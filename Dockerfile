@@ -1,4 +1,6 @@
-FROM node:16-alpine
+FROM alpine:3.15
+
+ENV NODE_VERSION 16.18.1
 
 WORKDIR /app
 
