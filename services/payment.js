@@ -63,6 +63,8 @@ async function createPaymentQR(payload = {}, authorization = "") {
     console.log(result);
     if (result.code === ErrorCode.CREATE_PAYMENT_SUCCEEDED) {
       return result.data;
+    } else {
+      return result;
     }
   } catch (error) {
     throw error;

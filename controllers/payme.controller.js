@@ -15,7 +15,7 @@ class PaymeController {
       partnerTransaction: bookingID,
       amount: amount > 100000 ? 5000 : amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
-      ipnUrl: "/v1/payme/callback",
+      ipnUrl: "/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
         qrPay: { platform: "mobile" },
@@ -23,9 +23,10 @@ class PaymeController {
       // redirectUrl: "https://domain.com/success",
       // failedUrl: " https://domain.com/fail",
     });
-    if (!response) {
-      return next(new AppError("Có lỗi xảy ra"));
+    if (!response || response.message) {
+      return next(new AppError("Có lỗi xảy ra" + response));
     }
+
     return res.status(200).send({
       status: "Success",
       data: response,
