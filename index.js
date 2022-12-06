@@ -52,7 +52,7 @@ const io = require("socket.io")(server, {
     origin: [
       "http://localhost:3000",
       "https://zalo.me/s/2746253485825640226",
-      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-e6777be",
+      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=51",
     ],
     transports: ["websocket"],
     secure: true,
