@@ -15,7 +15,7 @@ class PaymeController {
       partnerTransaction: bookingID,
       amount: amount > 100000 ? 5000 : amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
-      ipnUrl: "https://48ea-115-79-141-239.ap.ngrok.io/v1/payme/callback",
+      ipnUrl: "/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
         qrPay: { platform: "mobile" },

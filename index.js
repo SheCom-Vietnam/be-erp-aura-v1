@@ -49,7 +49,11 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://zalo.me/s/2746253485825640226"],
+    origin: [
+      "http://localhost:3000",
+      "https://zalo.me/s/2746253485825640226",
+      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-c6b1ddb8",
+    ],
     transports: ["websocket"],
     secure: true,
     cors: true,
