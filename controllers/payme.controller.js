@@ -24,7 +24,7 @@ class PaymeController {
       // failedUrl: " https://domain.com/fail",
     });
     if (!response || response.message) {
-      return next(new AppError("Có lỗi xảy ra" + response));
+      return next(new AppError("Có lỗi xảy ra" + response.message));
     }
 
     return res.status(200).send({
