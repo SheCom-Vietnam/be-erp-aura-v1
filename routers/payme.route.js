@@ -7,7 +7,7 @@ router.post("/callback", paymeController.paymeCallback);
 router.get("/test", (req, res) => {
   console.log("hello");
   return res.status(200).send({
-    data: "/v1/payme/callback",
+    data: "/api/v1/payme/callback",
   });
 });
 router.get("/socket", paymeController.socket);
