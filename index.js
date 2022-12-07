@@ -19,22 +19,25 @@ app.use(
     },
   })
 );
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("short"));
-
+var dir = path.join(__dirname, "public");
+app.use(express.static(dir));
 //create server
 const paymeRouter = require("./routers/payme.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
 });
+app.disable("etag");
 app.get("/", (req, res) => {
-  return res.status(200).send({
-    date: new Date(Date.now()).toString(),
-    message: "AuraAPP",
+  res.status(200).send({
+    data: "Welcome,Aura",
   });
+});
+app.get("/favicon.ico", function (req, res) {
+  res.sendStatus(204);
 });
 app.use("/api/v1/payme", paymeRouter);
 app.use((err, req, res, next) => {
