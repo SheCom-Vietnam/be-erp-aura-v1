@@ -34,6 +34,8 @@ app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
     data: "Welcome,Aura",
+    qrData:
+      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1el",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -60,7 +62,7 @@ const io = require("socket.io")(server, {
     origin: [
       "http://localhost:3000",
       "https://zalo.me/s/2746253485825640226",
-      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=51",
+      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1el",
     ],
     transports: ["websocket"],
     secure: true,
@@ -83,6 +85,8 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
-  console.log("healthcheck");
+  console.log(
+    "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1el"
+  );
   console.log(`Example app pro listening on port ${port}`);
 });
