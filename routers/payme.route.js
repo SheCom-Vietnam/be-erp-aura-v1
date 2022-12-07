@@ -5,7 +5,6 @@ const router = express.Router();
 router.post("/createQR", paymeController.createQRPayment);
 router.post("/callback", paymeController.paymeCallback);
 router.get("/test", (req, res) => {
-  console.log("hello");
   return res.status(200).send({
     data: "/api/v1/payme/callback",
   });

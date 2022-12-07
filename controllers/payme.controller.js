@@ -15,7 +15,7 @@ class PaymeController {
       partnerTransaction: bookingID,
       amount: amount > 100000 ? 5000 : amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
-      ipnUrl: "/api/v1/payme/callback",
+      ipnUrl: "https://api-staging.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
         qrPay: { platform: "mobile" },
@@ -43,9 +43,10 @@ class PaymeController {
   });
   socket = catchAsync(async (req, res, next) => {
     const io = res.io;
+    console.log("socket");
     const dump = {
       transaction: "6ZRVUIWGKAHL",
-      partnerTransaction: "447-645-543",
+      partnerTransaction: "042-196-692",
       paymentId: "EDDJQM3GSF2Z",
       accountId: 4440662620,
       merchantId: 690400,

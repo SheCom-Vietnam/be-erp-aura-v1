@@ -62,6 +62,7 @@ const io = require("socket.io")(server, {
     origin: [
       "http://localhost:3000",
       "https://zalo.me/s/2746253485825640226",
+      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=52",
       "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
     ],
     transports: ["websocket"],
@@ -82,11 +83,10 @@ io.on("connection", (socket) => {
   //   io.to(room).emit("viewer", io.sockets.adapter.rooms.get(room).size);
   // });
 });
-
+var os = require("os");
+console.log(os.hostname());
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
-  console.log(
-    "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e"
-  );
+  console.log("https://zalo.me/s/2746253485825640226/?env=TESTING&version=52");
   console.log(`Example app pro listening on port ${port}`);
 });
