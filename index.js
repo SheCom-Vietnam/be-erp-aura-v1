@@ -39,6 +39,11 @@ app.get("/", (req, res) => {
 app.get("/favicon.ico", function (req, res) {
   res.sendStatus(204);
 });
+app.get("/healthcheck", (req, res) => {
+  res.status(200).send({
+    data: "Welcome,Aura",
+  });
+});
 app.use("/api/v1/payme", paymeRouter);
 app.use((err, req, res, next) => {
   console.log(err);
@@ -78,5 +83,6 @@ io.on("connection", (socket) => {
 
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
+  console.log("healthcheck");
   console.log(`Example app pro listening on port ${port}`);
 });
