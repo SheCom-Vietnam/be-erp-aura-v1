@@ -5,12 +5,19 @@ const path = require("path");
 const http = require("http");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const admin = require('firebase-admin');
+var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json");
+
 
 const app = express();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 require("dotenv").config({
   path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
 });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 app.use(cors());
 app.use(
   express.json({
@@ -24,8 +31,11 @@ app.use(cookieParser());
 app.use(morgan("short"));
 var dir = path.join(__dirname, "public");
 app.use(express.static(dir));
+
 //create server
 const paymeRouter = require("./routers/payme.route");
+const pushnotifyRouter = require("./routers/pushnotify.route");
+const zaloRouter = require("./routers/oaZalo.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -47,6 +57,8 @@ app.get("/healthcheck", (req, res) => {
   });
 });
 app.use("/api/v1/payme", paymeRouter);
+app.use("/api/v1/pushnotify", pushnotifyRouter);
+app.use("/api/v1/zalo", zaloRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   console.log(err.message);
