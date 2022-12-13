@@ -10,6 +10,7 @@ class PancakeController {
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
     const io = res.io;
     const { account, custom_fields } = req.body;
+    console.log(account);
     // console.log(custom_fields);
     if (account && custom_fields) {
       const { data: newUser, error } = await supabase
