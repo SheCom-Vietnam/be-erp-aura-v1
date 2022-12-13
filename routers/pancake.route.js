@@ -1,0 +1,7 @@
+const pancakeController = require("../controllers/pancake.controller");
+const express = require("express");
+const router = express.Router();
+
+router.post("/hook", pancakeController.hookCustomer);
+router.get("/testhook", pancakeController.testHook);
+module.exports = router;

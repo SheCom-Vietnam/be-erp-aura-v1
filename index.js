@@ -5,9 +5,8 @@ const path = require("path");
 const http = require("http");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json");
-
 
 const app = express();
 admin.initializeApp({
@@ -36,6 +35,7 @@ app.use(express.static(dir));
 const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
 const zaloRouter = require("./routers/oaZalo.route");
+const pancakeRouter = require("./routers/pancake.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -59,6 +59,7 @@ app.get("/healthcheck", (req, res) => {
 app.use("/api/v1/payme", paymeRouter);
 app.use("/api/v1/pushnotify", pushnotifyRouter);
 app.use("/api/v1/zalo", zaloRouter);
+app.use("/api/v1/pancake", pancakeRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   console.log(err.message);
@@ -73,6 +74,7 @@ const io = require("socket.io")(server, {
   cors: {
     origin: [
       "http://localhost:3000",
+      "https: //admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
       "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
       "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
@@ -86,7 +88,7 @@ const io = require("socket.io")(server, {
   },
 });
 io.on("connection", (socket) => {
-  console.log("client_connect");
+  console.log("join_connect");
   // socket.on("join_booking", (bookingIdRoom) => {
   //   console.log(bookingIdRoom);
   //   socket.join(bookingIdRoom);
