@@ -1,4 +1,4 @@
-const {supabase} = require("./supabase")
+const supabase = require("../config/supabase");
 var fcm = require('fcm-notification');
 var FCM = new fcm('./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json');
 

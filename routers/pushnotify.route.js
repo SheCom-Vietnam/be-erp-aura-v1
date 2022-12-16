@@ -6,7 +6,7 @@ const router = express.Router();
 router.post("/staffs/clinic/:_clinicId/:_bookingId/:_userId", pushNotifyController.pushNotiAllStaffOfClinic);
 
 //router lễ tân check-in cho khách-> push noti cho bác sĩ // App Lễ Tân
-router.post("/staff/doctor/:_doctorId/:_bookingId/:_userId", pushNotifyController.staffPushNotiForDoctor);
+router.get("/staff/doctor/:_doctorId/:_bookingId/:_userId", pushNotifyController.staffPushNotiForDoctor);
 
 //router bác sĩ hoàn thành booking-> push noti cho nhân viên // App Bác Sĩ
 router.post("/doctor/staff/clinic/:_clinicId/:_bookingId/:_userId", pushNotifyController.doctorPushNotiForStaff);
