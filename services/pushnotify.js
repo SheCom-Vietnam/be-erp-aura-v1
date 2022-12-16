@@ -58,8 +58,10 @@ const message = {
   data: { score: '850', time: '2:45' },
     notification:{
             title : 'Có Đặt Hẹn Mới',
-            body : bodyNoti
-        },
+      body: bodyNoti
+  },
+    apns: { payload: { aps: { sound: 'default', badge: 1} } },
+    
 };
   FCM.sendToMultipleToken(message, tokens, function(err, response) {
     if(err){
@@ -93,7 +95,8 @@ const message = {
     notification:{
             title : 'Bác Sĩ Có Đặt Hẹn Mới',
             body : bodyNoti
-        },
+  },
+    apns: { payload: { aps: { sound: 'default', badge: 1} } },
 };
   FCM.sendToMultipleToken(message, tokens, function(err, response) {
     if(err){
@@ -122,13 +125,13 @@ async function doctorSendNotifyDoneBookingForStaff(tokens, userId, bookingId) {
     .single()
     
   const bodyNoti = `Đặt hẹn có mã ${booking.id} của khách hàng ${user.name} đã hoàn thành. Lễ tân tiến hành thanh toán.`
-
 const message = {
   data: { score: '850', time: '2:45' },
     notification:{
             title : 'Bác Sĩ Hoàn Thành Dịch Vụ',
             body : bodyNoti
-        },
+  },
+    apns: { payload: { aps: { sound: 'default', badge: 1} } },
 };
   FCM.sendToMultipleToken(message, tokens, function(err, response) {
     if(err){
@@ -172,7 +175,8 @@ const message = {
     notification:{
             title : 'Bác Sĩ Có Thông Báo Mới',
             body : bodyNoti
-        },
+  },
+    apns: { payload: { aps: { sound: 'default', badge: 1} } },
 };
   FCM.sendToMultipleToken(message, tokens, function(err, response) {
     if(err){
