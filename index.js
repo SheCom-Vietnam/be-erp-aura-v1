@@ -5,12 +5,18 @@ const path = require("path");
 const http = require("http");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
+const admin = require("firebase-admin");
+var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json");
 
 const app = express();
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
 require("dotenv").config({
   path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
 });
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 8000;
 app.use(cors());
 app.use(
   express.json({
@@ -19,24 +25,41 @@ app.use(
     },
   })
 );
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("short"));
+var dir = path.join(__dirname, "public");
+app.use(express.static(dir));
 
 //create server
 const paymeRouter = require("./routers/payme.route");
+const pushnotifyRouter = require("./routers/pushnotify.route");
+const zaloRouter = require("./routers/oaZalo.route");
+const pancakeRouter = require("./routers/pancake.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
 });
+app.disable("etag");
 app.get("/", (req, res) => {
-  return res.status(200).send({
-    date: new Date(Date.now()).toString(),
-    message: "AuraAPP",
+  res.status(200).send({
+    data: "Welcome,Aura",
+    qrData:
+      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
+  });
+});
+app.get("/favicon.ico", function (req, res) {
+  res.sendStatus(204);
+});
+app.get("/healthcheck", (req, res) => {
+  res.status(200).send({
+    data: "Welcome,Aura",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
+app.use("/api/v1/pushnotify", pushnotifyRouter);
+app.use("/api/v1/zalo", zaloRouter);
+app.use("/api/v1/pancake", pancakeRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   console.log(err.message);
@@ -51,8 +74,10 @@ const io = require("socket.io")(server, {
   cors: {
     origin: [
       "http://localhost:3000",
+      "https: //admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
-      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-e6777be",
+      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
+      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
     ],
     transports: ["websocket"],
     secure: true,
@@ -63,7 +88,7 @@ const io = require("socket.io")(server, {
   },
 });
 io.on("connection", (socket) => {
-  console.log("client_connect");
+  console.log("join_connect");
   // socket.on("join_booking", (bookingIdRoom) => {
   //   console.log(bookingIdRoom);
   //   socket.join(bookingIdRoom);
@@ -72,8 +97,13 @@ io.on("connection", (socket) => {
   //   io.to(room).emit("viewer", io.sockets.adapter.rooms.get(room).size);
   // });
 });
-
+// const supabaseUrl = process.env.SUPABASE_URL;
+// const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+// console.log(supabaseUrl);
+// console.log(supabaseAnonKey);
+var os = require("os");
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
+  console.log("https://zalo.me/s/2746253485825640226/?env=TESTING&version=53");
   console.log(`Example app pro listening on port ${port}`);
 });
