@@ -97,8 +97,11 @@ io.on("connection", (socket) => {
   //   io.to(room).emit("viewer", io.sockets.adapter.rooms.get(room).size);
   // });
 });
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+console.log(supabaseUrl);
+console.log(supabaseAnonKey);
 var os = require("os");
-console.log(os.hostname());
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
   console.log("https://zalo.me/s/2746253485825640226/?env=TESTING&version=53");
