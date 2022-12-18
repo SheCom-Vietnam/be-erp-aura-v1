@@ -1,5 +1,5 @@
 const axios = require('axios');
-const {supabase} = require("./supabase")
+const supabase = require("../config/supabase");
 const moment = require('moment')
 
 let oaSendMessage = async (access,zaloId,message) => {
