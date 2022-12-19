@@ -87,6 +87,8 @@ const io = require("socket.io")(server, {
     credentials: true,
   },
 });
+const supabase = require("./config/supabase");
+console.log(supabase);
 io.on("connection", (socket) => {
   console.log("join_connect");
   // socket.on("join_booking", (bookingIdRoom) => {
