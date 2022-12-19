@@ -1,7 +1,7 @@
 const axios = require("axios").default;
 const md5 = require("md5");
 const ErrorCode = require("../constant/ErrorCode");
-
+const supabase = require("../config/supabase");
 const Private = {
   paymeUrl: process.env.PAYME_DOMAIN,
   xApiClient: process.env.PAYME_API_CLIENT_KEY, // key x-api-client
@@ -45,22 +45,23 @@ async function createPaymentWeb(payload = {}, authorization = "") {
 async function createPaymentQR(payload = {}, authorization = "") {
   const path = "/payment/direct";
   const method = "POST";
+  const xApiValidate = md5(
+    `${path}${method}${authorization}${JSON.stringify(payload)}${
+      Private.secretKey
+    }`
+  );
   const headers = {
     authorization,
     "x-api-client": Private.xApiClient,
-    "x-api-validate": md5(
-      `${path}${method}${authorization}${JSON.stringify(payload)}${
-        Private.secretKey
-      }`
-    ),
+    "x-api-validate": xApiValidate,
   };
 
+  // console.log(Private);
   try {
     const response = await axios.post(`${Private.paymeUrl}${path}`, payload, {
       headers,
     });
     const result = response.data;
-    console.log(result);
     if (result.code === ErrorCode.CREATE_PAYMENT_SUCCEEDED) {
       return result.data;
     } else {

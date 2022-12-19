@@ -1,6 +1,8 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const PaymeService = require("../services/payment");
+const supabase = require("../config/supabase");
+const md5 = require("md5");
 class PaymeController {
   createQRPayment = catchAsync(async (req, res, next) => {
     const { bookingID, amount, customerName } = req.body;
@@ -10,7 +12,6 @@ class PaymeController {
       return next(new AppError("Tiền thanh toán không hợp lệ", 400));
     if (!customerName || customerName === "")
       return next(new AppError("Tên khách hàng không hợp lệ", 400));
-
     const response = await PaymeService.createPaymentQR({
       partnerTransaction: bookingID,
       amount: amount,
@@ -20,9 +21,8 @@ class PaymeController {
       payData: {
         qrPay: { platform: "mobile" },
       },
-      // redirectUrl: "https://domain.com/success",
-      // failedUrl: " https://domain.com/fail",
     });
+
     if (!response || response.message) {
       return next(new AppError("Có lỗi xảy ra" + response.message));
     }
@@ -35,11 +35,17 @@ class PaymeController {
   paymeCallback = catchAsync(async (req, res, next) => {
     const io = res.io;
     const paymeResponse = req.body;
-    console.log(paymeResponse);
-    io.emit("checkout_status", paymeResponse);
-    return res.status(200).send({
-      status: "Success",
-    });
+    const temp = md5(
+      `${JSON.stringify(paymeResponse)}${process.env.PAYME_SECRET_KEY}`
+    );
+    if (temp === req.headers["x-api-validate"]) {
+      io.emit("checkout_status", paymeResponse);
+      return res.status(200).send({
+        status: "Success",
+      });
+    } else {
+      return next(new AppError("Invalid header"), 400);
+    }
   });
   socket = catchAsync(async (req, res, next) => {
     const io = res.io;
