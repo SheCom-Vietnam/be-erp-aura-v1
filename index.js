@@ -43,9 +43,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura",
-    qrData:
-      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
+    data: "Welcome,Aura Staging",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -53,7 +51,7 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura",
+    data: "Welcome,Aura Production",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
@@ -73,11 +71,8 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
-      "https: //admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
-      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
-      "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
+      "https://admin.auradental.vn/",
     ],
     transports: ["websocket"],
     secure: true,
@@ -87,25 +82,13 @@ const io = require("socket.io")(server, {
     credentials: true,
   },
 });
-const supabase = require("./config/supabase");
-console.log(supabase);
+
 io.on("connection", (socket) => {
   console.log("join_connect");
-  // socket.on("join_booking", (bookingIdRoom) => {
-  //   console.log(bookingIdRoom);
-  //   socket.join(bookingIdRoom);
-  //   // socket.room = room;
-
-  //   io.to(room).emit("viewer", io.sockets.adapter.rooms.get(room).size);
-  // });
 });
-// const supabaseUrl = process.env.SUPABASE_URL;
-// const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-// console.log(supabaseUrl);
-// console.log(supabaseAnonKey);
+
 var os = require("os");
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
-  console.log("https://zalo.me/s/2746253485825640226/?env=TESTING&version=53");
   console.log(`Example app pro listening on port ${port}`);
 });

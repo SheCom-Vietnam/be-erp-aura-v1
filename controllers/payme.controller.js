@@ -15,7 +15,7 @@ class PaymeController {
       partnerTransaction: bookingID,
       amount: amount > 100000 ? 5000 : amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
-      ipnUrl: "https://api-staging.auradental.vn/api/v1/payme/callback",
+      ipnUrl: "https://api.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
         qrPay: { platform: "mobile" },
