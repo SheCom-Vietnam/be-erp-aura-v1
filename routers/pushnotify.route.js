@@ -13,6 +13,6 @@ router.post("/doctor/staff/clinic/:_clinicId/:_bookingId/:_userId", pushNotifyCo
 
 //router bác sĩ add thêm bác sĩ phụ, bác sĩ phụ xác nhận hoặc từ chối-> push noti cho bác sĩ phụ // App Bác Sĩ
 //_status: them || xacnhan || tuchoi
-router.post("/doctor/to/doctor/:_doctorId/:_bookingId/:_status", pushNotifyController.doctorPushNotiForDoctor);
+router.post("/doctor/to/doctor/:_doctor1Id/:_bookingId/:_doctor2Id/:_status", pushNotifyController.doctorPushNotiForDoctor);
 
 module.exports = router;
