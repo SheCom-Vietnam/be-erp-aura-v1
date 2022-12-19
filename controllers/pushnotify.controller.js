@@ -31,7 +31,7 @@ class PushNotifyController {
   
     doctorPushNotiForStaff = catchAsync(async (req, res, next) => {
     const { _clinicId,_bookingId,_userId } = req.params; 
-      if (_doctorId && _bookingId && _userId) {
+      if (_clinicId && _bookingId && _userId) {
           const response = await NotifyService.getAllTokenStaffOfClinic(_clinicId)
           if (response) {
               const resFirebase = await NotifyService.doctorSendNotifyDoneBookingForStaff(response, _userId, _bookingId)
