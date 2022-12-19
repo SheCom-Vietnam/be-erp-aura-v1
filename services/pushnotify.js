@@ -159,9 +159,9 @@ async function doctorSendNotifyForDoctor(tokens, doctorId, bookingId, status) {
   }
   if (status == "xacnhan") {
     bodyNoti = `Bác sĩ ${doctor.name} đã ĐỒNG Ý yêu cầu của bạn tham gia thực hiện dịch vụ ${booking.service_id[0].name} có mã đặt hẹn ${booking.id}`;
-    if (status == "tuchoi") {
-      bodyNoti = `Bác sĩ ${doctor.name} đã TỪ CHỐI yêu cầu của bạn tham gia thực hiện dịch vụ ${booking.service_id[0].name} có mã đặt hẹn ${booking.id}`;
-    }
+    // if (status == "tuchoi") {
+    //   bodyNoti = `Bác sĩ ${doctor.name} đã TỪ CHỐI yêu cầu của bạn tham gia thực hiện dịch vụ ${booking.service_id[0].name} có mã đặt hẹn ${booking.id}`;
+    // }
   }
 
   const message = {
