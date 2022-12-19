@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Staging",
+    data: "Welcome,Aura Production",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -72,7 +72,7 @@ const io = require("socket.io")(server, {
   cors: {
     origin: [
       "https://zalo.me/s/2746253485825640226",
-      "https://admin.auradental.vn/",
+      "https://admin.auradental.vn",
     ],
     transports: ["websocket"],
     secure: true,
