@@ -43,11 +43,11 @@ class PushNotifyController {
     });
   
      doctorPushNotiForDoctor = catchAsync(async (req, res, next) => {
-    const { _doctorId,_bookingId,_status} = req.params; 
-      if (_doctorId && _bookingId && _status) {
-          const response = await NotifyService.getTokenDoctorById(_doctorId)
+    const { _doctor1Id,_doctor2Id,_bookingId,_status} = req.params; 
+      if (_doctor1Id && _doctor2Id && _bookingId && _status) {
+          const response = await NotifyService.getTokenDoctorById(_doctor2Id)
           if (response) {
-              const resFirebase = await NotifyService.doctorSendNotifyForDoctor(response,_doctorId, _bookingId,_status)
+              const resFirebase = await NotifyService.doctorSendNotifyForDoctor(response,_doctor1Id, _bookingId,_status)
           }
             return res.status(200).send({
       status: "Success",
