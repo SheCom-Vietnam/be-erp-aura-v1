@@ -74,7 +74,7 @@ const io = require("socket.io")(server, {
   cors: {
     origin: [
       "http://localhost:3000",
-      "https: //admin-staging.auradental.vn",
+      "https://admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
       "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
       "https://zalo.me/s/2746253485825640226/?env=DEVELOPMENT&version=zdev-86619a1e",
@@ -87,22 +87,11 @@ const io = require("socket.io")(server, {
     credentials: true,
   },
 });
-const supabase = require("./config/supabase");
-console.log(supabase);
+
 io.on("connection", (socket) => {
   console.log("join_connect");
-  // socket.on("join_booking", (bookingIdRoom) => {
-  //   console.log(bookingIdRoom);
-  //   socket.join(bookingIdRoom);
-  //   // socket.room = room;
-
-  //   io.to(room).emit("viewer", io.sockets.adapter.rooms.get(room).size);
-  // });
 });
-// const supabaseUrl = process.env.SUPABASE_URL;
-// const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-// console.log(supabaseUrl);
-// console.log(supabaseAnonKey);
+
 var os = require("os");
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());

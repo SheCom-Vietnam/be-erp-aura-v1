@@ -55,6 +55,7 @@ async function createPaymentQR(payload = {}, authorization = "") {
     ),
   };
 
+  console.log(Private);
   try {
     const response = await axios.post(`${Private.paymeUrl}${path}`, payload, {
       headers,
