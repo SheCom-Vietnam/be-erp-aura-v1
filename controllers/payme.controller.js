@@ -10,10 +10,10 @@ class PaymeController {
       return next(new AppError("Tiền thanh toán không hợp lệ", 400));
     if (!customerName || customerName === "")
       return next(new AppError("Tên khách hàng không hợp lệ", 400));
-    console.log(bookingID, amount, customerName);
+
     const response = await PaymeService.createPaymentQR({
       partnerTransaction: bookingID,
-      amount: amount > 100000 ? 5000 : amount,
+      amount: amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
       ipnUrl: "https://api.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
