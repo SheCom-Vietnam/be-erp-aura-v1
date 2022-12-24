@@ -51,7 +51,7 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Production",
+    data: "Welcome,Aura production",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
