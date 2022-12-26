@@ -36,6 +36,7 @@ const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
 const zaloRouter = require("./routers/oaZalo.route");
 const pancakeRouter = require("./routers/pancake.route");
+const authRouter = require("./routers/auth.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -58,6 +59,7 @@ app.use("/api/v1/payme", paymeRouter);
 app.use("/api/v1/pushnotify", pushnotifyRouter);
 app.use("/api/v1/zalo", zaloRouter);
 app.use("/api/v1/pancake", pancakeRouter);
+app.use("/api/v1/auth", authRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   console.log(err.message);
