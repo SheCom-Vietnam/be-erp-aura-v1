@@ -36,7 +36,6 @@ const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
 const zaloRouter = require("./routers/oaZalo.route");
 const pancakeRouter = require("./routers/pancake.route");
-const authRouter = require("./routers/auth.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -44,7 +43,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Production",
+    data: "Welcome,Aura Staging",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -52,14 +51,13 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura production",
+    data: "Welcome,Aura",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
 app.use("/api/v1/pushnotify", pushnotifyRouter);
 app.use("/api/v1/zalo", zaloRouter);
 app.use("/api/v1/pancake", pancakeRouter);
-app.use("/api/v1/auth", authRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   console.log(err.message);
@@ -73,8 +71,10 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: [
+      "http://localhost:3000",
+      "https://admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
-      "https://admin.auradental.vn",
+      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
     ],
     transports: ["websocket"],
     secure: true,

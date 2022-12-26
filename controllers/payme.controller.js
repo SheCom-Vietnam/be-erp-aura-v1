@@ -16,7 +16,7 @@ class PaymeController {
       partnerTransaction: bookingID,
       amount: amount,
       desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
-      ipnUrl: "https://api.auradental.vn/api/v1/payme/callback",
+      ipnUrl: "https://api-staging.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
         qrPay: { platform: "mobile" },
@@ -40,7 +40,7 @@ class PaymeController {
     );
     if (temp === req.headers["x-api-validate"]) {
       io.emit("checkout_status", paymeResponse);
-      io.emit(`/${paymeResponse.partnerTransaction}`, paymeResponse)
+      io.emit(`/${paymeResponse.partnerTransaction}`, paymeResponse);
       return res.status(200).send({
         status: "Success",
       });
@@ -71,7 +71,7 @@ class PaymeController {
       updatedAt: "2022-12-05T03:56:12.404Z",
     };
     io.emit("checkout_status", dump);
-    io.emit(`/${dump.partnerTransaction}`, dump)
+    io.emit(`/${dump.partnerTransaction}`, dump);
     return res.status(200).send({
       status: "Success",
       data: dump,
