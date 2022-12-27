@@ -43,8 +43,6 @@ async function sendNotifyNewBookingForStaff(tokens, userId, bookingId) {
     .select("*")
     .eq("id", bookingId)
     .single();
-  console.log("sendNotifyNewBookingForStaff", booking, bookingErr);
-
   // Get the users
   const { data: user, error: userErr } = await supabase
     .from("users")
@@ -55,7 +53,7 @@ async function sendNotifyNewBookingForStaff(tokens, userId, bookingId) {
   const bodyNoti = `${user.name} đã đặt dịch vụ ${booking.service_id[0].name} có mã ${booking.id}`;
 
   const message = {
-    data: { score: "850", time: "2:45" },
+    data: { title: "Có Đặt Hẹn Mới", body: bodyNoti },
     notification: {
       title: "Có Đặt Hẹn Mới",
       body: bodyNoti,
@@ -89,7 +87,7 @@ async function staffSendNotifyNewBookingForDoctor(tokens, userId, bookingId) {
   const bodyNoti = `Bạn có lịch hẹn mới từ khách hàng ${user.name} với dịch vụ ${booking.service_id[0].name} có mã ${booking.id}`;
 
   const message = {
-    data: { score: "850", time: "2:45" },
+    data: { title: "Bác Sĩ Có Đặt Hẹn Mới", body: bodyNoti },
     notification: {
       title: "Bác Sĩ Có Đặt Hẹn Mới",
       body: bodyNoti,
@@ -122,7 +120,7 @@ async function doctorSendNotifyDoneBookingForStaff(tokens, userId, bookingId) {
 
   const bodyNoti = `Đặt hẹn có mã ${booking.id} của khách hàng ${user.name} đã hoàn thành. Lễ tân tiến hành thanh toán.`;
   const message = {
-    data: { score: "850", time: "2:45" },
+    data: { title: "Bác Sĩ Hoàn Thành Dịch Vụ", body: bodyNoti },
     notification: {
       title: "Bác Sĩ Hoàn Thành Dịch Vụ",
       body: bodyNoti,
@@ -165,7 +163,7 @@ async function doctorSendNotifyForDoctor(tokens, doctorId, bookingId, status) {
   }
 
   const message = {
-    data: { score: "850", time: "2:45" },
+    data: { title: "Bác Sĩ Có Thông Báo Mới", body: bodyNoti },
     notification: {
       title: "Bác Sĩ Có Thông Báo Mới",
       body: bodyNoti,
