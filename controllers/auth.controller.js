@@ -4,10 +4,15 @@ const supabase = require("../config/supabase");
 const AppError = require("../helpers/appError");
 const jwt = require("jsonwebtoken");
 class AuthController {
-  //   initPassword = catchAsync(async (req, res) => {
-  //     const hashedPassword = await bcrypt.hash("123456", 12);
-  //     console.log(hashedPassword);
-  //   });
+  initPassword = catchAsync(async (req, res) => {
+    const hashedPassword = await bcrypt.hash("123456", 12);
+    console.log(hashedPassword);
+    // const temp = await bcrypt.compare(
+    //   "123456",
+    //   "$2b$12$U.YbuuBQCyVcmWkvPBDiI.t/0p.60US1vOzDUtJMdy3RoGhGj639a"
+    // );
+    // console.log(temp);
+  });
   signToken = (phone) => {
     if (process.env.JWT_TOKEN_SECRET && process.env.JWT_EXPIRES_IN) {
       return jwt.sign({ id: phone }, process.env.JWT_TOKEN_SECRET, {

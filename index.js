@@ -37,6 +37,7 @@ const pushnotifyRouter = require("./routers/pushnotify.route");
 const zaloRouter = require("./routers/oaZalo.route");
 const pancakeRouter = require("./routers/pancake.route");
 const authRouter = require("./routers/auth.route");
+const voiceCallRouter = require("./routers/voicecall.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -60,9 +61,10 @@ app.use("/api/v1/pushnotify", pushnotifyRouter);
 app.use("/api/v1/zalo", zaloRouter);
 app.use("/api/v1/pancake", pancakeRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/voicecall", voiceCallRouter);
 app.use((err, req, res, next) => {
   console.log(err);
-  console.log(err.message);
+  // console.log(err.message);
   return res.status(err?.statusCode ? err?.statusCode : 404).send({
     status: err.status,
     message: err.message,
