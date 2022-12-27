@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Staging",
+    data: "Welcome,Aura Production",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -53,7 +53,7 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura",
+    data: "Welcome,Aura Production",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
@@ -75,10 +75,8 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
-      "https://admin-staging.auradental.vn",
       "https://zalo.me/s/2746253485825640226",
-      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
+      "https://aura.shecom.asia",
     ],
     transports: ["websocket"],
     secure: true,
