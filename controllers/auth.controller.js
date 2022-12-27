@@ -1,0 +1,102 @@
+const catchAsync = require("../helpers/catchAsync");
+const bcrypt = require("bcrypt");
+const supabase = require("../config/supabase");
+const AppError = require("../helpers/appError");
+const jwt = require("jsonwebtoken");
+class AuthController {
+  //   initPassword = catchAsync(async (req, res) => {
+  //     const hashedPassword = await bcrypt.hash("123456", 12);
+  //     console.log(hashedPassword);
+  //   });
+  signToken = (phone) => {
+    if (process.env.JWT_TOKEN_SECRET && process.env.JWT_EXPIRES_IN) {
+      return jwt.sign({ id: phone }, process.env.JWT_TOKEN_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      });
+    }
+  };
+  loginWithPhone = catchAsync(async (req, res, next) => {
+    const { phone, password } = req.body;
+    const { data, error } = await supabase
+      .from("roles")
+      .select("*")
+      .match({ phone: phone, position: "staff" });
+    if (error) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    }
+    if (data && data.length === 0) {
+      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+    }
+    if (await bcrypt.compare(password, data[0].password)) {
+      const { data: staff, error: staffError } = await supabase
+        .from("staffs")
+        .select("*,clinic_id(*)")
+        .match({ phone: data[0].phone })
+        .single();
+      if (staffError) {
+        return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+      }
+      if (staff) {
+        const token = this.signToken(data[0].phone);
+        return res.status(200).send({
+          status: "Success",
+          data: staff,
+          token: token,
+        });
+      }
+    } else {
+      return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
+    }
+  });
+  updatePassword = catchAsync(async (req, res, next) => {
+    const { phone, oldPassword, newPassword } = req.body;
+    const { data, error } = await supabase
+      .from("roles")
+      .select("*")
+      .match({ phone: phone, position: "staff" });
+    if (error) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    }
+    if (data && data.length === 0) {
+      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+    }
+    if (await bcrypt.compare(oldPassword, data[0].password)) {
+      const newhashedPassword = await bcrypt.hash(newPassword, 12);
+      const { data: newUpdatedPassRole, error: newUpdatedPassError } =
+        await supabase
+          .from("roles")
+          .update({ password: newhashedPassword })
+          .eq("id", data[0].id)
+          .select("*")
+          .single();
+      if (newUpdatedPassError) {
+        return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+      }
+      if (newUpdatedPassRole) {
+        const token = this.signToken(data[0].phone);
+        return res.status(200).send({
+          status: "Success",
+          token: token,
+        });
+      }
+    } else {
+      return next(new AppError("Mật khẩu cũ không đúng. Thử lại", 400));
+    }
+  });
+  getInfo = async (req, res, next) => {
+    const { data: staff, error: staffError } = await supabase
+      .from("staffs")
+      .select(`*,clinic_id(*)`)
+      .match({ phone: req.user.phone })
+      .single();
+    if (staffError) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    } else if (staff) {
+      return res.status(200).send({
+        status: "Success",
+        data: staff,
+      });
+    }
+  };
+}
+module.exports = new AuthController();
