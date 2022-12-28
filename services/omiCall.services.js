@@ -1,6 +1,7 @@
 const axios = require("axios");
 const supabase = require("../config/supabase");
 const moment = require("moment");
+
 const checkTimeAccessToken = (time) => {
   const _time = moment(time).add(1, "days");
   const isValid = !moment(Date.now()).isAfter(_time); //if date.now is after _time of token (>24h) is invalid
@@ -46,7 +47,7 @@ const updateOmiTokenOnDB = async (id, newToken) => {
       throw new Error(error);
     } else if (omi_token) {
       console.log("update new OmiToken sucesss");
-      // return omi_token;
+      return omi_token;
     }
   } catch (e) {
     throw new Error(e);
@@ -72,10 +73,31 @@ const insertOmiTokenOnDB = async (newToken) => {
     throw new Error(e);
   }
 };
+const getInternalPhoneList = async (accessKey) => {
+  try {
+    const response = await axios({
+      url: `${process.env.OMI_API}/api/call_center/internal_phone/list`,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessKey}`,
+      },
+    });
+    if (response && response.status === 200) {
+      return response.data;
+    } else {
+      console.log("Get phone list faild");
+      return response;
+    }
+  } catch (e) {
+    throw new Error(e);
+  }
+};
 module.exports = {
   getOmilAccesKey,
   updateOmiTokenOnDB,
   getOmiTokenOnDb,
   checkTimeAccessToken,
   insertOmiTokenOnDB,
+  getInternalPhoneList,
 };
