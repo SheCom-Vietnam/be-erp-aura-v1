@@ -41,17 +41,5 @@ class VngStorageController {
       },
     });
   });
-  uploadLoadToVng = catchAsync(async (req, res, next) => {
-    // downloadFile(
-    //   "https://public-v1-stg.omicrm.com/third_party/recording/uc?id=UWJ5N2JRdTlHa0NJUzEvZktxTlNDZmVlVEVuMkgzUTZNZWpDTDdsVlZQNnBXZWk4QjZTVWxPTlhiWkhYaDR4VGtQZ003anpsS01rMm9OUFJ0RnVOU2c9PQ==",
-    //   "123"
-    // );
-    const response = await axios.get(
-      "https://public-v1-stg.omicrm.com/third_party/recording/uc?id=UWJ5N2JRdTlHa0NJUzEvZktxTlNDZmVlVEVuMkgzUTZNZWpDTDdsVlZQNnBXZWk4QjZTVWxPTlhiWkhYaDR4VGtQZ003anpsS01rMm9OUFJ0RnVOU2c9PQ==",
-      { responseType: "stream" }
-    );
-    const upload = await vngStorageServices.upload(response.data, "demo.123");
-    console.log(upload);
-  });
 }
 module.exports = new VngStorageController();

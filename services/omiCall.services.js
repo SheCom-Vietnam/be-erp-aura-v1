@@ -4,7 +4,7 @@ const moment = require("moment");
 
 const checkTimeAccessToken = (time) => {
   const _time = moment(time).add(1, "days");
-  const isValid = !moment(Date.now()).isAfter(_time); //if date.now is after _time of token (>24h) is invalid
+  const isValid = !moment(new Date(Date.now())).isAfter(new Date(_time)); //if date.now is after _time of token (>24h) is invalid
   return isValid;
 };
 const getOmilAccesKey = async () => {
@@ -22,9 +22,10 @@ const getOmiTokenOnDb = async () => {
   try {
     let { data: omi_token, error } = await supabase
       .from("omi_token")
-      .select("*");
+      .select("*")
+      .single();
     if (error) {
-      throw new Error(error);
+      return null;
     } else if (omi_token) {
       return omi_token;
     }
@@ -39,10 +40,12 @@ const updateOmiTokenOnDB = async (id, newToken) => {
       .update({
         access_token: newToken.access_token,
         access_type: newToken.access_type,
-        token_type: newToken.newToken.token_type,
+        token_type: newToken.token_type,
+        time: Date.now(),
       })
       .eq("id", id)
-      .select("*");
+      .select("*")
+      .single();
     if (error) {
       throw new Error(error);
     } else if (omi_token) {
@@ -61,12 +64,14 @@ const insertOmiTokenOnDB = async (newToken) => {
         access_token: newToken.access_token,
         access_type: newToken.access_type,
         token_type: newToken.token_type,
+        time: Date.now(),
       })
-      .select("*");
+      .select("*")
+      .single();
     if (error) {
       throw new Error(error);
     } else if (omi_token) {
-      console.log("update new OmiToken sucesss");
+      console.log("Insert newOmiToken sucesss");
       return omi_token;
     }
   } catch (e) {
@@ -93,6 +98,7 @@ const getInternalPhoneList = async (accessKey) => {
     throw new Error(e);
   }
 };
+
 module.exports = {
   getOmilAccesKey,
   updateOmiTokenOnDB,
