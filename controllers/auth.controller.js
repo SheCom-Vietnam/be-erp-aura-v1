@@ -21,7 +21,6 @@ class AuthController {
     }
   };
   loginWithPhone = catchAsync(async (req, res, next) => {
-    console.log(1)
     const { phone, password } = req.body;
         console.log(req.body)
     const { data, error } = await supabase
@@ -56,6 +55,44 @@ class AuthController {
       return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
     }
   });
+
+  loginWithPhoneForDoctor = catchAsync(async (req, res, next) => {
+    console.log(1)
+    const { phone, password } = req.body;
+        console.log(req.body)
+    const { data, error } = await supabase
+      .from("roles")
+      .select("*")
+      .match({ phone: phone, position: "doctor" });
+    console.log(data,error)
+    if (error) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    }
+    if (data && data.length === 0) {
+      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+    }
+    if (await bcrypt.compare(password, data[0].password)) {
+      const { data: staff, error: staffError } = await supabase
+        .from("doctors")
+        .select("*,clinic_id(*)")
+        .match({ phone: data[0].phone })
+        .single();
+      if (staffError) {
+        return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+      }
+      if (staff) {
+        const token = this.signToken(data[0].phone);
+        return res.status(200).send({
+          status: "Success",
+          data: staff,
+          token: token,
+        });
+      }
+    } else {
+      return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
+    }
+  });
+
   updatePassword = catchAsync(async (req, res, next) => {
     const { phone, oldPassword, newPassword } = req.body;
     const { data, error } = await supabase
