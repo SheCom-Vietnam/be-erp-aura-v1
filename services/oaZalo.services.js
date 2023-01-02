@@ -26,6 +26,43 @@ let oaSendMessage = async (access, zaloId, message) => {
   }
 };
 
+let oaSendMessageImageOa = async (zaloId, imageUrl, messageText,access) => {
+  try {
+   const response= await axios.post(
+      `https://openapi.zalo.me/v2.0/oa/message`,
+      {
+        recipient: {
+          user_id: zaloId,
+        },
+        message: {
+          text: messageText,
+          attachment: {
+                type: 'template',
+                payload: {
+                    template_type: 'media',
+                    elements: [
+                        {
+                            media_type: 'image',
+                            url: imageUrl
+                        }
+                    ]
+                }
+            }
+        },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access,
+        },
+      }
+   );
+   return response.data;
+  } catch (e) {
+    throw new Error(message);
+  }
+};
+
 const checkTimeOaToken = (time) => {
   let flag = true;
   const _time = moment(time).startOf().fromNow();
@@ -93,4 +130,5 @@ module.exports = {
   getTokenOnDb,
   reNewOaToken,
   updateNewOaTokenOnDb,
+  oaSendMessageImageOa
 };

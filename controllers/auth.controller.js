@@ -21,11 +21,14 @@ class AuthController {
     }
   };
   loginWithPhone = catchAsync(async (req, res, next) => {
+    console.log(1)
     const { phone, password } = req.body;
+        console.log(req.body)
     const { data, error } = await supabase
       .from("roles")
       .select("*")
       .match({ phone: phone, position: "staff" });
+    console.log(data,error)
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
