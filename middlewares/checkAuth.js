@@ -29,9 +29,9 @@ module.exports = catchAsync(async (req, res, next) => {
   }
 
   const { data, error } = await supabase
-    .from("roles")
+    .from("staffs")
     .select("*")
-    .match({ phone: decoded.id, position: "staff" });
+    .match({ phone: decoded.id, role: "staff" });
   if (data.length === 0) {
     return next(
       new AppError(

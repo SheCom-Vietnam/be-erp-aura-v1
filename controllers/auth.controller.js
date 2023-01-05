@@ -25,7 +25,7 @@ class AuthController {
     const { data, error } = await supabase
       .from("staffs")
       .select("*")
-      .match({ phone: phone, roles: "staff" });
+      .match({ phone: phone, role: "staff" });
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -59,9 +59,9 @@ class AuthController {
   updatePassword = catchAsync(async (req, res, next) => {
     const { phone, oldPassword, newPassword } = req.body;
     const { data, error } = await supabase
-      .from("roles")
+      .from("staffs")
       .select("*")
-      .match({ phone: phone, position: "staff" });
+      .match({ phone: phone, role: "staff" });
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -72,7 +72,7 @@ class AuthController {
       const newhashedPassword = await bcrypt.hash(newPassword, 12);
       const { data: newUpdatedPassRole, error: newUpdatedPassError } =
         await supabase
-          .from("roles")
+          .from("staffs")
           .update({ password: newhashedPassword })
           .eq("id", data[0].id)
           .select("*")
@@ -95,7 +95,7 @@ class AuthController {
     const { data: staff, error: staffError } = await supabase
       .from("staffs")
       .select(`*,clinic_id(*)`)
-      .match({ phone: req.user.phone })
+      .match({ phone: req.user.phone, role: "staff" })
       .single();
     if (staffError) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
