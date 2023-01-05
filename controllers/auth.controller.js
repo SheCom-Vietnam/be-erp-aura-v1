@@ -23,9 +23,9 @@ class AuthController {
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
     const { data, error } = await supabase
-      .from("roles")
+      .from("staffs")
       .select("*")
-      .match({ phone: phone, position: "staff" });
+      .match({ phone: phone, roles: "staff" });
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -36,10 +36,13 @@ class AuthController {
       const { data: staff, error: staffError } = await supabase
         .from("staffs")
         .select("*,clinic_id(*)")
-        .match({ phone: data[0].phone })
+        .match({ id: data[0].id })
         .single();
       if (staffError) {
         return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+      }
+      if (staff.verify === false) {
+        return next(new AppError("Người dùng chưa được xác thực", 400));
       }
       if (staff) {
         const token = this.signToken(data[0].phone);
