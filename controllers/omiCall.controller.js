@@ -56,6 +56,7 @@ class OmiCallController {
     const { payload } = await omiCallServices.getInternalPhoneList(
       access_token
     );
+
     const staffInfo = payload.items.find((item) => item.email === email);
     if (!staffInfo) {
       return next(new AppError("Can not find user belong with email", 400));
@@ -63,7 +64,7 @@ class OmiCallController {
     const { data, error } = await supabase
       .from("staffs")
       .update({ omi_sip_number: staffInfo.sip_user })
-      .eq("email", email);
+      .match({ email: email, role: "staff" });
     if (error) {
       return next(new AppError("Can not update staff info", 500));
     }
@@ -89,6 +90,7 @@ class OmiCallController {
       provider,
       source_number, // from phone
     } = req.body;
+
     let { data: staff } = await supabase
       .from("staffs")
       .select("*")
@@ -111,6 +113,7 @@ class OmiCallController {
         .select("*")
         .single();
       if (omicall) {
+        console.log(omicall);
         console.log("Create new omicall data success", omicall.id);
       }
     }
