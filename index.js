@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Production",
+    data: "Welcome,Aura Staging",
   });
 });
 app.get("/favicon.ico", function (req, res) {
