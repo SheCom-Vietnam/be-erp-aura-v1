@@ -86,6 +86,14 @@ async function staffSendNotifyNewBookingForDoctor(tokens, userId, bookingId) {
 
   const bodyNoti = `Bạn có lịch hẹn mới từ khách hàng ${user.name} với dịch vụ ${booking.service_id[0].name} có mã ${booking.id}`;
 
+  FCM.subscribeToTopic(tokens, 'TopicName', function(err, response) {
+    if(err){
+        console.log('error found', err);
+    }else {
+        console.log('response here', response);
+    }
+  })
+  
   const message = {
     data: { title: "Bác Sĩ Có Đặt Hẹn Mới", body: bodyNoti },
     notification: {
