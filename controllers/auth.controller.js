@@ -24,15 +24,15 @@ class AuthController {
     const { phone, password } = req.body;
         console.log(req.body)
     const { data, error } = await supabase
-      .from("*,clinic_id(*)")
-      .select("*")
+      .from("staffs")
+      .select("*,clinic_id(*)")
       .match({ phone: phone, role: "staff" });
     console.log(data,error)
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
     if (data && data.length === 0) {
-      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+      return next(new AppError("Không tìm thấy người dùng", 400));
     }
     if (await bcrypt.compare(password, data[0].password)) {
       if (data[0].verify === false) {
@@ -45,7 +45,7 @@ class AuthController {
           token: token,
         });
     } else {
-      return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
+      return next(new AppError("Sai mật khẩu", 400));
     }
   });
 
@@ -61,7 +61,7 @@ class AuthController {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
     if (data && data.length === 0) {
-      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+      return next(new AppError("Không tìm thấy người dùng", 400));
     }
     if (await bcrypt.compare(password, data[0].password)) {
        if (data[0].verify === false) {
@@ -74,7 +74,7 @@ class AuthController {
           token: token,
         });
     } else {
-      return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
+      return next(new AppError("Sai mật khẩu", 400));
     }
   });
 
