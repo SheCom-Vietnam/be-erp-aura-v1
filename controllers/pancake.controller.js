@@ -36,7 +36,7 @@ class PancakeController {
     //   pancake_ticket_name: 'Fanpage',
     //   pancake_updated_time: '11/01/2023'
     // }
-    console.log(account, custom_fields);
+    // console.log(account, custom_fields);
     if (account && custom_fields) {
       const optionsUser = {
         name: account.account_name,
