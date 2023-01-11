@@ -19,8 +19,24 @@ class PancakeController {
   hookCustomer = catchAsync(async (req, res, next) => {
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
+    res.status(200).send({
+      status: "Success",
+    });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    //     {
+    //   account_name: 'Thanh Sơn Nguyễn',
+    //   gender: 'male',
+    //   phone_office: '0933670101',
+    //   sic_code: 'a973d8c1-aae4-4b62-a512-c5e072fb4099'
+    // } {
+    //   pancake_assign_tag: 'Hương',
+    //   pancake_locale_tag: 'Ba Tháng Hai',
+    //   pancake_service_tag: '',
+    //   pancake_ticket_name: 'Fanpage',
+    //   pancake_updated_time: '11/01/2023'
+    // }
+    console.log(account, custom_fields);
     if (account && custom_fields) {
       const optionsUser = {
         name: account.account_name,
@@ -56,17 +72,19 @@ class PancakeController {
       const { data: user, error: getUserErrror } = await supabase
         .from("users")
         .select("*")
-        .match({ phone: account.phone_office, id: account.sic_code });
-
+        .match({ phone: account.phone_office });
+      console.log(user.length);
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
             .from("users")
             .update([{ clinic: optionsUser.clinic }])
-            .match({ phone: account.phone_office, id: account.sic_code })
+            .match({ phone: account.phone_office })
             .select("*")
             .single();
+
           if (error) {
+            console.log(error);
             console.log(
               `Tạo dữ liệu lỗi. Vui lòng thử lại ${account.phone_office}`
             );
@@ -78,10 +96,11 @@ class PancakeController {
           const { data: updatedUser, error } = await supabase
             .from("users")
             .update([{ live_chat: optionsUser.live_chat }])
-            .match({ phone: account.phone_office, id: account.sic_code })
+            .match({ phone: account.phone_office })
             .select("*")
             .single();
           if (error) {
+            console.log(error);
             console.log(
               `Tạo dữ liệu lỗi. Vui lòng thử lại ${account.phone_office}`
             );
@@ -90,23 +109,21 @@ class PancakeController {
           }
         }
       } else {
+        console.log("run here");
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*")
-          .single();
+          .select("*");
         if (error) {
+          console.log(error);
           console.log(
-            `Tạo dữ liệu lỗi. Vui lòng thử lại ${account.phone_office}`
+            `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
           );
         } else if (newUser) {
           io.emit("pancake_hook", newUser);
         }
       }
     }
-    return res.status(200).send({
-      status: "Success",
-    });
   });
   testHook = catchAsync(async (req, res, next) => {
     const io = res.io;
