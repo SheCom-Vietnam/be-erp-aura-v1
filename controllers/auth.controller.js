@@ -22,40 +22,62 @@ class AuthController {
   };
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
+        console.log(req.body)
     const { data, error } = await supabase
       .from("staffs")
-      .select("*")
+      .select("*,clinic_id(*)")
       .match({ phone: phone, role: "staff" });
+    console.log(data,error)
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
     if (data && data.length === 0) {
-      return next(new AppError("Không tìm thấy người dùng phù hợp", 400));
+      return next(new AppError("Không tìm thấy người dùng", 400));
     }
     if (await bcrypt.compare(password, data[0].password)) {
-      const { data: staff, error: staffError } = await supabase
-        .from("staffs")
-        .select("*,clinic_id(*)")
-        .match({ id: data[0].id })
-        .single();
-      if (staffError) {
-        return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
-      }
-      if (staff.verify === false) {
+      if (data[0].verify === false) {
         return next(new AppError("Người dùng chưa được xác thực", 400));
       }
-      if (staff) {
         const token = this.signToken(data[0].phone);
         return res.status(200).send({
           status: "Success",
-          data: staff,
+          data: data[0],
           token: token,
         });
-      }
     } else {
-      return next(new AppError("Sai mật khẩu hoặc số điện thoại", 400));
+      return next(new AppError("Sai mật khẩu", 400));
     }
   });
+
+  loginWithPhoneForDoctor = catchAsync(async (req, res, next) => {
+    const { phone, password } = req.body;
+        console.log(req.body)
+    const { data, error } = await supabase
+      .from("staffs")
+      .select("*,clinic_id(*)")
+      .match({ phone: phone, role: "doctor" });
+    console.log(data,error)
+    if (error) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    }
+    if (data && data.length === 0) {
+      return next(new AppError("Không tìm thấy người dùng", 400));
+    }
+    if (await bcrypt.compare(password, data[0].password)) {
+       if (data[0].verify === false) {
+        return next(new AppError("Người dùng chưa được xác thực", 400));
+      }
+        const token = this.signToken(data[0].phone);
+        return res.status(200).send({
+          status: "Success",
+          data: data[0],
+          token: token,
+        });
+    } else {
+      return next(new AppError("Sai mật khẩu", 400));
+    }
+  });
+
   updatePassword = catchAsync(async (req, res, next) => {
     const { phone, oldPassword, newPassword } = req.body;
     const { data, error } = await supabase
