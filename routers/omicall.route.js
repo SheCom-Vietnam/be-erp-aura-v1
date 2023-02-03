@@ -1,7 +1,9 @@
 const OmiCallController = require("../controllers/omiCall.controller");
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+const upload = multer();
 
 router.get("/getOmiInfo", OmiCallController.getOmiInfo);
-router.post("/webhook", OmiCallController.webhook);
+router.post("/webhook", upload.single("filedata"), OmiCallController.webhook);
 module.exports = router;

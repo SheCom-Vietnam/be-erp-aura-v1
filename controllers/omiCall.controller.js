@@ -1,7 +1,9 @@
 const omiCallServices = require("../services/omiCall.services");
+const vngStorageServices = require("../services/vngStorage.services");
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
+const axios = require("axios");
 class OmiCallController {
   _getAccessToken = async () => {
     try {
@@ -38,6 +40,29 @@ class OmiCallController {
       }
     } catch (error) {
       throw error;
+    }
+  };
+  _uploadAudio = async (file) => {
+    const accessKey = await vngStorageServices.getAccessKey();
+    const fileName = file.originalname.replace("wav", "mp3");
+    try {
+      const response = await axios({
+        method: "PUT",
+        url: `${process.env.STORAGE_URL}/${fileName}`,
+        data: file.buffer,
+        headers: {
+          "Content-Type": file.mimetype,
+          "X-Auth-Token": accessKey.access_token,
+        },
+      });
+      if (response && response.status === 201) {
+        return `${process.env.STORAGE_URL}/${fileName}`;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+      return null;
     }
   };
   getOmiInfo = catchAsync(async (req, res, next) => {
@@ -78,43 +103,65 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    res.status(200).send("Sucess");
-    const {
-      created_date, //ngay tao
-      record_seconds,
-      recording_file,
-      call_out_price, //gia tien
-      to_number, //sdt khach hang
-      sip_user,
-      disposition, //"cancelled" || "answered"
-      provider,
-      source_number, // from phone
-    } = req.body;
+    res.status(200).send("Success");
+    if (req.file) {
+      const file = req.file;
+      const callUuid = req.file.originalname.split(".")[0];
+      const audioStorageUrl = await this._uploadAudio(file);
 
-    let { data: staff } = await supabase
-      .from("staffs")
-      .select("*")
-      .eq("omi_sip_number", sip_user)
-      .single();
-    if (staff) {
+      if (!audioStorageUrl) console.log("Storage Audio File Error");
       const { data: omicall } = await supabase
         .from("omi_calls")
-        .insert({
-          staff_id: staff.id,
-          created_date: created_date,
-          price: Math.round(call_out_price) | 0,
-          record_seconds: record_seconds,
-          record_file: recording_file,
-          customer_phone: to_number,
-          customer_phone_provider: provider,
-          from_phone: source_number,
-          disposition: disposition,
-        })
+        .upsert(
+          {
+            id: callUuid,
+            record_file: audioStorageUrl,
+          },
+          { onConflict: "id" }
+        )
         .select("*")
         .single();
-      if (omicall) {
-        console.log(omicall);
-        console.log("Create new omicall data success", omicall.id);
+      if (omicall) console.log("Attach Audio file OmiCall ", omicall.id);
+    } else {
+      const {
+        call_uuid, //call uuid
+        created_date, //ngay tao
+        record_seconds,
+        recording_file, // file record (k cần nữa)
+        call_out_price, //gia tien
+        to_number, //sdt khach hang
+        sip_user,
+        disposition, //"cancelled" || "answered"
+        provider,
+        source_number, // from phone
+      } = req.body;
+      let { data: staff } = await supabase
+        .from("staffs")
+        .select("*")
+        .eq("omi_sip_number", sip_user)
+        .single();
+      if (staff) {
+        const { data: omicall } = await supabase
+          .from("omi_calls")
+          .upsert(
+            {
+              id: call_uuid,
+              staff_id: staff.id,
+              created_date: created_date,
+              price: Math.round(call_out_price) | 0,
+              record_seconds: record_seconds,
+              customer_phone: to_number,
+              customer_phone_provider: provider,
+              from_phone: source_number,
+              disposition: disposition,
+            },
+            { onConflict: "id" }
+          )
+          .select("*")
+          .single();
+        if (omicall) {
+          console.log("Create new omicall data success", omicall.id);
+        }
       }
     }
   });
