@@ -91,7 +91,7 @@ const getInternalPhoneList = async (accessKey) => {
     if (response && response.status === 200) {
       return response.data;
     } else {
-      console.log("Get phone list faild");
+      console.log("Get phone list fail");
       return response;
     }
   } catch (e) {

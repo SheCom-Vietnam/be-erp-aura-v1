@@ -73,7 +73,7 @@ class PancakeController {
         .from("users")
         .select("*")
         .match({ phone: account.phone_office });
-      console.log(user.length);
+
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
@@ -109,13 +109,11 @@ class PancakeController {
           }
         }
       } else {
-        console.log("run here");
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
           .select("*");
         if (error) {
-          console.log(error);
           console.log(
             `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
           );

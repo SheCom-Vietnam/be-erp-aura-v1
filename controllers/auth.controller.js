@@ -22,12 +22,12 @@ class AuthController {
   };
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
-        console.log(req.body)
+
     const { data, error } = await supabase
       .from("staffs")
       .select("*,clinic_id(*)")
       .match({ phone: phone, role: "staff" });
-    console.log(data,error)
+
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -38,12 +38,12 @@ class AuthController {
       if (data[0].verify === false) {
         return next(new AppError("Người dùng chưa được xác thực", 400));
       }
-        const token = this.signToken(data[0].phone);
-        return res.status(200).send({
-          status: "Success",
-          data: data[0],
-          token: token,
-        });
+      const token = this.signToken(data[0].phone);
+      return res.status(200).send({
+        status: "Success",
+        data: data[0],
+        token: token,
+      });
     } else {
       return next(new AppError("Sai mật khẩu", 400));
     }
@@ -51,12 +51,12 @@ class AuthController {
 
   loginWithPhoneForDoctor = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
-        console.log(req.body)
+
     const { data, error } = await supabase
       .from("staffs")
       .select("*,clinic_id(*)")
       .match({ phone: phone, role: "doctor" });
-    console.log(data,error)
+
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -64,15 +64,15 @@ class AuthController {
       return next(new AppError("Không tìm thấy người dùng", 400));
     }
     if (await bcrypt.compare(password, data[0].password)) {
-       if (data[0].verify === false) {
+      if (data[0].verify === false) {
         return next(new AppError("Người dùng chưa được xác thực", 400));
       }
-        const token = this.signToken(data[0].phone);
-        return res.status(200).send({
-          status: "Success",
-          data: data[0],
-          token: token,
-        });
+      const token = this.signToken(data[0].phone);
+      return res.status(200).send({
+        status: "Success",
+        data: data[0],
+        token: token,
+      });
     } else {
       return next(new AppError("Sai mật khẩu", 400));
     }

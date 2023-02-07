@@ -65,6 +65,22 @@ class OmiCallController {
       return null;
     }
   };
+  checkOmiCallEmail = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    const { access_token } = await this._getAccessToken();
+    const { payload } = await omiCallServices.getInternalPhoneList(
+      access_token
+    );
+    if (!payload) return next(new AppError("Can not get omi phone list", 500));
+    const staffInfo = payload.items.find((item) => item.email === email);
+    if (!staffInfo) {
+      return next(new AppError("Can not find user belong with email", 400));
+    }
+    return res.status(200).send({
+      status: "Success",
+      data: staffInfo.email,
+    });
+  });
   getOmiInfo = catchAsync(async (req, res, next) => {
     const { email } = req.query;
     if (!email) {
