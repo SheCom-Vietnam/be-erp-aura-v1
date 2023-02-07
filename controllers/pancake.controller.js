@@ -24,6 +24,7 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    // console.log(req.body);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -112,7 +113,8 @@ class PancakeController {
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*");
+          .select("*")
+          .single();
         if (error) {
           console.log(
             `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
