@@ -1,6 +1,8 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
+const axios = require("axios");
+const { VnProvinces } = require("../constant/VnProvinces");
 const CLINICS = [
   "Ba Tháng Hai",
   "Phú Yên",
@@ -16,6 +18,28 @@ class PancakeController {
   _checkAPIKey = (key) => {
     return process.env.X_API_KEY === key;
   };
+  checkPancakeName = catchAsync(async (req, res, next) => {
+    const { pancakeName } = req.body;
+    if (!pancakeName) return next(new AppError("Missing data in body", 400));
+    const response = await axios.get(
+      `https://pages.fm/api/public_api/v1/pages/${process.env.PANCAKE_PAGE_ID}/tags?access_token=${process.env.PANCAKE_PAGE_ACCESS_KEY}`
+    );
+    if (response && response.status === 200) {
+      const listTags = response.data.tags;
+      const findPancakeName = listTags.find(
+        (item) => item.text === pancakeName
+      );
+      if (!findPancakeName || VnProvinces.includes(pancakeName)) {
+        return next(
+          new AppError("Can not find user belong with username", 400)
+        );
+      }
+      return res.status(200).send({
+        status: "Success",
+        data: findPancakeName,
+      });
+    }
+  });
   hookCustomer = catchAsync(async (req, res, next) => {
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
