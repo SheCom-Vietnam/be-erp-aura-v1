@@ -3,6 +3,10 @@ const bcrypt = require("bcrypt");
 const supabase = require("../config/supabase");
 const AppError = require("../helpers/appError");
 const jwt = require("jsonwebtoken");
+const {
+  sendSignUpMail,
+  sendRecoveryPass,
+} = require("../services/sendMail.service");
 class AuthController {
   initPassword = catchAsync(async (req, res) => {
     const hashedPassword = await bcrypt.hash("123456", 12);
@@ -128,5 +132,77 @@ class AuthController {
       });
     }
   };
+  signUpEmail = catchAsync(async (req, res, next) => {
+    const { email, username, password } = req.body;
+    if (!email || !username || !password)
+      return next(new AppError("Missing value in body", 400));
+    const { data, error } = await supabase.auth.admin.generateLink({
+      type: "signup",
+      email: email,
+      password: password,
+      options: {
+        data: {
+          user_name: username,
+        },
+      },
+    });
+    if (!error) {
+      const toEmail = data.user.email;
+      const toUserName = data.user.user_metadata.user_name;
+      const confirmationToken = data.properties.action_link;
+      const sendMail = await sendSignUpMail(
+        toEmail,
+        toUserName,
+        confirmationToken
+      );
+      if (sendMail && sendMail.statusCode === 202) {
+        return res.status(200).send({
+          status: "Success",
+        });
+      } else {
+        return res.status(404).send({
+          status: "Failed",
+        });
+      }
+    } else {
+      return next(new AppError(error.message, 400));
+    }
+  });
+  forgotPassEmail = catchAsync(async (req, res, next) => {
+    const { email } = req.body;
+    if (!email) return next(new AppError("Missing value in body", 400));
+    //check email exsist in db
+    const { data: checkEmail } = await supabase
+      .from("admin")
+      .select(`id`)
+      .eq("email", email);
+    if (checkEmail) {
+      const { data, error } = await supabase.auth.admin.generateLink({
+        type: "recovery",
+        email: email,
+      });
+      if (!error) {
+        const toEmail = data.user.email;
+        const toUserName = data.user.user_metadata.user_name;
+        const recoveryUrl = data.properties.action_link;
+        const sendMail = await sendRecoveryPass(
+          toEmail,
+          toUserName,
+          recoveryUrl
+        );
+        if (sendMail && sendMail.statusCode === 202) {
+          return res.status(200).send({
+            status: "Success",
+          });
+        } else {
+          return res.status(404).send({
+            status: "Failed",
+          });
+        }
+      }
+    } else {
+      return next(new AppError("Do not have user belong with this email", 400));
+    }
+  });
 }
 module.exports = new AuthController();
