@@ -1,6 +1,8 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
+const axios = require("axios");
+const { VnProvinces } = require("../constant/VnProvinces");
 const CLINICS = [
   "Ba Tháng Hai",
   "Phú Yên",
@@ -16,6 +18,28 @@ class PancakeController {
   _checkAPIKey = (key) => {
     return process.env.X_API_KEY === key;
   };
+  checkPancakeName = catchAsync(async (req, res, next) => {
+    const { pancakeName } = req.body;
+    if (!pancakeName) return next(new AppError("Missing data in body", 400));
+    const response = await axios.get(
+      `https://pages.fm/api/public_api/v1/pages/${process.env.PANCAKE_PAGE_ID}/tags?access_token=${process.env.PANCAKE_PAGE_ACCESS_KEY}`
+    );
+    if (response && response.status === 200) {
+      const listTags = response.data.tags;
+      const findPancakeName = listTags.find(
+        (item) => item.text === pancakeName
+      );
+      if (!findPancakeName || VnProvinces.includes(pancakeName)) {
+        return next(
+          new AppError("Can not find user belong with username", 400)
+        );
+      }
+      return res.status(200).send({
+        status: "Success",
+        data: findPancakeName,
+      });
+    }
+  });
   hookCustomer = catchAsync(async (req, res, next) => {
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
@@ -24,6 +48,7 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    // console.log(req.body);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -73,7 +98,7 @@ class PancakeController {
         .from("users")
         .select("*")
         .match({ phone: account.phone_office });
-      console.log(user.length);
+
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
@@ -109,13 +134,12 @@ class PancakeController {
           }
         }
       } else {
-        console.log("run here");
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*");
+          .select("*")
+          .single();
         if (error) {
-          console.log(error);
           console.log(
             `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
           );

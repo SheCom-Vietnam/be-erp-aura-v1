@@ -141,15 +141,17 @@ class OAZaloController {
       // }
     }
   });
-  
-    openApiMessageImageOa = catchAsync(async (req, res, next) => {
-      const { zaloId, imageUrl, messageText } = req.body;
+
+  openApiMessageImageOa = catchAsync(async (req, res, next) => {
+    const { zaloId, imageUrl, messageText } = req.body;
     const accessToken = await this._getAccessToken();
-      const response = await oaZaloServices.oaSendMessageImageOa(
-       zaloId, imageUrl, messageText,
+    const response = await oaZaloServices.oaSendMessageImageOa(
+      zaloId,
+      imageUrl,
+      messageText,
       accessToken
-      );
-    if (response && response.message === 'Success') {
+    );
+    if (response && response.message === "Success") {
       return res.status(200).send({
         data: response.data,
         status: "200",

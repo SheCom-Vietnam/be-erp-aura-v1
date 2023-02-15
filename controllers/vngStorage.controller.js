@@ -2,34 +2,6 @@ const vngStorageServices = require("../services/vngStorage.services");
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const axios = require("axios");
-const fs = require("fs");
-const downloadFile = async (url, fileName) => {
-  const response = await axios({
-    method: "GET",
-    url: url,
-    responseType: "stream",
-  });
-  return new Promise((resolve, reject) => {
-    try {
-      const fileStream = fs.createWriteStream(
-        `${__dirname}/data/${fileName}.mp3`
-      );
-      response.data.pipe(fileStream);
-      fileStream.on("finish", () => {
-        fileStream.close();
-        resolve();
-        console.log("done");
-      });
-      fileStream.on("error", (error) => {
-        fileStream.close();
-        reject();
-        console.error("Error" + error);
-      });
-    } catch (error) {
-      console.error("Error", error);
-    }
-  });
-};
 
 class VngStorageController {
   getAccesskey = catchAsync(async (req, res, next) => {
