@@ -39,6 +39,7 @@ const pancakeRouter = require("./routers/pancake.route");
 const authRouter = require("./routers/auth.route");
 const omiCallRouter = require("./routers/omicall.route");
 const storageRouter = require("./routers/storage.route");
+const larkRouter = require("./routers/lark.route");
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -64,6 +65,7 @@ app.use("/api/v1/pancake", pancakeRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/omicall", omiCallRouter);
 app.use("/api/v1/storage", storageRouter);
+app.use("/api/v1/lark", larkRouter);
 app.use((err, req, res, next) => {
   console.log(err);
   // console.log(err.message);
