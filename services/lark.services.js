@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const tenantToken = async (token) => {
+const tenantToken = async () => {
   try {
      var data = JSON.stringify({
         "app_id": "cli_a361a3bc4939d00a",
