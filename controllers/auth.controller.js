@@ -42,6 +42,9 @@ class AuthController {
       if (data[0].verify === false) {
         return next(new AppError("Người dùng chưa được xác thực", 400));
       }
+      if (data[0].active === false) {
+        return next(new AppError("Người dùng bị vô hiệu hoá", 400));
+      }
       const token = this.signToken(data[0].phone);
       return res.status(200).send({
         status: "Success",
@@ -71,6 +74,7 @@ class AuthController {
       if (data[0].verify === false) {
         return next(new AppError("Người dùng chưa được xác thực", 400));
       }
+
       const token = this.signToken(data[0].phone);
       return res.status(200).send({
         status: "Success",
