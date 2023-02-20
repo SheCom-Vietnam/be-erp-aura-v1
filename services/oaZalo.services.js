@@ -76,6 +76,7 @@ const getTokenOnDb = async () => {
     let { data: oa_token } = await supabase
       .from("oa_token")
       .select("*")
+      .eq("oa_name","TMV-OA")
       .single();
     if (oa_token) {
       return oa_token;
