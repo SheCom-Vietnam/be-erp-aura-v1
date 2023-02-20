@@ -41,6 +41,7 @@ class PancakeController {
     }
   });
   hookCustomer = catchAsync(async (req, res, next) => {
+    console.log(req.body);
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
     res.status(200).send({
@@ -48,7 +49,6 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
-    // console.log(req.body);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -97,17 +97,15 @@ class PancakeController {
       const { data: user, error: getUserErrror } = await supabase
         .from("users")
         .select("*")
-        .match({ phone: account.phone_office });
-
+        .match({ id: account.sic_code });
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
             .from("users")
             .update([{ clinic: optionsUser.clinic }])
-            .match({ phone: account.phone_office })
+            .match({ id: account.sic_code })
             .select("*")
             .single();
-
           if (error) {
             console.log(error);
             console.log(
@@ -116,12 +114,11 @@ class PancakeController {
           } else if (updatedUser) {
             io.emit("pancake_hook", updatedUser);
           }
-        }
-        if (user[0].live_chat === null && optionsUser.live_chat) {
+        } else if (user[0].live_chat === null && optionsUser.live_chat) {
           const { data: updatedUser, error } = await supabase
             .from("users")
             .update([{ live_chat: optionsUser.live_chat }])
-            .match({ phone: account.phone_office })
+            .match({ id: account.sic_code })
             .select("*")
             .single();
           if (error) {
@@ -140,6 +137,7 @@ class PancakeController {
           .select("*")
           .single();
         if (error) {
+          console.log(error);
           console.log(
             `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
           );

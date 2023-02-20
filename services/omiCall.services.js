@@ -4,6 +4,7 @@ const moment = require("moment");
 
 const checkTimeAccessToken = (time) => {
   const _time = moment(time).add(1, "days");
+
   const isValid = !moment(new Date(Date.now())).isAfter(new Date(_time)); //if date.now is after _time of token (>24h) is invalid
   return isValid;
 };
@@ -69,6 +70,7 @@ const insertOmiTokenOnDB = async (newToken) => {
       .select("*")
       .single();
     if (error) {
+      console.log(error);
       throw new Error(error);
     } else if (omi_token) {
       console.log("Insert newOmiToken sucesss");
