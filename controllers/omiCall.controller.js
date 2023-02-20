@@ -21,7 +21,7 @@ class OmiCallController {
         }
       }
       //if invalid token call new token and update in db
-      if (!omiCallServices.checkTimeAccessToken(getToken.created_at)) {
+      if (!omiCallServices.checkTimeAccessToken(getToken.time)) {
         const response = await omiCallServices.getOmilAccesKey();
         if (response.data.status_code === 9999) {
           const updatedToken = await omiCallServices.updateOmiTokenOnDB(
@@ -124,7 +124,7 @@ class OmiCallController {
       const file = req.file;
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
-
+      v;
       if (!audioStorageUrl) console.log("Storage Audio File Error");
       const { data: omicall } = await supabase
         .from("omi_calls")
