@@ -4,6 +4,7 @@ const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
 const axios = require("axios");
+const moment = require("moment");
 class OmiCallController {
   _getAccessToken = async () => {
     try {
@@ -44,7 +45,9 @@ class OmiCallController {
   };
   _uploadAudio = async (file) => {
     const accessKey = await vngStorageServices.getAccessKey();
-    const fileName = file.originalname.replace("wav", "mp3");
+    const fileName = `${moment().format(
+      "DD-MM-YYYY"
+    )}-${file.originalname.replace("wav", "mp3")}`;
     try {
       const response = await axios({
         method: "PUT",
@@ -120,11 +123,12 @@ class OmiCallController {
   });
   webhook = catchAsync(async (req, res, next) => {
     res.status(200).send("Success");
+    console.log(req.file);
+    console.log(req.body);
     if (req.file) {
       const file = req.file;
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
-      v;
       if (!audioStorageUrl) console.log("Storage Audio File Error");
       const { data: omicall } = await supabase
         .from("omi_calls")

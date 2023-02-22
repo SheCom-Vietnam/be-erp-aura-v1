@@ -55,7 +55,7 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Staging",
+    data: "Welcome,Aura Staging1",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
@@ -99,5 +99,5 @@ io.on("connection", (socket) => {
 var os = require("os");
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
-  console.log(`Example app pro listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });
