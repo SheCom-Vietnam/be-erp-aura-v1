@@ -7,7 +7,7 @@ async function getAllTokenStaffOfClinic(id) {
     const { data, error } = await supabase
       .from("staffs")
       .select("token_device")
-      .eq("clinic_id", id);
+      .match({"clinic_id":id,role:"staff"});
 
     const tokens = [];
     if (error == null) {
@@ -24,7 +24,7 @@ async function getAllTokenStaffOfClinic(id) {
 async function getTokenDoctorById(id) {
   try {
     const { data, error } = await supabase
-      .from("doctors")
+      .from("staffs")
       .select("token_device")
       .eq("id", id)
       .single();
@@ -154,7 +154,7 @@ async function doctorSendNotifyForDoctor(tokens, doctorId, bookingId, status) {
 
   // Get the users
   const { data: doctor, error: userErr } = await supabase
-    .from("doctors")
+    .from("staffs")
     .select("*")
     .eq("id", doctorId)
     .single();
