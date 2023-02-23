@@ -55,7 +55,6 @@ async function createPaymentQR(payload = {}, authorization = "") {
     "x-api-client": Private.xApiClient,
     "x-api-validate": xApiValidate,
   };
-
   // console.log(Private);
   try {
     const response = await axios.post(`${Private.paymeUrl}${path}`, payload, {

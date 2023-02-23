@@ -50,7 +50,7 @@ class OAZaloController {
         status: "200",
       });
     } catch (e) {
-      console.log(e);
+      return next(new AppError("Server Error", 500));
     }
   };
   ratingZNS = catchAsync(async (req, res, next) => {
