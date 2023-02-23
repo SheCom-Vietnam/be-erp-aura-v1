@@ -60,6 +60,81 @@ createARecord = catchAsync(async (req, res, next) => {
     } else {
         return next(new AppError("Không thêm được record", 400));
     }
+});
+  
+  
+  sendMessage = catchAsync(async (req, res, next) => {
+    const { phone, name, address, service,chatId} = req.body;
+    console.log("====================req.body====================")
+    console.log(req.body)
+    console.log("================================================")
+
+    const a = {
+        en_us: {
+          title: "Aura Bot 🤖",
+          content: [
+            [
+              {
+                tag: "text",
+                text: "📱 SĐT:                👤 Khách hàng:",
+              },
+            ],
+            [
+              {
+                tag: "text",
+                text: ` ${phone}      ${name}`,
+              },
+            ],
+            [
+              {
+                tag: "text",
+                text: "",
+              },
+            ],
+            [
+              {
+                tag: "text",
+                text: `🏠 ĐC: ${address}`,
+              },
+            ],
+            [
+              {
+                tag: "text",
+                text: "",
+              },
+            ],
+              [
+              {
+                tag: "text",
+                text: `🛅 Dịch vụ: ${service}`,
+              },
+            ],
+          ],
+        },
+      };
+
+    let token = await larkServices.tenantToken()
+    const config = {
+        url: "https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id",
+        method: "POST",
+        data: {
+            receive_id: chatId,
+            content: JSON.stringify(a),
+            msg_type: "post",
+        },
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+      };
+    const response = await axios(config);
+    console.log(response.data)
+    if (response.data.data) {
+        return res.status(200).send({
+        status: "Success",
+    });
+    } else {
+        return next(new AppError("Không gửi được tin nhắn", 400));
+    }
   });
 }
 module.exports = new LarkController();
