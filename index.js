@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Productionn",
+    data: "Welcome,Aura Production",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -98,5 +98,5 @@ io.on("connection", (socket) => {
 var os = require("os");
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
-  console.log(`Example app pro listening on port ${port}`);
+  console.log(`Example app listening on port ${port}`);
 });

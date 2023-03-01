@@ -22,13 +22,14 @@ let oaSendMessage = async (access, zaloId, message) => {
       }
     );
   } catch (e) {
+    console.log(e);
     throw new Error(message);
   }
 };
 
-let oaSendMessageImageOa = async (zaloId, imageUrl, messageText,access) => {
+let oaSendMessageImageOa = async (zaloId, imageUrl, messageText, access) => {
   try {
-   const response= await axios.post(
+    const response = await axios.post(
       `https://openapi.zalo.me/v2.0/oa/message`,
       {
         recipient: {
@@ -37,17 +38,17 @@ let oaSendMessageImageOa = async (zaloId, imageUrl, messageText,access) => {
         message: {
           text: messageText,
           attachment: {
-                type: 'template',
-                payload: {
-                    template_type: 'media',
-                    elements: [
-                        {
-                            media_type: 'image',
-                            url: imageUrl
-                        }
-                    ]
-                }
-            }
+            type: "template",
+            payload: {
+              template_type: "media",
+              elements: [
+                {
+                  media_type: "image",
+                  url: imageUrl,
+                },
+              ],
+            },
+          },
         },
       },
       {
@@ -56,8 +57,8 @@ let oaSendMessageImageOa = async (zaloId, imageUrl, messageText,access) => {
           access_token: access,
         },
       }
-   );
-   return response.data;
+    );
+    return response.data;
   } catch (e) {
     throw new Error(message);
   }
@@ -76,7 +77,7 @@ const getTokenOnDb = async () => {
     let { data: oa_token } = await supabase
       .from("oa_token")
       .select("*")
-      .eq("oa_name","TMV-OA")
+      .eq("oa_name", "TMV-OA")
       .single();
     if (oa_token) {
       return oa_token;
@@ -131,5 +132,5 @@ module.exports = {
   getTokenOnDb,
   reNewOaToken,
   updateNewOaTokenOnDb,
-  oaSendMessageImageOa
+  oaSendMessageImageOa,
 };
