@@ -5,6 +5,7 @@ const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
 const axios = require("axios");
 const moment = require("moment");
+const { OmiCallWhiteList } = require("../constant/omiCallWhitelist");
 class OmiCallController {
   _getAccessToken = async () => {
     try {
@@ -122,26 +123,31 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
+    const ip = req.headers["x-forwarded-for"];
+    if (!OmiCallWhiteList.includes(ip))
+      return next(new AppError("Invalid IP", 400));
     res.status(200).send("Success");
     console.log(req.file);
-    console.log(req.body);
     if (req.file) {
       const file = req.file;
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
-      if (!audioStorageUrl) console.log("Storage Audio File Error");
-      const { data: omicall } = await supabase
-        .from("omi_calls")
-        .upsert(
-          {
-            id: callUuid,
-            record_file: audioStorageUrl,
-          },
-          { onConflict: "id" }
-        )
-        .select("*")
-        .single();
-      if (omicall) console.log("Attach Audio file OmiCall ", omicall.id);
+      if (!audioStorageUrl) {
+        console.log("Storage Audio File Error");
+      } else {
+        const { data: omicall } = await supabase
+          .from("omi_calls")
+          .upsert(
+            {
+              id: callUuid,
+              record_file: audioStorageUrl,
+            },
+            { onConflict: "id" }
+          )
+          .select("*")
+          .single();
+        if (omicall) console.log("Attach Audio file OmiCall ", omicall.id);
+      }
     } else {
       const {
         call_uuid, //call uuid
