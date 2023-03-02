@@ -8,6 +8,7 @@ const {
   convertZaloPhoneToPhone,
 } = require("../helpers/convert/convertToVnPhone");
 const supabase = require("../config/supabase");
+const { default: axios } = require("axios");
 class OAZaloController {
   _checkTimeAccessToken = (time) => {
     const _time = moment(time).add(1, "days");
@@ -158,6 +159,35 @@ class OAZaloController {
       });
     } else {
       return next(new AppError("Send Message Failed", 500));
+    }
+  });
+
+    phoneNumber = catchAsync(async (req, res, next) => {
+      const { token, accessToken } = req.body;
+      console.log( "token", token )
+      console.log( "accessToken", accessToken )
+    const response = await axios.get("https://graph.zalo.me/v2.0/me/info",{
+      headers: {
+        'access_token': accessToken,
+        'code': token,
+        'secret_key': process.env.ZALO_SECRET_KEY
+      }
+    });
+      console.log(response.data)
+      //{ data: { number: '84933670101' }, error: 0, message: 'Success' }
+      if (response && response.data && response.data.message === "Success") {
+        let newPhone = 0
+        if (response.data.data && response.data.data.number) {
+          console.log("Không có data.number")
+          //Convert "84965xxx" -> "0965xxx"
+          newPhone = 0 + response.data.data.number.slice(2);
+        }
+      return res.status(200).send({
+        data: newPhone,
+        status: "200",
+      });
+    } else {
+      return next(new AppError("Get Phone Failed", 500));
     }
   });
 }
