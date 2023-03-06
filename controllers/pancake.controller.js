@@ -69,6 +69,7 @@ class PancakeController {
         customer_resource: custom_fields.pancake_ticket_name,
         last_update: custom_fields.pancake_updated_time,
         gender: account.gender,
+        service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT,
         live_chat: null,
         clinic: null,
       };
@@ -97,13 +98,14 @@ class PancakeController {
         .from("users")
         .select("*")
         .match({ id: account.sic_code });
+
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
             .from("users")
             .update([{ clinic: optionsUser.clinic }])
             .match({ id: account.sic_code })
-            .select("*")
+            .select("*,service_staff(*)")
             .single();
           if (error) {
             console.log(error);
@@ -118,7 +120,7 @@ class PancakeController {
             .from("users")
             .update([{ live_chat: optionsUser.live_chat }])
             .match({ id: account.sic_code })
-            .select("*")
+            .select("*,service_staff(*)")
             .single();
           if (error) {
             console.log(error);
@@ -133,7 +135,7 @@ class PancakeController {
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*")
+          .select("*,service_staff(*)")
           .single();
         if (error) {
           console.log(error);
