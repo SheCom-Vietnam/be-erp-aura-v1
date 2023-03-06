@@ -41,7 +41,6 @@ class PancakeController {
     }
   });
   hookCustomer = catchAsync(async (req, res, next) => {
-    console.log(req.body);
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
     res.status(200).send({
