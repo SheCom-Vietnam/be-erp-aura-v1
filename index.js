@@ -79,7 +79,7 @@ app.use("/api/v1/storage", storageRouter);
 app.use("/api/v1/lark", larkRouter);
 app.use("/api/v1/meilisearch", meilisearchRouter);
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.log(err.message);
   // console.log(err.message);
   return res.status(err?.statusCode ? err?.statusCode : 404).send({
     status: err.status,
