@@ -112,7 +112,7 @@ class OmiCallController {
     const { data, error } = await supabase
       .from("staffs")
       .update({ omi_sip_number: staffInfo.sip_user })
-      .match({ email: email, role: "staff" });
+      .match({ email: email });
     if (error) {
       return next(new AppError("Can not update staff info", 500));
     }

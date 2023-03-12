@@ -30,7 +30,7 @@ class AuthController {
       .from("staffs")
       .select("*")
       .match({ phone: phone });
-
+    console.log(staffAuthError);
     if (staffAuthError) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }

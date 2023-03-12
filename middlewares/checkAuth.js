@@ -28,11 +28,12 @@ module.exports = catchAsync(async (req, res, next) => {
     return next(new AppError("Unauthorized.You dont' have permission", 401));
   }
 
-  const { data, error } = await supabase
-    .from("staffs")
-    .select("*")
-    .match({ phone: decoded.id, role: "staff" });
-  if (data.length === 0) {
+  let { data: staffInfo, error: staffError } = await supabase
+    .rpc("get_staff_info_by_phone", {
+      staff_phone: decoded.id,
+    })
+    .single();
+  if (staffInfo.length === 0) {
     return next(
       new AppError(
         "User belong with this token does not exist.Login Again",
@@ -40,6 +41,6 @@ module.exports = catchAsync(async (req, res, next) => {
       )
     );
   }
-  req.user = data[0];
+  req.user = staffInfo;
   next();
 });
