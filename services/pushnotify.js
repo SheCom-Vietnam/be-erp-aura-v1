@@ -7,8 +7,7 @@ async function getAllTokenStaffOfClinic(id) {
     const { data, error } = await supabase
       .from("staffs")
       .select("token_device")
-      .match({"clinic_id":id,role:"staff"});
-
+      .match({ clinic_id: id, role: "staff" });
     const tokens = [];
     if (error == null) {
       data.map((item) => {
@@ -86,14 +85,14 @@ async function staffSendNotifyNewBookingForDoctor(tokens, userId, bookingId) {
 
   const bodyNoti = `Bạn có lịch hẹn mới từ khách hàng ${user.name} với dịch vụ ${booking.service_id[0].name} có mã ${booking.id}`;
 
-  FCM.subscribeToTopic(tokens, 'TopicName', function(err, response) {
-    if(err){
-        console.log('error found', err);
-    }else {
-        console.log('response here', response);
+  FCM.subscribeToTopic(tokens, "TopicName", function (err, response) {
+    if (err) {
+      console.log("error found", err);
+    } else {
+      console.log("response here", response);
     }
-  })
-  
+  });
+
   const message = {
     data: { title: "Bác Sĩ Có Đặt Hẹn Mới", body: bodyNoti },
     notification: {

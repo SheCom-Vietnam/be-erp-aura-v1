@@ -10,7 +10,7 @@ class OmiCallController {
   _getAccessToken = async () => {
     try {
       const getToken = await omiCallServices.getOmiTokenOnDb();
-      console.log(getToken);
+
       //if dont'have record insert new record
       if (!getToken) {
         const response = await omiCallServices.getOmilAccesKey();
@@ -26,7 +26,7 @@ class OmiCallController {
       //if invalid token call new token and update in db
       if (!omiCallServices.checkTimeAccessToken(getToken.time)) {
         const response = await omiCallServices.getOmilAccesKey();
-        console.log(response);
+
         if (response.data.status_code === 9999) {
           const updatedToken = await omiCallServices.updateOmiTokenOnDB(
             getToken.id,
@@ -74,7 +74,6 @@ class OmiCallController {
   checkOmiCallEmail = catchAsync(async (req, res, next) => {
     const { email } = req.body;
     const { access_token } = await this._getAccessToken();
-    console.log(access_token);
     const { payload } = await omiCallServices.getInternalPhoneList(
       access_token
     );
@@ -104,7 +103,6 @@ class OmiCallController {
     const { payload } = await omiCallServices.getInternalPhoneList(
       access_token
     );
-
     const staffInfo = payload.items.find((item) => item.email === email);
     if (!staffInfo) {
       return next(new AppError("Can not find user belong with email", 400));
@@ -112,7 +110,7 @@ class OmiCallController {
     const { data, error } = await supabase
       .from("staffs")
       .update({ omi_sip_number: staffInfo.sip_user })
-      .match({ email: email, role: "staff" });
+      .match({ omi_call_email: email });
     if (error) {
       return next(new AppError("Can not update staff info", 500));
     }

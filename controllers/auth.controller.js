@@ -26,29 +26,37 @@ class AuthController {
   };
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
-
-    const { data, error } = await supabase
+    const { data: staffAuth, error: staffAuthError } = await supabase
       .from("staffs")
-      .select("*,clinic_id(*)")
-      .match({ phone: phone, role: "staff" });
-
-    if (error) {
+      .select("*")
+      .match({ phone: phone });
+    console.log(staffAuthError);
+    if (staffAuthError) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
-    if (data && data.length === 0) {
+    if (staffAuth && staffAuth.length === 0) {
       return next(new AppError("Không tìm thấy người dùng", 400));
     }
-    if (await bcrypt.compare(password, data[0].password)) {
-      if (data[0].verify === false) {
-        return next(new AppError("Người dùng chưa được xác thực", 400));
-      }
-      if (data[0].active === false) {
+    if (await bcrypt.compare(password, staffAuth[0].password)) {
+      if (staffAuth.active === false) {
         return next(new AppError("Người dùng bị vô hiệu hoá", 400));
       }
-      const token = this.signToken(data[0].phone);
+      let { data: staffInfo, error } = await supabase
+        .rpc("get_staff_info_by_phone", {
+          staff_phone: staffAuth[0].phone,
+        })
+        .single();
+      if (error) {
+        return next(new AppError("Không tìm thấy thông tin người dùng", 400));
+      }
+
+      if (staffInfo.clinics === null || staffInfo.roles === null) {
+        return next(new AppError("Chưa cập nhật đủ thông tin", 400));
+      }
+      const token = this.signToken(staffAuth[0].phone);
       return res.status(200).send({
         status: "Success",
-        data: data[0],
+        data: staffInfo,
         token: token,
       });
     } else {
@@ -91,7 +99,7 @@ class AuthController {
     const { data, error } = await supabase
       .from("staffs")
       .select("*")
-      .match({ phone: phone, role: "staff" });
+      .match({ phone: phone });
     if (error) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -122,17 +130,20 @@ class AuthController {
     }
   });
   getInfo = async (req, res, next) => {
-    const { data: staff, error: staffError } = await supabase
-      .from("staffs")
-      .select(`*,clinic_id(*)`)
-      .match({ phone: req.user.phone, role: "staff" })
+    let { data: staffInfo, error: staffError } = await supabase
+      .rpc("get_staff_info_by_phone", {
+        staff_phone: req.user.phone,
+      })
       .single();
+    if (staffInfo.clinics === null || staffInfo.roles === null) {
+      return next(new AppError("Chưa cập nhật đủ thông tin", 400));
+    }
     if (staffError) {
-      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
-    } else if (staff) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 400));
+    } else if (staffInfo) {
       return res.status(200).send({
         status: "Success",
-        data: staff,
+        data: staffInfo,
       });
     }
   };

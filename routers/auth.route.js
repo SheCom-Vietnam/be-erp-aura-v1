@@ -10,4 +10,5 @@ router.post("/login-doctor", authController.loginWithPhoneForDoctor);
 router.get("/staffInfo", checkAuth, authController.getInfo);
 router.get("/init-password", authController.initPassword);
 router.post("/update-password", authController.updatePassword);
+
 module.exports = router;

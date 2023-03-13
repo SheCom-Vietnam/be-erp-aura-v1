@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const admin = require("firebase-admin");
 var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json");
-
+const connectMeilisearch = require("./config/supabaseConnetMeilisearch");
 const app = express();
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -31,6 +31,15 @@ app.use(morgan("short"));
 var dir = path.join(__dirname, "public");
 app.use(express.static(dir));
 
+// conenct melisearch
+// connectMeilisearch(
+//   process.env.SUPABASE_URL,
+//   process.env.SUPABASE_SEVICE_KEY,
+//   process.env.MEILISEARCH_HOST,
+//   process.env.MEILISEARCH_KEY,
+//   "users",
+//   "users"
+// );
 //create server
 const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
@@ -40,6 +49,8 @@ const authRouter = require("./routers/auth.route");
 const omiCallRouter = require("./routers/omicall.route");
 const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
+const meilisearchRouter = require("./routers/meilisearch.route");
+
 app.use((req, res, next) => {
   res.io = io;
   next();
@@ -66,8 +77,9 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/omicall", omiCallRouter);
 app.use("/api/v1/storage", storageRouter);
 app.use("/api/v1/lark", larkRouter);
+app.use("/api/v1/meilisearch", meilisearchRouter);
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.log(err.message);
   // console.log(err.message);
   return res.status(err?.statusCode ? err?.statusCode : 404).send({
     status: err.status,
