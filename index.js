@@ -31,7 +31,7 @@ app.use(morgan("short"));
 var dir = path.join(__dirname, "public");
 app.use(express.static(dir));
 
-//conenct melisearch
+// conenct melisearch
 connectMeilisearch(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SEVICE_KEY,
