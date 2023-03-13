@@ -1,38 +1,29 @@
 const axios = require("axios");
-const ZNS_URL = "https://business.openapi.zalo.me/message/template";
-const {
-  convertZaloPhoneToPhone,
-  convertPhonetoZaloPhone,
-} = require("../helpers/convert/convertToVnPhone");
-const znsZaloRatingTemplate = async (
-  accessKey,
-  phone,
-  customerName,
-  bookingId,
-  customerZaloId
-) => {
+const ZNS_URL =
+  "http://rest.esms.vn/MainService.svc/json/SendZaloMessage_V4_post_json/"; //Vihat
+
+const OAID = "1783272961339323129";
+const znsConfirmBookingTemplate = async ({ phone, templateConfig }) => {
   try {
     const response = await axios({
       url: ZNS_URL,
       method: "POST",
       data: {
-        phone: convertPhonetoZaloPhone(phone),
-        template_id: "241392",
-        template_data: {
-          customer_name: customerName,
-          booking_id: bookingId,
-        },
-        tracking_id: customerZaloId,
+        ApiKey: process.env.SMS_API_KEY,
+        SecretKey: process.env.SMS_SECRECT_KEY,
+        Phone: phone,
+        Params: templateConfig, //theo thứ tư[Tên KH,Tỉnh thành chi nhánh,Thời gian,BookingId,Ghi chú,Địa chỉ chi nhánh,BookingLink]
+        TempID: "249693",
+        OAID: OAID,
       },
       headers: {
         "Content-Type": "application/json",
-        access_token: accessKey,
       },
     });
     return response;
   } catch (error) {
-    console.log("erro");
-    return error;
+    console.log(error);
+    throw Error(error);
   }
 };
-module.exports = { znsZaloRatingTemplate };
+module.exports = { znsConfirmBookingTemplate };
