@@ -143,11 +143,6 @@ createARecord = catchAsync(async (req, res, next) => {
 
 
   getRecordsAttendanceOfUser = catchAsync(async (req, res, next) => {
-    //email: Tài khoản tạo lark
-    //phone: Tài khoản tạo lark
-    //dateFrom: timestamp
-    //dateTo: timestamp
-
 //     {
 //     "email":"vothanhduy689@gmail.com",
 //     "phone":"",
@@ -164,14 +159,14 @@ createARecord = catchAsync(async (req, res, next) => {
     var data = JSON.stringify(
       {
       "user_ids": [userId],
-      "check_time_from": dateFrom,
-      "check_time_to": dateTo
+      "check_date_from": dateFrom,
+      "check_date_to": dateTo
       }
     );
    
     var config = {
   method: 'POST',
-  url: 'https://open.larksuite.com/open-apis/attendance/v1/user_flows/query?employee_type=employee_id',
+ url: 'https://open.larksuite.com/open-apis/attendance/v1/user_tasks/query?employee_type=employee_id',
   headers: {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
@@ -180,9 +175,10 @@ createARecord = catchAsync(async (req, res, next) => {
 };
     const response = await axios(config)
     if (response.data.data) {
+      console.log(response.data)
         return res.status(200).send({
           status: "Success",
-          data:response.data.data
+          data:response.data.data.user_task_results
     })
     } else {
        return next(new AppError("Không có bản ghi", 400));
