@@ -3,7 +3,10 @@ const catchAsync = require("../helpers/catchAsync");
 const moment = require("moment");
 const AppError = require("../helpers/appError");
 const SHA256 = require("crypto-js/sha256");
-const { znsConfirmBookingTemplate } = require("../services/znsZalo.services");
+const {
+  znsConfirmBookingTemplate,
+  znsWelcomeStaffTemplate,
+} = require("../services/znsZalo.services");
 const {
   convertZaloPhoneToPhone,
 } = require("../helpers/convert/convertToVnPhone");
@@ -104,6 +107,29 @@ class OAZaloController {
       bookingLink,
     ];
     const response = await znsConfirmBookingTemplate({
+      phone,
+      templateConfig,
+    });
+    if (response && response.data.CodeResult === "100") {
+      return res.status(200).send({
+        status: "Success",
+      });
+    } else {
+      return next(new AppError("Failed", 400));
+    }
+  });
+  sendWelcomeStaffZNS = catchAsync(async (req, res, next) => {
+    const { staffName, phone, staffId, date } = req.body;
+
+    if (!staffName || !phone || !staffId || !date)
+      return next(new AppError("Missing field in body", 400));
+    const templateConfig = [
+      staffName,
+      date,
+      staffId,
+      "https://zalo.me/s/3693082134719524726",
+    ];
+    const response = await znsWelcomeStaffTemplate({
       phone,
       templateConfig,
     });
