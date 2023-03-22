@@ -48,6 +48,7 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    console.log(account);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -69,7 +70,8 @@ class PancakeController {
         customer_resource: custom_fields.pancake_ticket_name,
         last_update: custom_fields.pancake_updated_time,
         gender: account.gender,
-        service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT,
+        service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT, //Vũ Ngọc Trường HUy
+        status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
         live_chat: null,
         clinic: null,
       };
@@ -98,7 +100,6 @@ class PancakeController {
         .from("users")
         .select("*")
         .match({ id: account.sic_code });
-
       if (user.length > 0) {
         if (user[0].clinic === null && optionsUser.clinic) {
           const { data: updatedUser, error } = await supabase
@@ -135,7 +136,7 @@ class PancakeController {
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*,service_staff(*)")
+          .select("*,status(*),service_staff(*)")
           .single();
         if (error) {
           console.log(error);
