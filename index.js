@@ -51,6 +51,10 @@ const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
 
+//Gửi thông báo theo thời gian cố định của chức năng chấm công
+const scheduler = require('./helpers/scheduler');
+scheduler.runSchedule();
+
 app.use((req, res, next) => {
   res.io = io;
   next();
