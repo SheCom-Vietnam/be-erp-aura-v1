@@ -1,4 +1,5 @@
 const axios = require("axios");
+const crypto = require('crypto');
 
 const tenantToken = async (appId,appSecret) => {
   try {
@@ -65,6 +66,7 @@ var config = {
   }
 };
 
+
 // Decrypt function for Encrypt Key
 const encryptKey = 'cq9IZUAnMt6mYy77YdOljcNQl6iWS0sp';
 
@@ -75,11 +77,11 @@ function decrypt(encrypt) {
     const decrypted = Buffer.concat([decipher.update(Buffer.from(encrypt, 'base64')), decipher.final()]);
     return decrypted.toString('utf8');
 }
-
 // Function to handle verification request
 async function handleVerificationRequest(reqBody) {
     if (encryptKey) {
-        const decryptedBody = JSON.parse(decrypt(reqBody.encrypt));
+          const decryptedBody = JSON.parse(decrypt(reqBody.encrypt));
+          console.log("decryptedBody",decryptedBody)
         if (decryptedBody.type !== 'url_verification') {
             throw new Error('Invalid verification request');
         }

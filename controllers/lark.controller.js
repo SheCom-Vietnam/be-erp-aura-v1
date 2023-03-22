@@ -186,11 +186,9 @@ createARecord = catchAsync(async (req, res, next) => {
   })
   
   eventAttendanceBot = catchAsync(async (req, res, next) => {
-    const {encrypt } = req.body
-    if (encrypt) {
-      const response = await larkServices.handleVerificationRequest(encrypt)
+      const response = await larkServices.handleVerificationRequest(req.body)
+    console.log("response",response)
      return res.json({ challenge: response }); 
-    }
    })
 }
 
