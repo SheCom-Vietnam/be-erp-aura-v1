@@ -64,6 +64,49 @@ class AuthController {
     }
   });
 
+    staffLoginWithPhone = catchAsync(async (req, res, next) => {
+    const { phone, password } = req.body;
+    const { data: staffAuth, error: staffAuthError } = await supabase
+      .from("staffs")
+      .select("*")
+      .match({ phone: phone });
+    console.log(staffAuthError);
+    if (staffAuthError) {
+      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+    }
+    if (staffAuth && staffAuth.length === 0) {
+      return next(new AppError("Không tìm thấy người dùng", 400));
+    }
+    if (await bcrypt.compare(password, staffAuth[0].password)) {
+      if (staffAuth.active === false) {
+        return next(new AppError("Người dùng bị vô hiệu hoá", 400));
+      }
+      let { data: staffInfo, error } = await supabase
+        .rpc("get_staff_info_by_phone", {
+          staff_phone: staffAuth[0].phone,
+        })
+        .single();
+      if (error) {
+        return next(new AppError("Không tìm thấy thông tin người dùng", 400));
+      }
+
+      if (staffInfo.roles === null) {
+        return next(new AppError("Chưa cập nhật đủ thông tin", 400));
+      }
+      let check = staffInfo.roles.some(item => item.tag === "reception");
+      console.log(check);
+       if (!check) {
+        return next(new AppError("Không có quyền truy cập", 400));
+      }
+      return res.status(200).send({
+        status: "Success",
+        data: staffInfo,
+      });
+    } else {
+      return next(new AppError("Sai mật khẩu", 400));
+    }
+  });
+
   loginWithPhoneForDoctor = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
 
