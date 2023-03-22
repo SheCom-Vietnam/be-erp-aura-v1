@@ -183,6 +183,17 @@ createARecord = catchAsync(async (req, res, next) => {
     } else {
        return next(new AppError("Không có bản ghi", 400));
     }
+  })
+  
+  eventAttendanceBot = catchAsync(async (req, res, next) => {
+    const {encrypt } = req.body
+    if (encrypt) {
+      const response = await larkServices.handleVerificationRequest(encrypt)
+     return res.json({ challenge: response }); 
+    }
    })
 }
+
+
 module.exports = new LarkController();
+

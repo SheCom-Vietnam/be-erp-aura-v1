@@ -65,8 +65,36 @@ var config = {
   }
 };
 
+// Decrypt function for Encrypt Key
+const encryptKey = 'cq9IZUAnMt6mYy77YdOljcNQl6iWS0sp';
+
+function decrypt(encrypt) {
+    const keyHash = crypto.createHash('sha256').update(encryptKey).digest();
+    const iv = Buffer.alloc(16, 0);
+    const decipher = crypto.createDecipheriv('aes-256-cbc', keyHash, iv);
+    const decrypted = Buffer.concat([decipher.update(Buffer.from(encrypt, 'base64')), decipher.final()]);
+    return decrypted.toString('utf8');
+}
+
+// Function to handle verification request
+async function handleVerificationRequest(reqBody) {
+    if (encryptKey) {
+        const decryptedBody = JSON.parse(decrypt(reqBody.encrypt));
+        if (decryptedBody.type !== 'url_verification') {
+            throw new Error('Invalid verification request');
+        }
+        return decryptedBody.challenge;
+    } else {
+        if (reqBody.type !== 'url_verification') {
+            throw new Error('Invalid verification request');
+        }
+        return reqBody.challenge;
+    }
+}
 
 module.exports = {
   tenantToken,
-  getUserIdWithPhoneOrEmail
+  getUserIdWithPhoneOrEmail,
+  decrypt,
+  handleVerificationRequest
 };

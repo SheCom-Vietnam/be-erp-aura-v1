@@ -137,10 +137,13 @@ const sendMess = async () => {
     let _listNameLate =_listName.late
     let _listNameLack = _listName.lack
     
-    const a = {
-        en_us: {
-          title: "Attendances",
-            content: [
+  const a ={
+    "msg_type": "post",
+    "content": {
+        "post": {
+            "en_us": {
+                "title": "Attendances",
+                "content": [
             [
                 {
                     tag: "text",
@@ -172,32 +175,45 @@ const sendMess = async () => {
                 },
             ]
                 ]
-           
-        },
+            }
+        }
     }
-
-    if(!_token) return    
-    const option = {
-        url: "https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id",
-        method: "POST",
-        data: {
-          receive_id: ChatID,
-          content: JSON.stringify(a),
-          msg_type: "post",
-        },
-        headers: {
-          Authorization: `Bearer ${_token}`,
-        },
+}  
+  
+  
+    // if(!_token) return    
+    // const option = {
+    //     // url: "https://open.larksuite.com/open-apis/im/v1/messages?receive_id_type=chat_id",
+    //     url:"https://open.larksuite.com/open-apis/bot/v2/hook/5e2c737a-aee3-4d0c-a1dc-7d4dc419b486",
+    //     method: "POST",
+    //     data: {
+    //       receive_id: ChatID,
+    //       content: JSON.stringify(a),
+    //       msg_type: "post",
+    //     },
+    //     headers: {
+    //       Authorization: `Bearer ${_token}`,
+    //     },
+    // }
+    // await axios(option);
+  
+  const response = await axios.post(
+  'https://open.larksuite.com/open-apis/bot/v2/hook/5e2c737a-aee3-4d0c-a1dc-7d4dc419b486',
+  a,
+  {
+    headers: {
+      'Content-Type': 'application/json'
     }
-    await axios(option);
+  }
+  );
+  console.log(response)
 }
-
 
 
 //RUN SEND 12h
 async function runSchedule() {
   try {
-    schedule.scheduleJob('00 12 * * *', async () => {
+    schedule.scheduleJob('0 12 * * *', async () => {
    await sendMess();
 });
   } catch (error) {
