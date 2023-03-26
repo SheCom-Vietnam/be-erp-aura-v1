@@ -124,9 +124,9 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    const ip = req.headers["x-forwarded-for"];
-    if (!OmiCallWhiteList.includes(ip))
-      return next(new AppError("Invalid IP", 400));
+    // const ip = req.headers["x-forwarded-for"];
+    // if (!OmiCallWhiteList.includes(ip))
+    //   return next(new AppError("Invalid IP", 400));
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
