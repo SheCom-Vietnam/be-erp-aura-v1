@@ -38,9 +38,9 @@ class AuthController {
       return next(new AppError("Không tìm thấy người dùng", 400));
     }
     if (await bcrypt.compare(password, staffAuth[0].password)) {
-      if (staffAuth.active === false) {
-        return next(new AppError("Người dùng bị vô hiệu hoá", 400));
-      }
+      // if (staffAuth.active === false) {
+      //   return next(new AppError("Người dùng bị vô hiệu hoá", 400));
+      // }
       let { data: staffInfo, error } = await supabase
         .rpc("get_staff_info_by_phone", {
           staff_phone: staffAuth[0].phone,
