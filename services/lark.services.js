@@ -1,4 +1,5 @@
 const axios = require("axios");
+const crypto = require('crypto');
 
 const tenantToken = async (appId,appSecret) => {
   try {
@@ -66,7 +67,50 @@ var config = {
 };
 
 
+// Decrypt function for Encrypt Key
+const encryptKey = 'cq9IZUAnMt6mYy77YdOljcNQl6iWS0sp';
+// const encryptKey ="P37w+VZImNgPEO1RBhJ6RtKl7n6zymIbEG1pReEzghk="
+
+ class AESCipher {
+    constructor(key) {
+        const hash = crypto.createHash('sha256');
+        hash.update(key);
+        this.key = hash.digest();
+    }
+    decrypt(encrypt) {
+        const encryptBuffer = Buffer.from(encrypt, 'base64');
+        const decipher = crypto.createDecipheriv('aes-256-cbc', this.key, encryptBuffer.slice(0, 16));
+        let decrypted = decipher.update(encryptBuffer.slice(16).toString('hex'), 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
+    }
+}
+function unDecrypt(encrypt) {
+  const cipher = new AESCipher(encrypt)
+  console.log("cipher",cipher)
+  console.log("cipher",cipher.decrypt(encryptKey))
+    return cipher.decrypt(encryptKey);
+}
+
+// Function to handle verification request
+async function handleVerificationRequest(reqBody) {
+    if (encryptKey) {
+          const decryptedBody = JSON.parse(unDecrypt(reqBody.encrypt));
+          console.log("decryptedBody",decryptedBody)
+        if (decryptedBody.type !== 'url_verification') {
+            throw new Error('Invalid verification request');
+        }
+        return decryptedBody.challenge;
+    } else {
+        if (reqBody.type !== 'url_verification') {
+            throw new Error('Invalid verification request');
+        }
+        return reqBody.challenge;
+    }
+}
+
 module.exports = {
   tenantToken,
-  getUserIdWithPhoneOrEmail
+  getUserIdWithPhoneOrEmail,
+  handleVerificationRequest
 };

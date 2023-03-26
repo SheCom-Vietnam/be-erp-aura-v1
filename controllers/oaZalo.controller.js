@@ -143,8 +143,7 @@ class OAZaloController {
   });
   phoneNumber = catchAsync(async (req, res, next) => {
     const { token, accessToken } = req.body;
-    console.log("token", token);
-    console.log("accessToken", accessToken);
+
     const response = await axios.get("https://graph.zalo.me/v2.0/me/info", {
       headers: {
         access_token: accessToken,
@@ -152,7 +151,6 @@ class OAZaloController {
         secret_key: process.env.ZALO_SECRET_KEY,
       },
     });
-    console.log(response.data);
     //{ data: { number: '84933670101' }, error: 0, message: 'Success' }
     if (response && response.data && response.data.message === "Success") {
       let newPhone = 0;
