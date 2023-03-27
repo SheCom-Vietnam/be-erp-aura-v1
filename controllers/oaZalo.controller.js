@@ -141,6 +141,7 @@ class OAZaloController {
       return next(new AppError("Failed", 400));
     }
   });
+
   phoneNumber = catchAsync(async (req, res, next) => {
     const { token, accessToken } = req.body;
 
@@ -165,6 +166,37 @@ class OAZaloController {
       });
     } else {
       return next(new AppError("Get Phone Failed", 500));
+    }
+  });
+
+   getLocation = catchAsync(async (req, res, next) => {
+    const { token, accessToken } = req.body;
+    console.log(token, accessToken )
+    const response = await axios.get("https://graph.zalo.me/v2.0/me/info", {
+      headers: {
+        access_token: accessToken,
+        code: token,
+        secret_key: process.env.ZALO_SECRET_KEY,
+      },
+    });
+
+//   {
+//   data: {
+//     provider: 'gps',
+//     latitude: '10.769903',
+//     timestamp: '1679892659294',
+//     longitude: '106.724698'
+//   },
+//   error: 0,
+//   message: 'Success'
+// }
+    if (response && response.data && response.data.message === "Success") {
+      return res.status(200).send({
+        data: response.data.data,
+        status: "200",
+      });
+    } else {
+      return next(new AppError("Get Location Failed", 500));
     }
   });
 }

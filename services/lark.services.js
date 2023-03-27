@@ -68,8 +68,7 @@ var config = {
 
 
 // Decrypt function for Encrypt Key
-const encryptKey = 'cq9IZUAnMt6mYy77YdOljcNQl6iWS0sp';
-// const encryptKey ="P37w+VZImNgPEO1RBhJ6RtKl7n6zymIbEG1pReEzghk="
+const encryptKey = 'vothanhduy';
 
  class AESCipher {
     constructor(key) {
@@ -84,19 +83,17 @@ const encryptKey = 'cq9IZUAnMt6mYy77YdOljcNQl6iWS0sp';
         decrypted += decipher.final('utf8');
         return decrypted;
     }
-}
+ }
+
 function unDecrypt(encrypt) {
-  const cipher = new AESCipher(encrypt)
-  console.log("cipher",cipher)
-  console.log("cipher",cipher.decrypt(encryptKey))
-    return cipher.decrypt(encryptKey);
+ cipher = new AESCipher(encryptKey)
+    return cipher.decrypt(encrypt);
 }
 
 // Function to handle verification request
 async function handleVerificationRequest(reqBody) {
     if (encryptKey) {
           const decryptedBody = JSON.parse(unDecrypt(reqBody.encrypt));
-          console.log("decryptedBody",decryptedBody)
         if (decryptedBody.type !== 'url_verification') {
             throw new Error('Invalid verification request');
         }
@@ -112,5 +109,6 @@ async function handleVerificationRequest(reqBody) {
 module.exports = {
   tenantToken,
   getUserIdWithPhoneOrEmail,
-  handleVerificationRequest
+  handleVerificationRequest,
+  unDecrypt
 };
