@@ -124,14 +124,14 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    // const ip = req.headers["x-forwarded-for"];
-    // if (!OmiCallWhiteList.includes(ip))
-    //   return next(new AppError("Invalid IP", 400));
+    const ip = req.headers["x-forwarded-for"];
+    if (req.headers["x_api_key"] !== process.env.OMI_KEY) {
+      return next(new AppError("Unauthorized", 401));
+    }
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
-      console.log("AudioFile");
-      console.log(file);
+      console.log(eq.file.originalname);
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
       if (!audioStorageUrl) {
