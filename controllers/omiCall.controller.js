@@ -124,7 +124,6 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    const ip = req.headers["x-forwarded-for"];
     if (req.headers["x_api_key"] !== process.env.OMI_KEY) {
       return next(new AppError("Unauthorized", 401));
     }
