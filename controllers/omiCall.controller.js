@@ -130,6 +130,7 @@ class OmiCallController {
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
+      console.log("AudioFile");
       console.log(file);
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
