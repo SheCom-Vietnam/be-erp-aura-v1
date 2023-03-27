@@ -30,6 +30,7 @@ class PancakeController {
       const findPancakeName = listTags.find(
         (item) => item.text === pancakeName
       );
+      console.log(findPancakeName);
       if (!findPancakeName || CLINICS.includes(pancakeName)) {
         return next(
           new AppError("Can not find user belong with username", 400)
