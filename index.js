@@ -32,14 +32,14 @@ var dir = path.join(__dirname, "public");
 app.use(express.static(dir));
 
 // conenct melisearch
-connectMeilisearch(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SEVICE_KEY,
-  process.env.MEILISEARCH_HOST,
-  process.env.MEILISEARCH_KEY,
-  "users",
-  "users"
-);
+// connectMeilisearch(
+//   process.env.SUPABASE_URL,
+//   process.env.SUPABASE_SEVICE_KEY,
+//   process.env.MEILISEARCH_HOST,
+//   process.env.MEILISEARCH_KEY,
+//   "users",
+//   "users"
+// );
 //create server
 const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
@@ -62,7 +62,7 @@ app.use((req, res, next) => {
 app.disable("etag");
 app.get("/", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Staging",
+    data: "Welcome,Aura",
   });
 });
 app.get("/favicon.ico", function (req, res) {
@@ -70,7 +70,7 @@ app.get("/favicon.ico", function (req, res) {
 });
 app.get("/healthcheck", (req, res) => {
   res.status(200).send({
-    data: "Welcome,Aura Staging1",
+    data: "Welcome,Aura Production",
   });
 });
 app.use("/api/v1/payme", paymeRouter);
@@ -95,9 +95,8 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     origin: [
-      "http://localhost:3000",
-      "https://staging-aura.shecom.asia",
-      "https://zalo.me/s/2746253485825640226/?env=TESTING&version=53",
+      "https://zalo.me/s/2746253485825640226",
+      "https://aura.shecom.asia",
     ],
     transports: ["websocket"],
     secure: true,
