@@ -124,9 +124,19 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    if (req.headers["x_api_key"] !== process.env.OMI_KEY) {
-      return next(new AppError("Unauthorized", 401));
-    }
+    //     {
+    //   host: 'e473-2001-ee0-520a-d220-59df-1ff3-b9b2-2d1d.ap.ngrok.io',
+    //   'user-agent': 'okhttp/4.7.2',
+    //   'content-length': '1264',
+    //   'accept-encoding': 'gzip',
+    //   'content-type': 'application/json; charset=utf-8',
+    //   pbx_domain: 'dieudtm1',
+    //   'x-forwarded-for': '103.29.26.138',
+    //   'x-forwarded-proto': 'https',
+    //   x_api_key: '****'
+    // if (req.headers["x_api_key"] !== process.env.OMI_KEY) {
+    //   return next(new AppError("Unauthorized", 401));
+    // }
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
