@@ -1,7 +1,6 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const PaymeService = require("../services/payment");
-const supabase = require("../config/supabase");
 const md5 = require("md5");
 class PaymeController {
   createQRPayment = catchAsync(async (req, res, next) => {
@@ -15,7 +14,7 @@ class PaymeController {
     const response = await PaymeService.createPaymentQR({
       partnerTransaction: bookingID,
       amount: amount,
-      desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
+      desc: `Thanh toán đơn hàng #${bookingID} của khách hàng ${customerName}`,
       ipnUrl: "https://api-staging.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {

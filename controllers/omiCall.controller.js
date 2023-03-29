@@ -124,12 +124,13 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
-    const ip = req.headers["x-forwarded-for"];
-    if (!OmiCallWhiteList.includes(ip))
-      return next(new AppError("Invalid IP", 400));
+    // const ip = req.headers["x-forwarded-for"];
+    // if (!OmiCallWhiteList.includes(ip))
+    //   return next(new AppError("Invalid IP", 400));
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
+      console.log(file);
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
       if (!audioStorageUrl) {
@@ -173,6 +174,7 @@ class OmiCallController {
             id: call_uuid,
             staff_id: staff?.id || null,
             created_date: created_date,
+            record_file: recording_file,
             price: Math.round(call_out_price) || 0,
             record_seconds: record_seconds,
             customer_phone: to_number,

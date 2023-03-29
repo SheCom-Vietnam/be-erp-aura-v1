@@ -8,11 +8,12 @@ const CLINICS = [
   "Phú Yên",
   "Đồng Tháp",
   "Cà Mau",
-  "Rạch Giá",
+  "Rạch Gía",
   "Long Xuyên",
   "Vĩnh Long",
   "Cần Thơ",
-  "Chưa xác định",
+  "Mỹ Tho",
+  "Vinh",
 ];
 class PancakeController {
   _checkAPIKey = (key) => {
@@ -29,7 +30,7 @@ class PancakeController {
       const findPancakeName = listTags.find(
         (item) => item.text === pancakeName
       );
-      if (!findPancakeName || VnProvinces.includes(pancakeName)) {
+      if (!findPancakeName || CLINICS.includes(pancakeName)) {
         return next(
           new AppError("Can not find user belong with username", 400)
         );
@@ -48,7 +49,6 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
-    console.log(account);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
