@@ -170,6 +170,7 @@ class OAZaloController {
   });
 
   getLocation = catchAsync(async (req, res, next) => {
+     const { token, accessToken } = req.body;
     const response = await axios.get("https://graph.zalo.me/v2.0/me/info", {
       headers: {
         access_token: accessToken,
