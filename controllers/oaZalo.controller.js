@@ -191,6 +191,8 @@ class OAZaloController {
 //   message: 'Success'
 // }
     if (response && response.data && response.data.message === "Success") {
+    const {latitude,longitude} = response.data.data
+     console.log(addrName)
       return res.status(200).send({
         data: response.data.data,
         status: "200",
