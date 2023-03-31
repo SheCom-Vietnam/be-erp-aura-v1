@@ -169,9 +169,8 @@ class OAZaloController {
     }
   });
 
-   getLocation = catchAsync(async (req, res, next) => {
-    const { token, accessToken } = req.body;
-    console.log(token, accessToken )
+  getLocation = catchAsync(async (req, res, next) => {
+     const { token, accessToken } = req.body;
     const response = await axios.get("https://graph.zalo.me/v2.0/me/info", {
       headers: {
         access_token: accessToken,
@@ -190,6 +189,7 @@ class OAZaloController {
 //   error: 0,
 //   message: 'Success'
 // }
+    
     if (response && response.data && response.data.message === "Success") {
       return res.status(200).send({
         data: response.data.data,
