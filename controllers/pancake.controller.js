@@ -51,7 +51,7 @@ class PancakeController {
     const io = res.io;
     const { account, custom_fields } = req.body;
     console.log(account);
-    console.log(custom_fields);
+    // console.log(custom_fields);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -68,7 +68,8 @@ class PancakeController {
     if (account && custom_fields) {
       const optionsUser = {
         name: account.account_name,
-        phone: account.phone_office,
+        phone: account?.phone_office || null,
+        phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
         id: account.sic_code,
         customer_resource: custom_fields.pancake_ticket_name,
         last_update: custom_fields.pancake_updated_time,
