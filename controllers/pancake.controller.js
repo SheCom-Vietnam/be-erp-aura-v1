@@ -50,6 +50,8 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    console.log(account);
+    console.log(custom_fields);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',

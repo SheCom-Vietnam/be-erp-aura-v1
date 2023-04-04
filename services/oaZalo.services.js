@@ -126,6 +126,19 @@ const updateNewOaTokenOnDb = async (token) => {
   }
 };
 
+const fetchAddress = async (latitude,longitude ) => {
+      try {
+       const response = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+        );
+        if (response.data) {
+          console.log("fetchAddress",response.data.display_name);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+};
+
 module.exports = {
   checkTimeOaToken,
   oaSendMessage,
@@ -133,4 +146,5 @@ module.exports = {
   reNewOaToken,
   updateNewOaTokenOnDb,
   oaSendMessageImageOa,
+  fetchAddress,
 };
