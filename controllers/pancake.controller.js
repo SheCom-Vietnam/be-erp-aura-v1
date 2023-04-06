@@ -51,6 +51,7 @@ class PancakeController {
     const io = res.io;
     const { account, custom_fields } = req.body;
     console.log(account);
+    console.log(custom_fields);
     // console.log(custom_fields);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
@@ -80,10 +81,12 @@ class PancakeController {
         clinic: null,
       };
       if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
-        optionsUser.clinic = custom_fields.pancake_locale_tag;
+        // optionsUser.clinic = custom_fields.pancake_locale_tag;
+        optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_assign_tag;
       } else {
-        optionsUser.clinic = custom_fields.pancake_assign_tag;
+        // optionsUser.clinic = custom_fields.pancake_assign_tag;
+        optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_locale_tag;
       }
       if (
@@ -98,17 +101,23 @@ class PancakeController {
         CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
         optionsUser.live_chat = null;
-        optionsUser.clinic = custom_fields.pancake_locale_tag;
+        // optionsUser.clinic = custom_fields.pancake_locale_tag;
+        optionsUser.clinic = null;
       }
       const { data: user, error: getUserErrror } = await supabase
         .from("users")
         .select("*")
         .match({ id: account.sic_code });
       if (user.length > 0) {
-        if (user[0].clinic === null && optionsUser.clinic) {
+        if (user[0].phone === null && optionsUser.phone !== null) {
           const { data: updatedUser, error } = await supabase
             .from("users")
-            .update([{ clinic: optionsUser.clinic }])
+            .update([
+              {
+                phone: optionsUser.phone,
+                phone_update_date: optionsUser.phone_update_date,
+              },
+            ])
             .match({ id: account.sic_code })
             .select("*,service_staff(*)")
             .single();
