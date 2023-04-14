@@ -32,14 +32,14 @@ var dir = path.join(__dirname, "public");
 app.use(express.static(dir));
 
 // conenct melisearch
-connectMeilisearch(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SEVICE_KEY,
-  process.env.MEILISEARCH_HOST,
-  process.env.MEILISEARCH_KEY,
-  "users",
-  "users"
-);
+// connectMeilisearch(
+//   process.env.SUPABASE_URL,
+//   process.env.SUPABASE_SEVICE_KEY,
+//   process.env.MEILISEARCH_HOST,
+//   process.env.MEILISEARCH_KEY,
+//   "users",
+//   "users"
+// );
 //create server
 const paymeRouter = require("./routers/payme.route");
 const pushnotifyRouter = require("./routers/pushnotify.route");
