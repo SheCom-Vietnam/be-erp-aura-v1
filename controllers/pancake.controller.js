@@ -105,7 +105,7 @@ class PancakeController {
         CLINICS.includes(custom_fields.pancake_locale_tag) &&
         CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
-        optionsUser.live_chat = null;
+        optionsUser.live_chat = "Nhung";
         // optionsUser.clinic = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
       }
