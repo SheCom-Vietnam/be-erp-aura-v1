@@ -88,17 +88,17 @@ class PancakeController {
       if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
         // optionsUser.clinic = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
-        optionsUser.live_chat = custom_fields.pancake_assign_tag;
+        optionsUser.live_chat = custom_fields.pancake_assign_tag ? custom_fields.pancake_assign_tag : "Nhung" ;
       } else {
         // optionsUser.clinic = custom_fields.pancake_assign_tag;
         optionsUser.clinic = null;
-        optionsUser.live_chat = custom_fields.pancake_locale_tag;
+        optionsUser.live_chat = custom_fields.pancake_locale_tag ? custom_fields.pancake_locale_tag : "Nhung" ;
       }
       if (
         !CLINICS.includes(custom_fields.pancake_locale_tag) &&
         !CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
-        optionsUser.live_chat = custom_fields.pancake_locale_tag;
+        optionsUser.live_chat = custom_fields.pancake_locale_tag ? custom_fields.pancake_locale_tag : "Nhung";
         optionsUser.clinic = null;
       }
       if (
