@@ -10,7 +10,6 @@ class OmiCallController {
   _getAccessToken = async () => {
     try {
       const getToken = await omiCallServices.getOmiTokenOnDb();
-
       //if dont'have record insert new record
       if (!getToken) {
         const response = await omiCallServices.getOmilAccesKey();
