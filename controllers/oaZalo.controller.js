@@ -189,7 +189,7 @@ class OAZaloController {
 //   error: 0,
 //   message: 'Success'
 // }
-    
+    console.log(response.data)
     if (response && response.data && response.data.message === "Success") {
       return res.status(200).send({
         data: response.data.data,

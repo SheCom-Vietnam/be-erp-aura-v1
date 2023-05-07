@@ -42,7 +42,12 @@ class PancakeController {
       });
     }
   });
+
+
+  // https://api-staging.auradental.vn/api/v1/pancake/hook
   hookCustomer = catchAsync(async (req, res, next) => {
+
+    console.log(req.body);
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
     res.status(200).send({
@@ -77,7 +82,7 @@ class PancakeController {
         gender: account.gender,
         service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT, //Vũ Ngọc Trường HUy
         status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
-        live_chat: null,
+        live_chat: "Nhung",
         clinic: null,
       };
       if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
