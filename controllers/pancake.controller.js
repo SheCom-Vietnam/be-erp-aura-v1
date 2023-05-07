@@ -82,30 +82,30 @@ class PancakeController {
         gender: account.gender,
         service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT, //Vũ Ngọc Trường HUy
         status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
-        live_chat: "Nhung",
+        live_chat: null,
         clinic: null,
       };
       if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
         // optionsUser.clinic = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
-        optionsUser.live_chat = custom_fields.pancake_assign_tag ? custom_fields.pancake_assign_tag : "Nhung" ;
+        optionsUser.live_chat = custom_fields.pancake_assign_tag;
       } else {
         // optionsUser.clinic = custom_fields.pancake_assign_tag;
         optionsUser.clinic = null;
-        optionsUser.live_chat = custom_fields.pancake_locale_tag ? custom_fields.pancake_locale_tag : "Nhung" ;
+        optionsUser.live_chat = custom_fields.pancake_locale_tag;
       }
       if (
         !CLINICS.includes(custom_fields.pancake_locale_tag) &&
         !CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
-        optionsUser.live_chat = custom_fields.pancake_locale_tag ? custom_fields.pancake_locale_tag : "Nhung";
+        optionsUser.live_chat = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
       }
       if (
         CLINICS.includes(custom_fields.pancake_locale_tag) &&
         CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
-        optionsUser.live_chat = "Nhung";
+        optionsUser.live_chat = null;
         // optionsUser.clinic = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
       }
