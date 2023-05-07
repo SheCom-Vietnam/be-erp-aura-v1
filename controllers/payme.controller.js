@@ -1,7 +1,6 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const PaymeService = require("../services/payment");
-const supabase = require("../config/supabase");
 const md5 = require("md5");
 class PaymeController {
   createQRPayment = catchAsync(async (req, res, next) => {
@@ -15,7 +14,7 @@ class PaymeController {
     const response = await PaymeService.createPaymentQR({
       partnerTransaction: bookingID,
       amount: amount,
-      desc: `Thanh toán đơn hàng ${bookingID} của khách hàng ${customerName}`,
+      desc: `Thanh toán đơn hàng #${bookingID} của khách hàng ${customerName}`,
       ipnUrl: "https://api.auradental.vn/api/v1/payme/callback",
       payMethod: "VIETQR",
       payData: {
@@ -40,7 +39,10 @@ class PaymeController {
     );
     if (temp === req.headers["x-api-validate"]) {
       io.emit("checkout_status", paymeResponse);
-      io.emit(`/${paymeResponse.partnerTransaction}`, paymeResponse);
+      io.emit(
+        `/${paymeResponse.partnerTransaction.split("*")[0]}`,
+        paymeResponse
+      );
       return res.status(200).send({
         status: "Success",
       });
@@ -50,19 +52,18 @@ class PaymeController {
   });
   socket = catchAsync(async (req, res, next) => {
     const io = res.io;
-    console.log("socket");
     const dump = {
       transaction: "6ZRVUIWGKAHL",
-      partnerTransaction: "042-196-692",
+      partnerTransaction: "486-398-709*72",
       paymentId: "EDDJQM3GSF2Z",
       accountId: 4440662620,
       merchantId: 690400,
       storeId: 0,
       payMethod: "VIETQR",
       payCode: "VIETQR",
-      amount: 5000,
+      amount: 90000,
       fee: 0,
-      total: 5000,
+      total: 90000,
       state: "SUCCEEDED",
       desc: "Thanh toán đơn hàng 600-927-501 của khách hàng Nghiêm Trần",
       reason: "",
@@ -71,7 +72,7 @@ class PaymeController {
       updatedAt: "2022-12-05T03:56:12.404Z",
     };
     io.emit("checkout_status", dump);
-    io.emit(`/${dump.partnerTransaction}`, dump);
+    io.emit(`/${dump.partnerTransaction.split("*")[0]}`, dump);
     return res.status(200).send({
       status: "Success",
       data: dump,

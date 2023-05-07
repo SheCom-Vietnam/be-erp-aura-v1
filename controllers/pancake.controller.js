@@ -8,11 +8,12 @@ const CLINICS = [
   "Phú Yên",
   "Đồng Tháp",
   "Cà Mau",
-  "Rạch Giá",
+  "Rạch Gía",
   "Long Xuyên",
   "Vĩnh Long",
   "Cần Thơ",
-  "Chưa xác định",
+  "Mỹ Tho",
+  "Vinh",
 ];
 class PancakeController {
   _checkAPIKey = (key) => {
@@ -29,7 +30,8 @@ class PancakeController {
       const findPancakeName = listTags.find(
         (item) => item.text === pancakeName
       );
-      if (!findPancakeName || VnProvinces.includes(pancakeName)) {
+      console.log(findPancakeName);
+      if (!findPancakeName || CLINICS.includes(pancakeName)) {
         return next(
           new AppError("Can not find user belong with username", 400)
         );
@@ -48,6 +50,9 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
+    console.log(account);
+    console.log(custom_fields);
+    // console.log(custom_fields);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
     //   gender: 'male',
@@ -64,19 +69,24 @@ class PancakeController {
     if (account && custom_fields) {
       const optionsUser = {
         name: account.account_name,
-        phone: account.phone_office,
+        phone: account?.phone_office || null,
+        phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
         id: account.sic_code,
         customer_resource: custom_fields.pancake_ticket_name,
         last_update: custom_fields.pancake_updated_time,
         gender: account.gender,
+        service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT, //Vũ Ngọc Trường HUy
+        status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
         live_chat: null,
         clinic: null,
       };
       if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
-        optionsUser.clinic = custom_fields.pancake_locale_tag;
+        // optionsUser.clinic = custom_fields.pancake_locale_tag;
+        optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_assign_tag;
       } else {
-        optionsUser.clinic = custom_fields.pancake_assign_tag;
+        // optionsUser.clinic = custom_fields.pancake_assign_tag;
+        optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_locale_tag;
       }
       if (
@@ -91,19 +101,25 @@ class PancakeController {
         CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
         optionsUser.live_chat = null;
-        optionsUser.clinic = custom_fields.pancake_locale_tag;
+        // optionsUser.clinic = custom_fields.pancake_locale_tag;
+        optionsUser.clinic = null;
       }
       const { data: user, error: getUserErrror } = await supabase
         .from("users")
         .select("*")
         .match({ id: account.sic_code });
       if (user.length > 0) {
-        if (user[0].clinic === null && optionsUser.clinic) {
+        if (user[0].phone === null && optionsUser.phone !== null) {
           const { data: updatedUser, error } = await supabase
             .from("users")
-            .update([{ clinic: optionsUser.clinic }])
+            .update([
+              {
+                phone: optionsUser.phone,
+                phone_update_date: optionsUser.phone_update_date,
+              },
+            ])
             .match({ id: account.sic_code })
-            .select("*")
+            .select("*,service_staff(*)")
             .single();
           if (error) {
             console.log(error);
@@ -118,7 +134,7 @@ class PancakeController {
             .from("users")
             .update([{ live_chat: optionsUser.live_chat }])
             .match({ id: account.sic_code })
-            .select("*")
+            .select("*,service_staff(*)")
             .single();
           if (error) {
             console.log(error);
@@ -133,7 +149,7 @@ class PancakeController {
         const { data: newUser, error } = await supabase
           .from("users")
           .insert([optionsUser])
-          .select("*")
+          .select("*,status(*),service_staff(*)")
           .single();
         if (error) {
           console.log(error);

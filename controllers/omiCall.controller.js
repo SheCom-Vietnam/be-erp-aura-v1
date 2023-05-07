@@ -5,10 +5,12 @@ const AppError = require("../helpers/appError");
 const supabase = require("../config/supabase");
 const axios = require("axios");
 const moment = require("moment");
+const { OmiCallWhiteList } = require("../constant/omiCallWhitelist");
 class OmiCallController {
   _getAccessToken = async () => {
     try {
       const getToken = await omiCallServices.getOmiTokenOnDb();
+
       //if dont'have record insert new record
       if (!getToken) {
         const response = await omiCallServices.getOmilAccesKey();
@@ -24,6 +26,7 @@ class OmiCallController {
       //if invalid token call new token and update in db
       if (!omiCallServices.checkTimeAccessToken(getToken.time)) {
         const response = await omiCallServices.getOmilAccesKey();
+
         if (response.data.status_code === 9999) {
           const updatedToken = await omiCallServices.updateOmiTokenOnDB(
             getToken.id,
@@ -100,7 +103,6 @@ class OmiCallController {
     const { payload } = await omiCallServices.getInternalPhoneList(
       access_token
     );
-
     const staffInfo = payload.items.find((item) => item.email === email);
     if (!staffInfo) {
       return next(new AppError("Can not find user belong with email", 400));
@@ -108,7 +110,7 @@ class OmiCallController {
     const { data, error } = await supabase
       .from("staffs")
       .update({ omi_sip_number: staffInfo.sip_user })
-      .match({ email: email, role: "staff" });
+      .match({ omi_call_email: email });
     if (error) {
       return next(new AppError("Can not update staff info", 500));
     }
@@ -122,24 +124,41 @@ class OmiCallController {
     });
   });
   webhook = catchAsync(async (req, res, next) => {
+    //     {
+    //   host: 'e473-2001-ee0-520a-d220-59df-1ff3-b9b2-2d1d.ap.ngrok.io',
+    //   'user-agent': 'okhttp/4.7.2',
+    //   'content-length': '1264',
+    //   'accept-encoding': 'gzip',
+    //   'content-type': 'application/json; charset=utf-8',
+    //   pbx_domain: 'dieudtm1',
+    //   'x-forwarded-for': '103.29.26.138',
+    //   'x-forwarded-proto': 'https',
+    //   x_api_key: '****'
+    // if (req.headers["x_api_key"] !== process.env.OMI_KEY) {
+    //   return next(new AppError("Unauthorized", 401));
+    // }
     res.status(200).send("Success");
     if (req.file) {
       const file = req.file;
+      console.log(req.file.originalname);
       const callUuid = req.file.originalname.split(".")[0];
       const audioStorageUrl = await this._uploadAudio(file);
-      if (!audioStorageUrl) console.log("Storage Audio File Error");
-      const { data: omicall } = await supabase
-        .from("omi_calls")
-        .upsert(
-          {
-            id: callUuid,
-            record_file: audioStorageUrl,
-          },
-          { onConflict: "id" }
-        )
-        .select("*")
-        .single();
-      if (omicall) console.log("Attach Audio file OmiCall ", omicall.id);
+      if (!audioStorageUrl) {
+        console.log("Storage Audio File Error");
+      } else {
+        const { data: omicall } = await supabase
+          .from("omi_calls")
+          .upsert(
+            {
+              id: callUuid,
+              record_file: audioStorageUrl,
+            },
+            { onConflict: "id" }
+          )
+          .select("*")
+          .single();
+        if (omicall) console.log("Attach Audio file OmiCall ", omicall.id);
+      }
     } else {
       const {
         call_uuid, //call uuid
@@ -158,28 +177,27 @@ class OmiCallController {
         .select("*")
         .eq("omi_sip_number", sip_user)
         .single();
-      if (staff) {
-        const { data: omicall } = await supabase
-          .from("omi_calls")
-          .upsert(
-            {
-              id: call_uuid,
-              staff_id: staff.id,
-              created_date: created_date,
-              price: Math.round(call_out_price) | 0,
-              record_seconds: record_seconds,
-              customer_phone: to_number,
-              customer_phone_provider: provider,
-              from_phone: source_number,
-              disposition: disposition,
-            },
-            { onConflict: "id" }
-          )
-          .select("*")
-          .single();
-        if (omicall) {
-          console.log("Create new omicall data success", omicall.id);
-        }
+      const { data: omicall } = await supabase
+        .from("omi_calls")
+        .upsert(
+          {
+            id: call_uuid,
+            staff_id: staff?.id || null,
+            created_date: created_date,
+            record_file: recording_file,
+            price: Math.round(call_out_price) || 0,
+            record_seconds: record_seconds,
+            customer_phone: to_number,
+            customer_phone_provider: provider,
+            from_phone: source_number,
+            disposition: disposition,
+          },
+          { onConflict: "id" }
+        )
+        .select("*")
+        .single();
+      if (omicall) {
+        console.log("Create new omicall data success", omicall.id);
       }
     }
   });
