@@ -55,8 +55,7 @@ class PancakeController {
     });
     const io = res.io;
     const { account, custom_fields } = req.body;
-    console.log(account);
-    console.log(custom_fields);
+
     // console.log(custom_fields);
     //     {
     //   account_name: 'Thanh Sơn Nguyễn',
@@ -71,8 +70,12 @@ class PancakeController {
     //   pancake_updated_time: '11/01/2023'
     // }
     // console.log(account, custom_fields);
-    if (account && custom_fields) {
-      const optionsUser = {
+
+    if (!account || !custom_fields) {
+      return;
+    }
+    
+    const optionsUser = {
         name: account.account_name,
         phone: account?.phone_office || null,
         phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
@@ -84,13 +87,12 @@ class PancakeController {
         status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
         live_chat: null,
         clinic: null,
-      };
-      if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
-        // optionsUser.clinic = custom_fields.pancake_locale_tag;
+    };
+
+    if (CLINICS.includes(custom_fields.pancake_locale_tag)) {
         optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_assign_tag;
-      } else {
-        // optionsUser.clinic = custom_fields.pancake_assign_tag;
+    } else {
         optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_locale_tag;
       }
@@ -106,67 +108,104 @@ class PancakeController {
         CLINICS.includes(custom_fields.pancake_assign_tag)
       ) {
         optionsUser.live_chat = null;
-        // optionsUser.clinic = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
       }
-      const { data: user, error: getUserErrror } = await supabase
+
+    let checkHaveUser = false
+    let _userInfoForSicCode = null
+    let _userInfoForPhone = null
+
+    const { data: userForSicCode} = await supabase //Tìm user theo sic_code
+      .from("users")
+      .select("id,phone,live_chat")
+      .eq("id", account.sic_code);
+    
+    if (userForSicCode && userForSicCode.length > 0) {
+      checkHaveUser = true
+      _userInfoForSicCode =userForSicCode
+    }
+    
+    if (optionsUser.phone !== null) { 
+      const { data: userForPhone} = await supabase //Tìm user theo phone
         .from("users")
-        .select("*")
-        .match({ id: account.sic_code });
-      if (user.length > 0) {
-        if (user[0].phone === null && optionsUser.phone !== null) {
-          const { data: updatedUser, error } = await supabase
-            .from("users")
-            .update([
-              {
-                phone: optionsUser.phone,
-                phone_update_date: optionsUser.phone_update_date,
-              },
-            ])
-            .match({ id: account.sic_code })
-            .select("*,service_staff(*)")
-            .single();
-          if (error) {
-            console.log(error);
-            console.log(
-              `Tạo dữ liệu lỗi. Vui lòng thử lại ${account.phone_office}`
-            );
-          } else if (updatedUser) {
-            io.emit("pancake_hook", updatedUser);
-          }
-        } else if (user[0].live_chat === null && optionsUser.live_chat) {
-          const { data: updatedUser, error } = await supabase
-            .from("users")
-            .update([{ live_chat: optionsUser.live_chat }])
-            .match({ id: account.sic_code })
-            .select("*,service_staff(*)")
-            .single();
-          if (error) {
-            console.log(error);
-            console.log(
-              `Tạo dữ liệu lỗi. Vui lòng thử lại ${account.phone_office}`
-            );
-          } else if (updatedUser) {
-            io.emit("pancake_hook", updatedUser);
-          }
-        }
-      } else {
-        const { data: newUser, error } = await supabase
-          .from("users")
-          .insert([optionsUser])
-          .select("*,status(*),service_staff(*)")
-          .single();
-        if (error) {
-          console.log(error);
-          console.log(
-            `Người dùng đã tồn tại. Vui lòng thử lại ${account.phone_office}`
-          );
-        } else if (newUser) {
-          io.emit("pancake_hook", newUser);
-        }
+        .select("id,phone,live_chat")
+        .eq("phone", optionsUser.phone);
+      
+      if (userForPhone && userForPhone.length > 0) {
+        checkHaveUser = true
+        _userInfoForPhone = userForPhone
       }
     }
+
+    if (_userInfoForPhone && _userInfoForSicCode) {
+      //Nếu id của 2 record khác nhau thì xoá cái vừa tạo đi
+      if (_userInfoForPhone[0].id !== _userInfoForSicCode[0].id) {
+         const { error} = await supabase
+        .from("users")
+        .delete()
+        .eq("id", _userInfoForSicCode[0].id);
+        if (error) {
+          console.log(error)
+        } 
+        _userInfoForSicCode = _userInfoForPhone
+      }
+    }
+    
+    if (!checkHaveUser) {
+      //Không có User thì tạo mới user
+      const { data: newUser} = await supabase
+        .from("users")
+        .insert([optionsUser])
+        .select("*,status(*),service_staff(*)")
+        .single();
+      
+      if (newUser) {
+        io.emit("pancake_hook", newUser);
+      }
+      else if (error) {
+        console.log(error)
+      }
+    }
+      
+    if (optionsUser.phone !== null && _userInfoForSicCode[0].phone !== optionsUser.phone) {
+      //Update phone for user
+      const { data: updatedPhoneUser, error } = await supabase
+        .from("users")
+        .update([
+            {
+              phone: optionsUser.phone,
+              phone_update_date: optionsUser.phone_update_date,
+            },
+          ])
+        .eq("id",_userInfoForSicCode[0].id )
+        .select("*,service_staff(*)")
+        .single();
+      
+        if (error) {
+          console.log(error);
+        }
+        else if (updatedPhoneUser) {
+          io.emit("pancake_hook", updatedPhoneUser);
+        }
+    }
+
+    if (optionsUser.live_chat && _userInfoForSicCode[0].live_chat !== optionsUser.live_chat) {
+      //Update live_chat for user
+      const { data: updatedUser, error } = await supabase
+        .from("users")
+        .update([{ live_chat: optionsUser.live_chat }])
+        .match({ id: account.sic_code })
+        .select("*,service_staff(*)")
+        .single();
+      
+      if (updatedUser) {
+            io.emit("pancake_hook", updatedUser);
+      } else if (error) {
+          console.log(error);
+      }  
+    }
   });
+
   testHook = catchAsync(async (req, res, next) => {
     const io = res.io;
     const newUser = {
