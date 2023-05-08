@@ -118,7 +118,7 @@ class PancakeController {
 
     const { data: userForSicCode} = await supabase //Tìm user theo sic_code
       .from("users")
-      .select("id,phone,live_chat")
+      .select("id,phone,live_chat,name")
       .eq("id", account.sic_code);
     
     if (userForSicCode && userForSicCode.length > 0) {
@@ -129,7 +129,7 @@ class PancakeController {
     if (optionsUser.phone !== null) { 
       const { data: userForPhone} = await supabase //Tìm user theo phone
         .from("users")
-        .select("id,phone,live_chat")
+        .select("id,phone,live_chat,name")
         .eq("phone", optionsUser.phone);
       
       if (userForPhone && userForPhone.length > 0) {
@@ -140,7 +140,7 @@ class PancakeController {
 
     if (_userInfoForPhone && _userInfoForSicCode) {
       //Nếu id của 2 record khác nhau thì xoá cái vừa tạo đi
-      if (_userInfoForPhone[0].id !== _userInfoForSicCode[0].id) {
+      if ((_userInfoForPhone[0].id !== _userInfoForSicCode[0].id) && (_userInfoForPhone[0].name == _userInfoForSicCode[0].name)) {
          const { error} = await supabase
         .from("users")
         .delete()
