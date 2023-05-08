@@ -95,21 +95,22 @@ class PancakeController {
     } else {
         optionsUser.clinic = null;
         optionsUser.live_chat = custom_fields.pancake_locale_tag;
-      }
-      if (
+    }
+    
+    if (
         !CLINICS.includes(custom_fields.pancake_locale_tag) &&
         !CLINICS.includes(custom_fields.pancake_assign_tag)
-      ) {
+    ) {
         optionsUser.live_chat = custom_fields.pancake_locale_tag;
         optionsUser.clinic = null;
-      }
-      if (
+    }
+    if (
         CLINICS.includes(custom_fields.pancake_locale_tag) &&
         CLINICS.includes(custom_fields.pancake_assign_tag)
-      ) {
+    ) {
         optionsUser.live_chat = null;
         optionsUser.clinic = null;
-      }
+    }
 
     let checkHaveUser = false
     let _userInfoForSicCode = null
