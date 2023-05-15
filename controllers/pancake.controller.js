@@ -53,6 +53,7 @@ class PancakeController {
     res.status(200).send({
       status: "Success",
     });
+    
     const io = res.io;
     const { account, custom_fields } = req.body;
 
@@ -123,10 +124,10 @@ class PancakeController {
     
     if (userForSicCode && userForSicCode.length > 0) {
       checkHaveUser = true
-      _userInfoForSicCode =userForSicCode
+      _userInfoForSicCode = userForSicCode
     }
     
-    if (optionsUser.phone !== null) { 
+    if (optionsUser.phone) { 
       const { data: userForPhone} = await supabase //Tìm user theo phone
         .from("users")
         .select("id,phone,live_chat,name")
@@ -179,7 +180,7 @@ class PancakeController {
             },
           ])
         .eq("id",_userInfoForSicCode[0].id )
-        .select("*,service_staff(*)")
+        .select("*,status(*),service_staff(*)")
         .single();
       
         if (error) {
@@ -195,8 +196,8 @@ class PancakeController {
       const { data: updatedUser, error } = await supabase
         .from("users")
         .update([{ live_chat: optionsUser.live_chat }])
-        .match({ id: account.sic_code })
-        .select("*,service_staff(*)")
+        .id( "id",account.sic_code )
+        .select("*,status(*),service_staff(*)")
         .single();
       
       if (updatedUser) {
@@ -210,11 +211,11 @@ class PancakeController {
   testHook = catchAsync(async (req, res, next) => {
     const io = res.io;
     const newUser = {
-      id: "c710838d-b770-45f3-bf35-d861fa4914ee",
+      id: "c710838d-b770-45f3-bf35-d861fa491af",
       created_at: "2022-12-13T08:22:31.551734+00:00",
-      phone: "0933670101",
+      phone: "0933670102",
       avatar: null,
-      name: "Thanh Sơn Nguyễn",
+      name: "Thanh Sơn Nguyễn 2",
       zalo_id: null,
       clinic_id: null,
       status: 1,
