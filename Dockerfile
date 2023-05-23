@@ -7,6 +7,6 @@ RUN npm run build
 
 USER node
 
-CMD ["npm","run","pro"]
+CMD ["npm","run","prod"]
 
 EXPOSE 3000
