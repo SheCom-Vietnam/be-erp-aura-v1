@@ -56,6 +56,11 @@ class PancakeController {
     
     const io = res.io;
     const { account, custom_fields } = req.body;
+    
+console.log("==============================================")
+    console.log("account",account)
+    console.log("custom_fields", custom_fields)
+console.log("==============================================")
 
     // console.log(custom_fields);
     //     {
