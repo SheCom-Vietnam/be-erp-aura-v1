@@ -78,6 +78,7 @@ class PancakeController {
     
     const optionsUser = {
         name: account.account_name,
+        avatar: account?.psid ? `https://graph.facebook.com/${account?.psid}/picture?height=120&width=120`:null,
         phone: account?.phone_office || null,
         phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
         id: account.sic_code,
