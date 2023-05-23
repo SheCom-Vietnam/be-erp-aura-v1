@@ -56,7 +56,7 @@ class PancakeController {
     
     const io = res.io;
     const { account, custom_fields } = req.body;
-    
+
 console.log("==============================================")
     console.log("account",account)
     console.log("custom_fields", custom_fields)
@@ -83,7 +83,7 @@ console.log("==============================================")
     
     const optionsUser = {
         name: account.account_name,
-        avatar: account?.psid ? `https://graph.facebook.com/${account?.psid}/picture?height=120&width=120`:null,
+        avatar: custom_fields?.psid ? `https://graph.facebook.com/${custom_fields?.psid}/picture?height=120&width=120`:null,
         phone: account?.phone_office || null,
         phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
         id: account.sic_code,
