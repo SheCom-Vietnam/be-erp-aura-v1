@@ -85,10 +85,10 @@ console.log("==============================================")
         avatar: custom_fields?.psid && custom_fields?.page_id? `https://pancake.vn/api/v1/pages/${custom_fields?.page_id}/avatar/${custom_fields?.psid}`: null,
         phone:account?.phone_office? account.phone_office.trim() : null,
         phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
-        id: account.sic_code,
+        id: account?.sic_code.trim(),
         customer_resource: custom_fields.pancake_ticket_name,
         last_update: custom_fields.pancake_updated_time,
-        gender: account.gender,
+        gender: account?.gender && account?.gender == 1 ? "female" : "male",
         service_staff: process.env.PANCAKE_SERVICE_STAFF_DEFAULT, //Vũ Ngọc Trường HUy
         status: process.env.PANCAKE_STATUS_DEFAULT, //Mới
         live_chat: null,
@@ -125,7 +125,7 @@ console.log("==============================================")
     const { data: userForSicCode} = await supabase //Tìm user theo sic_code
       .from("users")
       .select("id,phone,live_chat,name")
-      .eq("id", account.sic_code);
+      .eq("id", account.sic_code.trim());
     
     if (userForSicCode && userForSicCode.length > 0) {
       checkHaveUser = true
