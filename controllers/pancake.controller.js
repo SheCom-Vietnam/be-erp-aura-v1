@@ -83,7 +83,7 @@ console.log("==============================================")
     const optionsUser = {
         name: account?.account_name.trim(),
         avatar: custom_fields?.psid && custom_fields?.page_id? `https://pancake.vn/api/v1/pages/${custom_fields?.page_id}/avatar/${custom_fields?.psid}`: null,
-        phone: account?.phone_office.trim() || null,
+        phone:account?.phone_office? account.phone_office.trim() : null,
         phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
         id: account.sic_code,
         customer_resource: custom_fields.pancake_ticket_name,
@@ -132,7 +132,7 @@ console.log("==============================================")
       _userInfoForSicCode = userForSicCode
     }
     
-    if (optionsUser.phone) { 
+    if (optionsUser.phone !== null) { 
       const { data: userForPhone} = await supabase //Tìm user theo phone
         .from("users")
         .select("id,phone,live_chat,name")
