@@ -18,6 +18,7 @@ class PancakeController {
   _checkAPIKey = (key) => {
     return process.env.X_API_KEY === key;
   };
+
   checkPancakeName = catchAsync(async (req, res, next) => {
     const { pancakeName } = req.body;
     if (!pancakeName) return next(new AppError("Missing data in body", 400));
@@ -43,9 +44,9 @@ class PancakeController {
   });
 
   hookCustomer = catchAsync(async (req, res, next) => {
-
     const isValidHeader = this._checkAPIKey(req.headers["x-api-key"]);
     if (!isValidHeader) return next(new AppError("Invalid Header", 400));
+
     res.status(200).send({
       status: "Success",
     });
@@ -115,6 +116,10 @@ console.log("==============================================")
         optionsUser.clinic = null;
     }
 
+    console.log("==============================================")
+    console.log("optionsUser",optionsUser)
+    console.log("==============================================")
+
     let checkHaveUser = false
     let _userInfoForSicCode = null
     let _userInfoForPhone = null
@@ -157,11 +162,17 @@ console.log("==============================================")
     
     if (!checkHaveUser) {
       //Không có User thì tạo mới user
-      const { data: newUser} = await supabase
+      const { data: newUser,error} = await supabase
         .from("users")
         .insert([optionsUser])
         .select("*,status(*),service_staff(*)")
         .single();
+      
+    console.log("==============================================")
+    console.log("newUser",newUser)
+    console.log("error",error)
+    console.log("==============================================")
+
       
       if (newUser) {
         io.emit("pancake_hook", newUser);
@@ -192,6 +203,49 @@ console.log("==============================================")
           io.emit("pancake_hook", updatedPhoneUser);
         }
     }
+
+      if (optionsUser.avatar !== null && _userInfoForSicCode[0].avatar !== optionsUser.avatar) {
+      //Update avatar for user
+      const { data: updatedPhoneUser, error } = await supabase
+        .from("users")
+        .update([
+            {
+              avatar: optionsUser.avatar.trim()
+            },
+          ])
+        .eq("id",_userInfoForSicCode[0].id )
+        .select("*,status(*),service_staff(*)")
+        .single();
+      
+        if (error) {
+          console.log(error);
+        }
+        else if (updatedPhoneUser) {
+          io.emit("pancake_hook", updatedPhoneUser);
+        }
+  }
+  
+   if (optionsUser.name !== null && _userInfoForSicCode[0].name !== optionsUser.name) {
+      //Update avatar for user
+      const { data: updatedPhoneUser, error } = await supabase
+        .from("users")
+        .update([
+            {
+              name: optionsUser.avatar.trim()
+            },
+          ])
+        .eq("id",_userInfoForSicCode[0].id )
+        .select("*,status(*),service_staff(*)")
+        .single();
+      
+        if (error) {
+          console.log(error);
+        }
+        else if (updatedPhoneUser) {
+          io.emit("pancake_hook", updatedPhoneUser);
+        }
+    }
+      
 
     if (optionsUser.live_chat && _userInfoForSicCode[0].live_chat !== optionsUser.live_chat) {
       //Update live_chat for user

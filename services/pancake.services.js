@@ -114,6 +114,27 @@ const handleHook = async (data) => {
         else if (updatedPhoneUser) {
           io.emit("pancake_hook", updatedPhoneUser);
         }
+  }
+  
+   if (optionsUser.name !== null && _userInfoForSicCode[0].name !== optionsUser.name) {
+      //Update avatar for user
+      const { data: updatedPhoneUser, error } = await supabase
+        .from("users")
+        .update([
+            {
+              name: optionsUser.avatar.trim()
+            },
+          ])
+        .eq("id",_userInfoForSicCode[0].id )
+        .select("*,status(*),service_staff(*)")
+        .single();
+      
+        if (error) {
+          console.log(error);
+        }
+        else if (updatedPhoneUser) {
+          io.emit("pancake_hook", updatedPhoneUser);
+        }
     }
       
     if (optionsUser.phone !== null && _userInfoForSicCode[0].phone !== optionsUser.phone) {
