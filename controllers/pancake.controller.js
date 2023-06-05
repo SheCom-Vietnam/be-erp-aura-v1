@@ -1,6 +1,8 @@
 const catchAsync = require("../helpers/catchAsync");
 const AppError = require("../helpers/appError");
 const axios = require("axios");
+const { VnProvinces } = require("../constant/VnProvinces");
+const supabase = require("../config/supabase");
 
 const CLINICS = [
   "Ba Tháng Hai",
@@ -245,7 +247,6 @@ console.log("==============================================")
           io.emit("pancake_hook", updatedPhoneUser);
         }
     }
-      
 
     if (optionsUser.live_chat && _userInfoForSicCode[0].live_chat !== optionsUser.live_chat) {
       //Update live_chat for user
