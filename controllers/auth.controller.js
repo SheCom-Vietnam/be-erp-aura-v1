@@ -40,6 +40,7 @@ class AuthController {
       // if (staffAuth.active === false) {
       //   return next(new AppError("Người dùng bị vô hiệu hoá", 400));
       // }
+      
       let { data: staffInfo, error } = await supabase
         .rpc("get_staff_info_by_phone", {
           staff_phone: staffAuth[0].phone,
@@ -69,6 +70,7 @@ class AuthController {
       .select("*")
       .match({ phone: phone });
     console.log(staffAuthError);
+
     if (staffAuthError) {
       return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
     }
@@ -170,6 +172,7 @@ class AuthController {
       return next(new AppError("Mật khẩu cũ không đúng. Thử lại", 400));
     }
   });
+
   getInfo = async (req, res, next) => {
     let { data: staffInfo, error: staffError } = await supabase
       .rpc("get_staff_info_by_phone", {
@@ -188,6 +191,7 @@ class AuthController {
       });
     }
   };
+
   signUpEmail = catchAsync(async (req, res, next) => {
     const { email, username, password } = req.body;
     if (!email || !username || !password)
@@ -224,6 +228,7 @@ class AuthController {
       return next(new AppError(error.message, 400));
     }
   });
+  
   forgotPassEmail = catchAsync(async (req, res, next) => {
     const { email } = req.body;
     if (!email) return next(new AppError("Missing value in body", 400));
