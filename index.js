@@ -18,6 +18,7 @@ require("dotenv").config({
 });
 const port = process.env.PORT || 8000;
 app.use(cors());
+app.options('*', cors());
 app.use(
   express.json({
     verify: (req, res, buf) => {
