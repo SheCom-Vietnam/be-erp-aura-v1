@@ -233,7 +233,7 @@ console.log("==============================================")
         .from("users")
         .update([
             {
-              name: optionsUser.avatar.trim()
+              name: optionsUser.name.trim()
             },
           ])
         .eq("id",_userInfoForSicCode[0].id )
