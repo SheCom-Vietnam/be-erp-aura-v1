@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: product-aura-api
-        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:6fa07cecf65a4b6b4617d9b97033f13567ac0174
+        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:cdf988c47ed9c0f0804a3ecff43f9bf377b4c0e8
         ports:
         - containerPort: 3000
