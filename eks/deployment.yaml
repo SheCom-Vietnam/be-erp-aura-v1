@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-aura-api-deployment
+  labels:
+    app: product-aura-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-aura-api
+  template:
+    metadata:
+      labels:
+        app: product-aura-api
+    spec:
+      containers:
+      - name: product-aura-api
+        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:6fa07cecf65a4b6b4617d9b97033f13567ac0174
+        ports:
+        - containerPort: 3000
