@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: product-aura-api-deployment
   labels:
-    app: product-aura-api
+    app.kubernetes.io/name: aura-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: product-aura-api
+      app.kubernetes.io/name: aura-api
   template:
     metadata:
       labels:
-        app: product-aura-api
+        app.kubernetes.io/name: aura-api
     spec:
       containers:
-      - name: product-aura-api
-        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:cdf988c47ed9c0f0804a3ecff43f9bf377b4c0e8
+      - name: aura-api
+        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:latest
         ports:
         - containerPort: 3000
