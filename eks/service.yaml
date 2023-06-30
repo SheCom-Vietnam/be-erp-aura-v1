@@ -8,7 +8,16 @@ spec:
   selector:
     app.kubernetes.io/name: aura-api
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 80
       targetPort: 3000
+
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 3000
   type: LoadBalancer
+
+
+  # aurastagingcicd-1621093032.ap-southeast-1.elb.amazonaws.com
