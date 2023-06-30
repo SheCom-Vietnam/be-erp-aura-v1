@@ -17,5 +17,6 @@ spec:
       containers:
       - name: aura-api
         image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/product_aura_be:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000

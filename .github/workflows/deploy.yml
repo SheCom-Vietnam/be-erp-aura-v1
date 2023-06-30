@@ -39,8 +39,11 @@ jobs:
           REPOSITORY: product_aura_be
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t latest .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG:latest .
           docker push -a $REGISTRY/$REPOSITORY
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name product-aura-be --region ap-southeast-1
       
       - name: Deploy image to Amazon EKS
         run: |
