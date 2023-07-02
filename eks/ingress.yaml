@@ -26,6 +26,7 @@ spec:
             name: product-aura-api-service
             port:
               number: 80
+
   tls:
   - hosts:
     - new-api.auradental.vn

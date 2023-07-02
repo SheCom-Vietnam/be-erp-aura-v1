@@ -265,5 +265,11 @@ class AuthController {
       return next(new AppError("Do not have user belong with this email", 400));
     }
   });
+
+  test =catchAsync( async (req, res, next) => {
+      return res.status(200).send({
+        status: "Success"
+      });
+  });
 }
 module.exports = new AuthController();

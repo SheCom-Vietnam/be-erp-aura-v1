@@ -3,6 +3,8 @@ const checkAuth = require("../middlewares/checkAuth");
 const express = require("express");
 const router = express.Router();
 
+router.get("/test", authController.test);
+
 router.post("/login", authController.loginWithPhone);
 router.post("/sign-up-email", authController.signUpEmail);
 router.post("/forgot-pass-email", authController.forgotPassEmail);
