@@ -73,6 +73,13 @@ app.get("/healthcheck", (req, res) => {
     data: "Welcome,Aura Production",
   });
 });
+
+app.get("/test", (req, res) => {
+  res.status(200).send({
+    data: "Welcome,Aura test",
+  });
+});
+
 app.use("/api/v1/payme", paymeRouter);
 app.use("/api/v1/pushnotify", pushnotifyRouter);
 app.use("/api/v1/zalo", zaloRouter);
