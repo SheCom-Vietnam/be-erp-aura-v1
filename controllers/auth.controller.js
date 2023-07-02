@@ -29,11 +29,16 @@ class AuthController {
     const { data: staffAuth, error: staffAuthError } = await supabase
       .from("staffs")
       .select("*")
-      .match({ phone: phone });
+      .eq( "phone", phone );
     
     if (staffAuthError) {
-      return next(new AppError(staffAuthError.message, 500));
-    }
+       return res.status(500).send({
+        status: "Error",
+        data: req.body,
+        error: staffAuthError
+      });
+    } 
+
     if (staffAuth && staffAuth.length === 0) {
       return next(new AppError("Không tìm thấy người dùng", 400));
     }

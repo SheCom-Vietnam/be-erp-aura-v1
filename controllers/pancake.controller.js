@@ -289,6 +289,7 @@ console.log("==============================================")
     io.emit("pancake_hook", newUser);
     return res.status(200).send({
       status: "Success",
+      data: newUser
     });
   });
 }
