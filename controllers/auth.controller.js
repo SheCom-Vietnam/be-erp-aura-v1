@@ -24,6 +24,7 @@ class AuthController {
       });
     }
   };
+  
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
     const { data: staffAuth, error: staffAuthError } = await supabase
@@ -52,6 +53,7 @@ class AuthController {
           staff_phone: staffAuth[0].phone,
         })
         .single();
+      
       if (error) {
         return next(new AppError("Không tìm thấy thông tin người dùng", 400));
       }
