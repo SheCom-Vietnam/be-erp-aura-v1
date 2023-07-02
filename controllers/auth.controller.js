@@ -30,8 +30,9 @@ class AuthController {
       .from("staffs")
       .select("*")
       .match({ phone: phone });
+    
     if (staffAuthError) {
-      return next(new AppError("Có lỗi xảy ra. Vui lòng thử lại", 500));
+      return next(new AppError(staffAuthError.message, 500));
     }
     if (staffAuth && staffAuth.length === 0) {
       return next(new AppError("Không tìm thấy người dùng", 400));
