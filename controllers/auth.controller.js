@@ -7,6 +7,7 @@ const {
   sendSignUpMail,
   sendRecoveryPass,
 } = require("../services/sendMail.service");
+const { default: axios } = require("axios");
 class AuthController {
   initPassword = catchAsync(async (req, res) => {
     const hashedPassword = await bcrypt.hash("123456", 12);
@@ -24,7 +25,7 @@ class AuthController {
       });
     }
   };
-  
+
   loginWithPhone = catchAsync(async (req, res, next) => {
     const { phone, password } = req.body;
     const { data: staffAuth, error: staffAuthError } = await supabase
@@ -274,9 +275,13 @@ class AuthController {
     }
   });
 
-  test =catchAsync( async (req, res, next) => {
+  test = catchAsync(async (req, res, next) => {
+    
+    let duy = await axios.get("https://api.auradental.vn/")
+    
       return res.status(200).send({
-        status: "Success"
+        status: "Success",
+        data: duy.data
       });
   });
 }
