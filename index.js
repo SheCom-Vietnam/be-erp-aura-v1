@@ -13,9 +13,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-require("dotenv").config({
-  path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
-});
+require('dotenv').config({ path: path.resolve(__dirname, `./.env.${process.env.NODE_ENV}`) })
 
 const port = process.env.PORT || 8000;
 app.use(cors());
@@ -51,6 +49,7 @@ const omiCallRouter = require("./routers/omicall.route");
 const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
+const streamRouter = require("./routers/stream.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -118,6 +117,8 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("join_connect");
 });
+//stream
+app.use("/api/v1/stream", streamRouter);
 
 var os = require("os");
 server.listen(port, () => {

@@ -1,18 +1,19 @@
 {
   "name": "miniappbe",
   "version": "1.0.0",
-  "description": "",
+  "description": "...\r ....",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
-    "start": "export NODE_ENV=development && nodemon ./index.js",
-    "prod": "export NODE_ENV=production && nodemon ./index.js"
+    "start": "export NODE_ENV=development&& nodemon ./index.js",
+    "prod": "export NODE_ENV=production&& nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.2.1",
+    "@volcengine/openapi": "^1.10.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
@@ -43,5 +44,14 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shecom/aure-be-new-aws.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/shecom/aure-be-new-aws/issues"
+  },
+  "homepage": "https://github.com/shecom/aure-be-new-aws#readme"
 }
