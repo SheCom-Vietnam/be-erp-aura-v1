@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install",
-    "start": "export NODE_ENV=development&& nodemon ./index.js",
+    "start": "set NODE_ENV=development&& nodemon ./index.js",
     "prod": "export NODE_ENV=production&& nodemon ./index.js"
   },
   "author": "",
@@ -17,6 +17,7 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.1",
+    "circular-json": "^0.5.9",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

@@ -50,6 +50,7 @@ const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
 const streamRouter = require("./routers/stream.route");
+const easygopRouter = require("./routers/easygop.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -119,6 +120,9 @@ io.on("connection", (socket) => {
 });
 //stream
 app.use("/api/v1/stream", streamRouter);
+
+//easygop
+app.use("/api/v1/easygop", easygopRouter);
 
 var os = require("os");
 server.listen(port, () => {
