@@ -11,12 +11,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: product-aura-api-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   ingressClassName: nginx
   rules:
-  - host: "new-api.auradental.vn"
+  - host: "api.auradental.vn"
     http:
       paths:
       - pathType: Prefix
@@ -26,11 +24,6 @@ spec:
             name: product-aura-api-service
             port:
               number: 80
-
-  tls:
-  - hosts:
-    - new-api.auradental.vn
-    secretName: product-aura-api-cert
-  
+ 
 
 
