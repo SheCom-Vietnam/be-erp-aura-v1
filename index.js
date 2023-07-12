@@ -101,10 +101,11 @@ app.use((err, req, res, next) => {
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: [
-      "https://zalo.me/s/2746253485825640226",
-      "https://aura.shecom.asia",
-    ],
+    // origin: [
+    //   "https://zalo.me/s/2746253485825640226",
+    //   "https://aura.shecom.asia",
+    // ],
+    origin:['*'],
     transports: ["websocket"],
     secure: true,
     cors: true,
