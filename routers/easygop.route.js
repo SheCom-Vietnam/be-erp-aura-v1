@@ -7,7 +7,9 @@ router.post("/confirmation", EasygopController.confirmation);
 router.post("/firstPay", EasygopController.firstPayment);
 
 router.get("/installment-history", EasygopController.getInstallmentHistory);
+router.get("/order-detail", EasygopController.getOrderDetail);
 
 //hook for easygop
 router.post("/update-order-hook", EasygopController.updateOrderHook);
+router.post("/cancel-order", EasygopController.cancelOrder);
 module.exports = router;

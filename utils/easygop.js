@@ -7,6 +7,8 @@ module.exports = {
         order: host + "/request/order",
         confirm: host + "/order/first-confirm",
         receiveOrderStatus: host + "/order/receive-order-status",
+        orderDetail: host + "/order/detail?order_id=",
+        orderCancel: host + "/order/cancel",
     },
     headers: {
         Authorization: `Bearer ${token}`,
