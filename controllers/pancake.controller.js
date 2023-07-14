@@ -27,6 +27,11 @@ class PancakeController {
     const response = await axios.get(
       `https://pages.fm/api/public_api/v1/pages/${process.env.PANCAKE_PAGE_ID}/tags?access_token=${process.env.PANCAKE_PAGE_ACCESS_KEY}`
     );
+    console.log(pancakeName)
+    console.log(response.data)
+    console.log(process.env.PANCAKE_PAGE_ID)
+    console.log(process.env.PANCAKE_PAGE_ACCESS_KEY)
+
     if (response && response.status === 200) {
       const listTags = response.data.tags;
       const findPancakeName = listTags.find(
