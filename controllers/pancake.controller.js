@@ -28,14 +28,12 @@ class PancakeController {
       `https://pages.fm/api/public_api/v1/pages/${process.env.PANCAKE_PAGE_ID}/tags?access_token=${process.env.PANCAKE_PAGE_ACCESS_KEY}`
     );
     console.log(pancakeName)
-    console.log(response.data)
-    console.log(process.env.PANCAKE_PAGE_ID)
-    console.log(process.env.PANCAKE_PAGE_ACCESS_KEY)
+    console.log(response.data.tags)
 
     if (response && response.status === 200) {
       const listTags = response.data.tags;
       const findPancakeName = listTags.find(
-        (item) => item.text === pancakeName
+        (item) => item.text.trim() === pancakeName.trim()
       );
       console.log(findPancakeName);
       if (!findPancakeName || CLINICS.includes(pancakeName)) {
