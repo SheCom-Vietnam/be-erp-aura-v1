@@ -5,12 +5,25 @@ const querystring = require("querystring");
 
 const CircularJSON = require("circular-json");
 
-function convertDateFormat(date) {
-    if (date) {
-        let datearray = date.split("/");
-        return datearray[1] + "/" + datearray[0] + "/" + datearray[2];
+function getPeriodsPay(period, prepay, paid_instalment_period, orderId) {
+    let periods = [];
+    periods.push({
+        order_status: "processing",
+        period: 1,
+        period_status: "unpaid",
+        period_paid: prepay,
+        order_id: orderId,
+    });
+    for (let i = 0; i < period - 1; i++) {
+        periods.push({
+            period: i + 2,
+            order_status: "processing",
+            period_status: "unpaid",
+            period_paid: paid_instalment_period,
+            order_id: orderId,
+        });
     }
-    return undefined;
+    return periods;
 }
 
 class EasygopController {
@@ -30,22 +43,20 @@ class EasygopController {
 
     confirmation = async (req, res, next) => {
         const { userInfo, installmentPlan, orderInfo, userId } = req.body;
-        //add to database
-        // const { status, statusText } = await supabase
-        //     .from("easygop_main")
-        //     .update({
-        //         user_info: userInfo,
-        //         installment_plan: installmentPlan,
-        //     })
-        //     .match({ user_id: userId, order_id: orderInfo?.id });
+        const { status, statusText } = await supabase
+            .from("easygop_main")
+            .update({
+                user_info: userInfo,
+                installment_plan: installmentPlan,
+            })
+            .match({ user_id: userId, order_id: orderInfo?.orderId });
 
-        let { error } = await supabase.from("easygop_main").insert({
-            user_id: userId,
-            order_id: orderInfo?.orderId,
-            user_info: userInfo,
-            installment_plan: installmentPlan,
-        });
-        console.log(error);
+        // let { error } = await supabase.from("easygop_main").insert({
+        //     user_id: userId,
+        //     order_id: orderInfo?.orderId,
+        //     user_info: userInfo,
+        //     installment_plan: installmentPlan,
+        // });
         //easygop request new user
         try {
             //easygop request new order
@@ -109,25 +120,33 @@ class EasygopController {
                             easygop_user_id: resUserInfo?.data?.data.id,
                             status: result.data.data.status,
                             payment_info: result.data.data.payment_info,
-                            label: "WAIT_PREPAY",
+                            label: "NOT_PREPAY",
                         })
                         .match({
                             user_id: userId,
                             order_id: orderInfo?.orderId,
                         })
                         .select();
-                    console.log("Data ", updatedData);
                     res.status(200).json({ easygopInfo: updatedData.data[0] });
+                    let periodsList = getPeriodsPay(
+                        installmentPlan?.period,
+                        installmentPlan?.prepay,
+                        installmentPlan?.paid_instalment_period,
+                        result.data.data.order_id
+                    );
+                    for (let i = 0; i < periodsList.length; i++) {
+                        await supabase
+                            .from("easygop_history")
+                            .insert(periodsList[i]);
+                    }
+                    console.log("Data ", updatedData);
                 }
             } catch (err) {
-                let easygopInfo = await supabase
-                    .from("easygop_main")
-                    .select()
-                    .match({
-                        user_id: userId,
-                        order_id: orderInfo?.orderId,
-                    });
-                res.status(200).json({ easygopInfo: easygopInfo.data[0] });
+                res.status(200).json({
+                    error: true,
+                    message:
+                        "Bạn hiện đang có một đơn trả góp khác trên hệ thống.",
+                });
             }
         } catch (e) {
             console.log(e);
@@ -158,16 +177,30 @@ class EasygopController {
                     headers: headers,
                 }
             );
-            if (result.data.status == "paid_prepay") {
-                await supabase.from("easygop_history").insert({
-                    date_paid: "",
-                    order_id: data.order_id,
-                    order_status: "done",
-                    period: "1",
-                    period_paid: data.installment_plan.prepay,
-                    period_status: "paid",
-                });
+            console.log(result);
+            if (result.data.data.status == "paid_prepay") {
+                await supabase
+                    .from("easygop_history")
+                    .update({
+                        date_paid: new Date().toDateString(),
+                        order_status: "processing",
+                        period_status: "paid",
+                    })
+                    .match({ order_id: data.easygop_order_id, period: 1 });
+                await supabase
+                    .from("easygop_main")
+                    .update({
+                        label: "PROCESSING",
+                    })
+                    .match({
+                        order_id: data.order_id,
+                        easygop_order_id: data.easygop_order_id,
+                    });
+                return res
+                    .status(status)
+                    .json({ message: "Pay prepay success" });
             }
+            return res.status(status).json({ message: "Pay prepay fail" });
         } catch (e) {
             console.log(e.response);
             return next(e);
@@ -193,14 +226,25 @@ class EasygopController {
             //         date_paid,
             //     })
             //     .eq("order_id", order_id);
-            await supabase.from("easygop_history").insert({
-                order_id,
-                order_status,
-                period,
-                period_status,
-                period_paid,
-                date_paid,
-            });
+            await supabase
+                .from("easygop_history")
+                .update({
+                    order_status,
+                    period_status,
+                    period_paid,
+                    date_paid,
+                })
+                .match({ order_id, period });
+            if (order_status == "done") {
+                await supabase
+                    .from("easygop_main")
+                    .update({
+                        label: "DONE",
+                    })
+                    .match({
+                        easygop_order_id: order_id,
+                    });
+            }
             res.status(200).json({ message: "Success" });
         } catch (e) {
             console.log(e.response);

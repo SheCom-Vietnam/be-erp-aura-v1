@@ -12,4 +12,6 @@ router.get("/order-detail", EasygopController.getOrderDetail);
 //hook for easygop
 router.post("/update-order-hook", EasygopController.updateOrderHook);
 router.post("/cancel-order", EasygopController.cancelOrder);
+router.post("/receive-ipn", EasygopController.receiveIPN);
+
 module.exports = router;
