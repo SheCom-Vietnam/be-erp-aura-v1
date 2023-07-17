@@ -290,10 +290,18 @@ class EasygopController {
     getOrderDetail = async (req, res, next) => {
         try {
             let order_id = req.query.orderId;
-            console.log(order_id);
-            let resData = await axios.get(routes.orderDetail + order_id, {
-                headers: headers,
-            });
+            const { data, status, statusText } = await supabase
+                .from("easygop_main")
+                .select()
+                .eq("order_id", order_id)
+                .single();
+            if (status != 200) return res.status(status).send(statusText);
+            let resData = await axios.get(
+                routes.orderDetail + data.easygop_order_id,
+                {
+                    headers: headers,
+                }
+            );
             if (resData.data.success) {
                 res.status(200).json(resData.data.data);
             }
@@ -304,11 +312,17 @@ class EasygopController {
     cancelOrder = async (req, res, next) => {
         try {
             let { order_id, reason } = req.body;
-            console.log(order_id);
+            const { data, status, statusText } = await supabase
+                .from("easygop_main")
+                .select()
+                .eq("order_id", order_id)
+                .single();
+            if (status != 200) return res.status(status).send(statusText);
+            console.log(data);
             let resData = await axios.post(
                 routes.orderCancel,
                 {
-                    order_id,
+                    order_id: data.easygop_order_id,
                     reason,
                 },
                 {
@@ -317,7 +331,30 @@ class EasygopController {
             );
             console.log(resData.data);
             if (resData.data.success) {
+                await supabase
+                    .from("easygop_main")
+                    .update({
+                        label: "CANCELED",
+                        status: resData.data?.data.status,
+                    })
+                    .match({ order_id: order_id });
                 res.status(200).json(resData.data.data);
+            }
+        } catch (e) {
+            return next(e);
+        }
+    };
+
+    hookReceiveCancelOrder = async (req, res, next) => {
+        try {
+            let { order_id, status } = req.body;
+            console.log(order_id);
+            if (order_id) {
+                let { data, error } = await supabase
+                    .from("easygop_main")
+                    .update({ label: "CANCELED", status: status })
+                    .match({ easygop_order_id: order_id });
+                res.status(200).json({ data, error });
             }
         } catch (e) {
             return next(e);
