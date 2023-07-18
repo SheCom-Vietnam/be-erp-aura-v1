@@ -10,19 +10,21 @@ var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json")
 const connectMeilisearch = require("./config/supabaseConnetMeilisearch");
 const app = express();
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert(serviceAccount),
 });
-
-require('dotenv').config({ path: path.resolve(__dirname, `./.env.${process.env.NODE_ENV}`) })
+console.log(path.join(__dirname, `./.env.${process.env.NODE_ENV}`));
+require("dotenv").config({
+    path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`),
+});
 
 const port = process.env.PORT || 8000;
 app.use(cors());
 app.use(
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
-    },
-  })
+    express.json({
+        verify: (req, res, buf) => {
+            req.rawBody = buf;
+        },
+    })
 );
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -50,34 +52,36 @@ const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
 const streamRouter = require("./routers/stream.route");
+const easygopRouter = require("./routers/easygop.route");
+const miniappRouter = require("./routers/miniapp.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
 // scheduler.runSchedule();
 
 app.use((req, res, next) => {
-  res.io = io;
-  next();
+    res.io = io;
+    next();
 });
 app.disable("etag");
 app.get("/", (req, res) => {
-  res.status(200).send({
-    data: "Welcome,Auraa",
-  });
+    res.status(200).send({
+        data: "Welcome,Auraa",
+    });
 });
 app.get("/favicon.ico", function (req, res) {
-  res.sendStatus(204);
+    res.sendStatus(204);
 });
 app.get("/healthcheck", (req, res) => {
-  res.status(200).send({
-    data: "Welcome,Aura Production",
-  });
+    res.status(200).send({
+        data: "Welcome,Aura Production",
+    });
 });
 
 app.get("/test", (req, res) => {
-  res.status(200).send({
-    data: "Welcome,Aura test",
-  });
+    res.status(200).send({
+        data: "Welcome,Aura test",
+    });
 });
 
 app.use("/api/v1/payme", paymeRouter);
@@ -90,39 +94,43 @@ app.use("/api/v1/storage", storageRouter);
 app.use("/api/v1/lark", larkRouter);
 app.use("/api/v1/meilisearch", meilisearchRouter);
 app.use((err, req, res, next) => {
-  console.log(err.message);
-  // console.log(err.message);
-  return res.status(err?.statusCode ? err?.statusCode : 404).send({
-    status: err.status,
-    message: err.message,
-  });
+    console.log(err.message);
+    // console.log(err.message);
+    return res.status(err?.statusCode ? err?.statusCode : 404).send({
+        status: err.status,
+        message: err.message,
+    });
 });
 //socket
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
-  cors: {
-    // origin: [
-    //   "https://zalo.me/s/2746253485825640226",
-    //   "https://aura.shecom.asia",
-    // ],
-    origin:['*'],
-    transports: ["websocket"],
-    secure: true,
-    cors: true,
-    methods: ["GET", "POST"],
-    allowedHeaders: ["my-custom-header"],
-    credentials: true,
-  },
+    cors: {
+        origin: [
+            "https://zalo.me/s/2746253485825640226",
+            "https://aura.shecom.asia",
+        ],
+        transports: ["websocket"],
+        secure: true,
+        cors: true,
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true,
+    },
 });
 
 io.on("connection", (socket) => {
-  console.log("join_connect");
+    console.log("join_connect");
 });
 //stream
 app.use("/api/v1/stream", streamRouter);
 
+//easygop
+app.use("/api/v1/easygop", easygopRouter);
+
+//mini app hook
+app.use("/api/v1/miniapp-hook/", miniappRouter);
 var os = require("os");
 server.listen(port, () => {
-  console.log(new Date(Date.now()).toString());
-  console.log(`Example app listening on port ${port}`);
+    console.log(new Date(Date.now()).toString());
+    console.log(`Example app listening on port ${port}`);
 });
