@@ -53,6 +53,7 @@ const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
 const streamRouter = require("./routers/stream.route");
 const easygopRouter = require("./routers/easygop.route");
+const miniappRouter = require("./routers/miniapp.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -126,6 +127,8 @@ app.use("/api/v1/stream", streamRouter);
 //easygop
 app.use("/api/v1/easygop", easygopRouter);
 
+//mini app hook
+app.use("/api/v1/miniapp-hook/", miniappRouter);
 var os = require("os");
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
