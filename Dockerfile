@@ -8,10 +8,12 @@ RUN apk --no-cache add --virtual .gyp python3 make g++ \
     && apk del .gyp
 
 COPY . .
-COPY .env.production .
+COPY .env.dev .
+# COPY .env.production .
 
 RUN npm run build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "prod"]
+# CMD ["npm", "run", "prod"]
+CMD ["npm", "run", "dev"]
