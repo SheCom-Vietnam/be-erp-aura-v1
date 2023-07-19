@@ -1,5 +1,11 @@
-const token = "SE3#aNMrJYjihagzecTK";
-const host = "https://api.staging.easygop.com/api/v1/deep-partner";
+// //staging
+// const token = "SE3#aNMrJYjihagzecTK";
+// const host = "https://api.staging.easygop.com/api/v1/deep-partner";
+
+//production
+const token = "R9IFtCyYRvr=ZE0MJEpp";
+const host = "https://api.easygop.com/api/v1/deep-partner";
+
 module.exports = {
     routes: {
         acquireUser: `${host}/request/user`,
