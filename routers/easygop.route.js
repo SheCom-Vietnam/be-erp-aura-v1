@@ -12,6 +12,10 @@ router.post("/cancel-order", EasygopController.cancelOrder);
 
 //hook for easygop
 router.post("/update-order-hook", EasygopController.updateOrderHook);
+router.post(
+    "/receive-update-order-hook",
+    EasygopController.hookReceiveUpdateOrder
+);
 router.post("/receive-cancel-order", EasygopController.hookReceiveCancelOrder);
 router.post("/receive-ipn", EasygopController.receiveIPN);
 
