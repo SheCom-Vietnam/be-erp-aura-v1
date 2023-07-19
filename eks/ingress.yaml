@@ -24,6 +24,18 @@ spec:
             name: product-aura-api-service
             port:
               number: 80
+  
+  - host: "api-dev.auradental.vn" 
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: product-aura-api-service
+              port:
+                number: 80
+
  
 
 
