@@ -1,3 +1,5 @@
+# Khi deploy chỉnh lại 2 lệnh rem bên dưới
+
 FROM node:20.3.1-alpine3.17
 
 WORKDIR /app

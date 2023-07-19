@@ -108,6 +108,7 @@ const io = require("socket.io")(server, {
         origin: [
             "https://zalo.me/s/2746253485825640226",
             "https://aura.shecom.asia",
+            "https://aura-dev.shecom.asia",
         ],
         transports: ["websocket"],
         secure: true,
