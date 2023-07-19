@@ -43,6 +43,7 @@ class EasygopController {
 
     confirmation = async (req, res, next) => {
         const { userInfo, installmentPlan, orderInfo, userId } = req.body;
+        console.log("confirmation req.body",req.body)
         const { status, statusText } = await supabase
             .from("easygop_main")
             .update({
@@ -157,6 +158,8 @@ class EasygopController {
 
     firstPayment = async (req, res, next) => {
         const { order_id } = req.body;
+            console.log("firstPayment req.body",req.body)
+
         const { data, status, statusText } = await supabase
             .from("easygop_main")
             .select()
@@ -215,6 +218,8 @@ class EasygopController {
                 period_paid,
                 date_paid,
             } = req.body;
+            console.log("receiveIPN req.body",req.body)
+
             await supabase
                 .from("easygop_history")
                 .update({
@@ -241,6 +246,8 @@ class EasygopController {
     updateOrderHook = async (req, res, next) => {
         try {
             const { order_id, status, payment_info } = req.body;
+            console.log("updateOrderHook req.body",req.body)
+
             const { status: statusRes, statusText } = await supabase
                 .from("easygop_main")
                 .update({ status, payment_info })
@@ -300,6 +307,8 @@ class EasygopController {
     cancelOrder = async (req, res, next) => {
         try {
             let { order_id, reason } = req.body;
+        console.log("cancelOrder req.body",req.body)
+
             const { data, status, statusText } = await supabase
                 .from("easygop_main")
                 .select()
