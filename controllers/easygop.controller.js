@@ -120,7 +120,6 @@ class EasygopController {
                             easygop_user_id: resUserInfo?.data?.data.id,
                             status: result.data.data.status,
                             payment_info: result.data.data.payment_info,
-                            label: "NOT_PREPAY",
                         })
                         .match({
                             user_id: userId,
@@ -190,7 +189,7 @@ class EasygopController {
                 await supabase
                     .from("easygop_main")
                     .update({
-                        label: "PROCESSING",
+                        status: "paid_prepay",
                     })
                     .match({
                         order_id: data.order_id,
@@ -216,16 +215,6 @@ class EasygopController {
                 period_paid,
                 date_paid,
             } = req.body;
-            // const { status: statusRes, statusText } = await supabase
-            //     .from("easygop_history")
-            //     .update({
-            //         order_status,
-            //         period,
-            //         period_status,
-            //         period_paid,
-            //         date_paid,
-            //     })
-            //     .eq("order_id", order_id);
             await supabase
                 .from("easygop_history")
                 .update({
@@ -235,16 +224,14 @@ class EasygopController {
                     date_paid,
                 })
                 .match({ order_id, period });
-            if (order_status == "done") {
-                await supabase
-                    .from("easygop_main")
-                    .update({
-                        label: "DONE",
-                    })
-                    .match({
-                        easygop_order_id: order_id,
-                    });
-            }
+            await supabase
+                .from("easygop_main")
+                .update({
+                    status: order_status,
+                })
+                .match({
+                    easygop_order_id: order_id,
+                });
             res.status(200).json({ message: "Success" });
         } catch (e) {
             console.log(e.response);
@@ -258,7 +245,7 @@ class EasygopController {
                 .from("easygop_main")
                 .update({ status, payment_info })
                 .eq("easygop_order_id", order_id);
-            res.status(statusRes).json(statusText);
+            res.status(200).json({ message: "success" });
         } catch (e) {
             console.log(e.response);
             return next(e);
@@ -295,6 +282,7 @@ class EasygopController {
                 .select()
                 .eq("order_id", order_id)
                 .single();
+
             if (status != 200) return res.status(status).send(statusText);
             let resData = await axios.get(
                 routes.orderDetail + data.easygop_order_id,
@@ -334,7 +322,6 @@ class EasygopController {
                 await supabase
                     .from("easygop_main")
                     .update({
-                        label: "CANCELED",
                         status: resData.data?.data.status,
                     })
                     .match({ order_id: order_id });
@@ -352,7 +339,7 @@ class EasygopController {
             if (order_id) {
                 let { data, error } = await supabase
                     .from("easygop_main")
-                    .update({ label: "CANCELED", status: status })
+                    .update({ status: status })
                     .match({ easygop_order_id: order_id });
                 res.status(200).json({ data, error });
             }
