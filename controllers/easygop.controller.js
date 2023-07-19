@@ -43,7 +43,7 @@ class EasygopController {
 
     confirmation = async (req, res, next) => {
         const { userInfo, installmentPlan, orderInfo, userId } = req.body;
-        console.log("confirmation req.body",req.body)
+        console.log("confirmation req.body", req.body);
         const { status, statusText } = await supabase
             .from("easygop_main")
             .update({
@@ -158,7 +158,7 @@ class EasygopController {
 
     firstPayment = async (req, res, next) => {
         const { order_id } = req.body;
-            console.log("firstPayment req.body",req.body)
+        console.log("firstPayment req.body", req.body);
 
         const { data, status, statusText } = await supabase
             .from("easygop_main")
@@ -218,7 +218,7 @@ class EasygopController {
                 period_paid,
                 date_paid,
             } = req.body;
-            console.log("receiveIPN req.body",req.body)
+            console.log("receiveIPN req.body", req.body);
 
             await supabase
                 .from("easygop_history")
@@ -246,7 +246,7 @@ class EasygopController {
     updateOrderHook = async (req, res, next) => {
         try {
             const { order_id, status, payment_info } = req.body;
-            console.log("updateOrderHook req.body",req.body)
+            console.log("updateOrderHook req.body", req.body);
 
             const { status: statusRes, statusText } = await supabase
                 .from("easygop_main")
@@ -307,7 +307,7 @@ class EasygopController {
     cancelOrder = async (req, res, next) => {
         try {
             let { order_id, reason } = req.body;
-        console.log("cancelOrder req.body",req.body)
+            console.log("cancelOrder req.body", req.body);
 
             const { data, status, statusText } = await supabase
                 .from("easygop_main")
@@ -349,6 +349,22 @@ class EasygopController {
                 let { data, error } = await supabase
                     .from("easygop_main")
                     .update({ status: status })
+                    .match({ easygop_order_id: order_id });
+                res.status(200).json({ data, error });
+            }
+        } catch (e) {
+            return next(e);
+        }
+    };
+
+    hookReceiveUpdateOrder = async (req, res, next) => {
+        try {
+            let { order_id, status, payment_info, order_status } = req.body;
+            console.log(order_id);
+            if (order_id) {
+                let { data, error } = await supabase
+                    .from("easygop_main")
+                    .update({ status: status || order_status, payment_info })
                     .match({ easygop_order_id: order_id });
                 res.status(200).json({ data, error });
             }
