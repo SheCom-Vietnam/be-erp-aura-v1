@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-aura-api-deployment
+  labels:
+    app.kubernetes.io/name: dev-aura-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dev-aura-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dev-aura-api
+    spec:
+      containers:
+      - name: dev-aura-api
+        image: 906043146211.dkr.ecr.ap-southeast-1.amazonaws.com/dev_aura_be:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000

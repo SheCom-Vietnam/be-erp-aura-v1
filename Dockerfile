@@ -1,3 +1,5 @@
+# Khi deploy chỉnh lại 2 lệnh rem bên dưới
+
 FROM node:20.3.1-alpine3.17
 
 WORKDIR /app
@@ -8,6 +10,7 @@ RUN apk --no-cache add --virtual .gyp python3 make g++ \
     && apk del .gyp
 
 COPY . .
+# COPY .env.dev .
 COPY .env.production .
 
 RUN npm run build
@@ -15,3 +18,4 @@ RUN npm run build
 EXPOSE 3000
 
 CMD ["npm", "run", "prod"]
+# CMD ["npm", "run", "dev"]
