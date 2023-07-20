@@ -45,10 +45,10 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name dev-aura-be --region ap-southeast-1
 
-      - name: Deploy image to Amazon EKS
-        run: |
-          kubectl apply -f eks-dev/aws-auth.yaml
-          kubectl apply -f eks-dev/deployment.yaml
-          kubectl apply -f eks-dev/service.yaml
-          kubectl apply -f eks-dev/ingress.yaml
-          kubectl rollout restart deployment/dev-aura-api-deployment
+      # - name: Deploy image to Amazon EKS
+      #   run: |
+      #     kubectl apply -f eks-dev/aws-auth.yaml
+      #     kubectl apply -f eks-dev/deployment.yaml
+      #     kubectl apply -f eks-dev/service.yaml
+      #     kubectl apply -f eks-dev/ingress.yaml
+      #     kubectl rollout restart deployment/dev-aura-api-deployment
