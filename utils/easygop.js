@@ -1,10 +1,5 @@
-// //staging
-// const token = "SE3#aNMrJYjihagzecTK";
-// const host = "https://api.staging.easygop.com/api/v1/deep-partner";
-
-//production
-const token = "R9IFtCyYRvr=ZE0MJEpp";
-const host = "https://api.easygop.com/api/v1/deep-partner";
+const token = process.env.EASYGOP_TOKEN;
+const host = process.env.EASYGOP_URL;
 
 module.exports = {
     routes: {
