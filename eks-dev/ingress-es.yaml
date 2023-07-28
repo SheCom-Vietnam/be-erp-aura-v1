@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-es
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - elasticsearch-dev.auradental.vn
+      secretName: dev-elasticsearch-es-http-ca-public
+  rules:
+    - host: elasticsearch-dev.auradental.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: dev-elasticsearch-es-http
+                port:
+                  number: 9200
+

@@ -1,0 +1,45 @@
+apiVersion: logstash.k8s.elastic.co/v1alpha1
+kind: Logstash
+metadata:
+  name: dev-logstash
+spec:
+  version: 8.8.2
+  count: 1
+  elasticsearchRefs:
+    - clusterName: dev-elasticsearch
+      name: dev-elasticsearch
+  pipelines:
+    # - pipeline.id: main
+    #   config.string: |
+    #     input {
+    #       beats {
+    #         port => 5044
+    #       } 
+    #     }
+    #     output {
+    #       elasticsearch {
+    #         hosts => ["https://elasticsearch-dev.auradental.vn"]
+    #         user => ["elastic"]
+    #         password => ["O0cYLwF4F516nI5s7W7t2cu9"]
+    #       }
+    #     }
+    - pipeline.id: clinics-pipeline
+      config.string: |
+        input {
+          jdbc {
+            jdbc_connection_string => "jdbc:postgres://postgres:@db.ghukjxfokoeacobbajae.supabase.co:6543/postgres"
+            jdbc_user => "postgres"
+            jdbc_password => "aura.shecom.asia"
+            jdbc_driver_class => "org.postgresql.Driver"
+            statement => "SELECT * FROM clinics"
+          }
+        }
+        output {
+          elasticsearch {
+            hosts => "https://elasticsearch-dev.auradental.vn"
+            user => "elastic"
+            password => "O0cYLwF4F516nI5s7W7t2cu9"
+            index => "clinics"
+            document_id => "%{id}"
+          }
+        }
