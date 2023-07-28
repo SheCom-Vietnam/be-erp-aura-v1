@@ -54,6 +54,7 @@ const meilisearchRouter = require("./routers/meilisearch.route");
 const streamRouter = require("./routers/stream.route");
 const easygopRouter = require("./routers/easygop.route");
 const miniappRouter = require("./routers/miniapp.route");
+const dateRouter = require("./routers/date.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -127,6 +128,8 @@ app.use("/api/v1/stream", streamRouter);
 
 //easygop
 app.use("/api/v1/easygop", easygopRouter);
+//date
+app.use("/api/v1/date", dateRouter);
 
 //mini app hook
 app.use("/api/v1/miniapp-hook/", miniappRouter);
