@@ -3,9 +3,14 @@ kind: Elasticsearch
 metadata:
   name: dev-elasticsearch
 spec:
+  http:
+    service:
+      spec:
+        type: ClusterIP
   version: 8.8.2
   nodeSets:
     - name: default
       count: 1
       config:
         node.store.allow_mmap: false
+
