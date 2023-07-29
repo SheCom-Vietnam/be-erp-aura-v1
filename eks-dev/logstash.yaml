@@ -13,12 +13,22 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
-            jdbc_user => "postgres"
-            jdbc_password => "aura.shecom.asia"
-            jdbc_driver_class => "org.postgresql.Driver"
-            jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
-            statement => "SELECT * FROM clinics"
+          jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
+          jdbc_user => "postgres"
+          jdbc_password => "aura.shecom.asia"
+          jdbc_driver_class => "org.postgresql.Driver"
+          jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
+          jdbc_paging_enabled => true
+          tracking_column => "updated_at"
+          use_column_value => true
+          schedule => "*/5 * * * * *"
+          statement => "SELECT * FROM clinics WHERE EXTRACT(EPOCH FROM updated_at) > :sql_last_value"
+          }
+        }
+        filter {
+          mutate {
+            copy => { "id" => "[@metadata][_id]"}
+            remove_field => ["id", "@version", "updated_at"]
           }
         }
         output {
@@ -29,7 +39,7 @@ spec:
             password => "O0cYLwF4F516nI5s7W7t2cu9"
             index => "clinics"
             document_type => "clinic"
-            document_id => "%{id}"
+            document_id => "%{[@metadata][_id]}"
           }
         }
    
