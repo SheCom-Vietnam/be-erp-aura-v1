@@ -9,7 +9,7 @@ spec:
     - clusterName: dev-elasticsearch
       name: dev-elasticsearch
   pipelines:
-    - pipeline.id: clinics-pipeline
+    - pipeline.id: users-pipeline
       config.string: |
         input {
           jdbc {
@@ -19,16 +19,20 @@ spec:
           jdbc_driver_class => "org.postgresql.Driver"
           jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
           jdbc_paging_enabled => true
+          jdbc_page_size => "100000"
           tracking_column => "updated_at"
           use_column_value => true
-          schedule => "*/5 * * * * *"
-          statement => "SELECT * FROM clinics WHERE EXTRACT(EPOCH FROM updated_at) > :sql_last_value"
+          schedule => "*/1 * * * *"
+          statement => "SELECT *, CAST(note AS text) as note FROM users WHERE EXTRACT(EPOCH FROM updated_at) > :sql_last_value"
           }
         }
         filter {
           mutate {
             copy => { "id" => "[@metadata][_id]"}
-            remove_field => ["id", "@version", "updated_at"]
+          }
+          json {
+            source => "note"
+            target => "parsed_note"
           }
         }
         output {
@@ -37,8 +41,8 @@ spec:
             user => "elastic"
             ssl => true
             password => "O0cYLwF4F516nI5s7W7t2cu9"
-            index => "clinics"
-            document_type => "clinic"
+            index => "users"
+            document_type => "user"
             document_id => "%{[@metadata][_id]}"
           }
         }

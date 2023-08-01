@@ -13,4 +13,17 @@ spec:
       count: 1
       config:
         node.store.allow_mmap: false
+      podTemplate:
+        spec:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+        
+# curl https://github.com/duydo/elasticsearch-analysis-vietnamese/releases/download/v8.7.0/elasticsearch-analysis-vietnamese-8.7.0.zip -o elasticsearch-analysis-vietnamese-8.7.0.zip
+
+
+                
+
+
+
 
