@@ -102,6 +102,7 @@ app.use((err, req, res, next) => {
         message: err.message,
     });
 });
+
 //socket
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
