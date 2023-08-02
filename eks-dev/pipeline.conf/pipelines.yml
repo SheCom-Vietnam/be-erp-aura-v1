@@ -1,4 +1,0 @@
-- pipeline.id: users-pipeline
-  path.config: "./users-pipeline.conf"
-  pipeline.workers: 1
-
