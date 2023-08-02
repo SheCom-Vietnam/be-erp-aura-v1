@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@elastic/elasticsearch": "^8.9.0",
         "@supabase/supabase-js": "^2.2.1",
         "@volcengine/openapi": "^1.10.0",
         "axios": "^1.4.0",

@@ -85,29 +85,28 @@ spec:
             jdbc_page_size => "100000"
             tracking_column => "updated_at"
             use_column_value => true
-            schedule => "*/1 * * * *"
+            schedule => "*/30 * * * * *"
             statement => "
               SELECT
                 orders.id AS id,
-                (orders.id)::TEXT AS booking_id,
-                MAX(bookings.status)::INTEGER AS status,
-                bookings.date::DATE AS booking_date,
-                bookings.time::TIME AS booking_time,
-                users.name::TEXT AS user_name,
-                min(users.phone) AS user_phone,
-                min(staffs.name)::TEXT,
-                COUNT(bookings.id)::INTEGER AS quantity_service,
-                clinics.name::TEXT AS clinic_name,
-                SUM(bookings.new_price * bookings.quantity_service)::NUMERIC AS total_price,
-                bookings.clinic_id::TEXT AS clinic_id
+                orders.id AS booking_id,
+                MAX(bookings.status) AS status,
+                bookings.date AS booking_date,
+                bookings.time AS booking_time,
+                MIN(users.name) AS user_name,
+                MIN(users.phone) AS user_phone,
+                MIN(staffs.name) AS staff_name,
+                COUNT(bookings.id) AS quantity_service,
+                clinics.name AS clinic_name,
+                SUM(bookings.new_price * bookings.quantity_service) AS total_price,
+                bookings.clinic_id AS clinic_id
               FROM bookings
                 JOIN orders ON orders.id = bookings.order_id
                 JOIN clinics ON clinics.id = bookings.clinic_id
                 JOIN users ON users.id = orders.user_id
-                LEFT JOIN staffs on staffs.id = orders.staff_creator_id
+                LEFT JOIN staffs ON staffs.id = orders.staff_creator_id
               WHERE EXTRACT(EPOCH FROM users.updated_at) > :sql_last_value
-              GROUP BY
-                orders.id, bookings.date, bookings.time, bookings.clinic_id, users.name, clinics.name
+              GROUP BY orders.id, bookings.date, bookings.time, bookings.clinic_id, clinics.name, bookings.status
               "
           }
         }
@@ -144,7 +143,7 @@ spec:
             jdbc_page_size => "100000"
             tracking_column => "updated_at"
             use_column_value => true
-            schedule => "*/1 * * * *"
+            schedule => "*/30 * * * * *"
             statement => "
               SELECT
                 orders.id AS id,

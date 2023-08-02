@@ -51,6 +51,7 @@ const omiCallRouter = require("./routers/omicall.route");
 const storageRouter = require("./routers/storage.route");
 const larkRouter = require("./routers/lark.route");
 const meilisearchRouter = require("./routers/meilisearch.route");
+const elasticsearchRouter = require("./routers/elasticsearch.route");
 const streamRouter = require("./routers/stream.route");
 const easygopRouter = require("./routers/easygop.route");
 const miniappRouter = require("./routers/miniapp.route");
@@ -94,6 +95,7 @@ app.use("/api/v1/omicall", omiCallRouter);
 app.use("/api/v1/storage", storageRouter);
 app.use("/api/v1/lark", larkRouter);
 app.use("/api/v1/meilisearch", meilisearchRouter);
+app.use("/api/v1/elasticsearch", elasticsearchRouter);
 app.use((err, req, res, next) => {
     console.log(err.message);
     // console.log(err.message);
