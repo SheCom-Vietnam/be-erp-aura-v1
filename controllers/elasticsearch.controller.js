@@ -11,7 +11,7 @@ class elasticsearchController {
                     query: {
                         multi_match: {
                             query: text,
-                            fields: ["id", "user_name", "user_phone"]
+                            fields: ["id", "user_name", "user_phone", "clinic_name", "staff_name"]
                         }
                     },
                 },
@@ -37,7 +37,7 @@ class elasticsearchController {
                     query: {
                         multi_match: {
                             query: text,
-                            fields: ["id", "user_name", "user_phone", "clinic_name", "staff_name"]
+                            fields: ["id", "user_name", "user_phone", "staff_name", "clinic_name"]
                         }
                     },
                 },
@@ -59,7 +59,7 @@ class elasticsearchController {
         try {
             const { text } = req.body
             const body = await elasticsearch.search({
-                index: 'bookings',
+                index: 'users',
                 body: {
                     query: {
                         multi_match: {

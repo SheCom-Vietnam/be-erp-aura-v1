@@ -56,10 +56,6 @@ spec:
           mutate {
             copy => { "id" => "[@metadata][_id]"}
           }
-          json {
-            source => "note"
-            target => "parsed_note"
-          }
         }
         output {
           elasticsearch {
@@ -89,24 +85,22 @@ spec:
             statement => "
               SELECT
                 orders.id AS id,
-                orders.id AS booking_id,
-                MAX(bookings.status) AS status,
-                bookings.date AS booking_date,
-                bookings.time AS booking_time,
-                MIN(users.name) AS user_name,
-                MIN(users.phone) AS user_phone,
-                MIN(staffs.name) AS staff_name,
-                COUNT(bookings.id) AS quantity_service,
+                bookings.status AS status,
+                bookings.date::text AS booking_date,
+                bookings.time::text AS booking_time,
                 clinics.name AS clinic_name,
-                SUM(bookings.new_price * bookings.quantity_service) AS total_price,
-                bookings.clinic_id AS clinic_id
+                clinics.id AS clinic_id,
+                MIN(users.name) AS user_name,
+                MIN(users.avatar) AS user_avatar,
+                MIN(users.phone) AS user_phone,
+                MIN(staffs.name) AS staff_name
               FROM bookings
                 JOIN orders ON orders.id = bookings.order_id
                 JOIN clinics ON clinics.id = bookings.clinic_id
                 JOIN users ON users.id = orders.user_id
                 LEFT JOIN staffs ON staffs.id = orders.staff_creator_id
               WHERE EXTRACT(EPOCH FROM users.updated_at) > :sql_last_value
-              GROUP BY orders.id, bookings.date, bookings.time, bookings.clinic_id, clinics.name, bookings.status
+              GROUP BY orders.id, bookings.date, bookings.time, clinics.name, bookings.status,clinics.id
               "
           }
         }
@@ -114,10 +108,7 @@ spec:
           mutate {
             copy => { "id" => "[@metadata][_id]"}
           }
-          json {
-            source => "note"
-            target => "parsed_note"
-          }
+         
         }
         output {
           elasticsearch {
@@ -147,21 +138,17 @@ spec:
             statement => "
               SELECT
                 orders.id AS id,
-                orders.label,
                 orders.created_at,
-                orders.updated_at,
                 users.name AS user_name,
+                users.phone AS user_phone,
+                users.avatar AS user_avatar,
                 clinics.name AS clinic_name,
-                staffs.name AS staff_name,
-                COUNT(DISTINCT bookings.id) AS quantity_booking,
-                COUNT(DISTINCT bookings_products.id) AS quantity_product
+                staffs.name AS staff_name
               FROM orders
                 LEFT JOIN users ON users.id = orders.user_id
                 LEFT JOIN clinics ON clinics.id = orders.clinic_id
                 LEFT JOIN staffs ON staffs.id = orders.staff_creator_id
-                LEFT JOIN bookings ON bookings.order_id = orders.id
-                LEFT JOIN bookings_products ON bookings_products.order_id = orders.id
-              GROUP BY orders.id, users.id, clinics.id, staffs.id, orders.label, orders.created_at, orders.updated_at, users.name, clinics.name, staffs.name
+              GROUP BY orders.id, orders.created_at, users.avatar, users.name, clinics.name, staffs.name,users.phone
               "
           }
         }
