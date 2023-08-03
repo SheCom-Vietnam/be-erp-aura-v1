@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-kibana-product
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - kibana-product.auradental.vn
+      secretName: product-kibana-kb-http-ca-public
+  rules:
+    - host: kibana-product.auradental.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: product-kibana-kb-http
+                port:
+                  number: 5601
