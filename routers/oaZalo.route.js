@@ -10,4 +10,14 @@ router.post("/send/welcome-staff", oaZaloController.sendWelcomeStaffZNS);
 // router.get("/accessToken", oaZaloController.getAccessToken);
 
 router.post("/send-message-image-oa", oaZaloController.openApiMessageImageOa);
+router.post("/send-zns-checkout", oaZaloController.sendZNSCheckout);
+router.post(
+    "/send-zns-booking-confirmation",
+    oaZaloController.sendZNSBookingConfirmation
+);
+router.post(
+    "/send-zns-call-confirmation",
+    oaZaloController.sendZNSCallConfirmation
+);
+
 module.exports = router;

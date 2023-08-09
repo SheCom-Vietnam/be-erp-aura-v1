@@ -9,6 +9,8 @@ const admin = require("firebase-admin");
 var serviceAccount = require("./auralt-firebase-adminsdk-j7xv1-bb162b29c1.json");
 const connectMeilisearch = require("./config/supabaseConnetMeilisearch");
 const app = express();
+const cron = require("node-cron");
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
 });
@@ -137,6 +139,22 @@ app.use("/api/v1/date", dateRouter);
 //mini app hook
 app.use("/api/v1/miniapp-hook/", miniappRouter);
 var os = require("os");
+
+// ZNS
+const {
+    znsRemindBooking,
+    znsAfterService,
+} = require("./services/znsZalo.services");
+cron.schedule("0 9 * * *", async function () {
+    console.log("---------------------");
+    await znsRemindBooking();
+    await znsAfterService();
+});
+// cron.schedule("*/5 * * * * *", async function () {
+//     console.log("---------------------");
+//     await znsRemindBooking();
+//     await znsAfterService();
+// });
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
     console.log(`Example app listening on port ${port}`);

@@ -6,11 +6,13 @@ const SHA256 = require("crypto-js/sha256");
 const {
     znsConfirmBookingTemplate,
     znsWelcomeStaffTemplate,
+    znsCheckoutTemplate,
+    znsCallConfirmation,
+    znsBookingConfirmationV2,
 } = require("../services/znsZalo.services");
 const {
     convertZaloPhoneToPhone,
 } = require("../helpers/convert/convertToVnPhone");
-const supabase = require("../config/supabase");
 const { default: axios } = require("axios");
 class OAZaloController {
     _checkTimeAccessToken = (time) => {
@@ -149,6 +151,52 @@ class OAZaloController {
         });
         console.log(response);
         if (response && response.data.CodeResult === "100") {
+            return res.status(200).send({
+                status: "Success",
+            });
+        } else {
+            return next(new AppError("Failed", 400));
+        }
+    });
+    sendZNSBookingConfirmation = catchAsync(async (req, res, next) => {
+        const { bookingID } = req.body;
+
+        // if (!staffName || !phone || !staffId || !date)
+        //     return next(new AppError("Missing field in body", 400));
+        const response = await znsBookingConfirmationV2(bookingID);
+        if (response && response.data.error == 0) {
+            return res.status(200).send({
+                status: "Success",
+            });
+        } else {
+            return next(new AppError("Failed", 400));
+        }
+    });
+    sendZNSCheckout = catchAsync(async (req, res, next) => {
+        const { paid, orderID } = req.body;
+
+        // if (!staffName || !phone || !staffId || !date)
+        //     return next(new AppError("Missing field in body", 400));
+        const response = await znsCheckoutTemplate({
+            paid,
+            orderID,
+        });
+        if (response && response.data.error == 0) {
+            return res.status(200).send({
+                status: "Success",
+            });
+        } else {
+            return next(new AppError("Failed", 400));
+        }
+    });
+
+    sendZNSCallConfirmation = catchAsync(async (req, res, next) => {
+        const { bookingID } = req.body;
+
+        // if (!staffName || !phone || !staffId || !date)
+        //     return next(new AppError("Missing field in body", 400));
+        const response = await znsCallConfirmation(bookingID);
+        if (response && response.data.error == 0) {
             return res.status(200).send({
                 status: "Success",
             });
