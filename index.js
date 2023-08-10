@@ -145,16 +145,16 @@ const {
     znsRemindBooking,
     znsAfterService,
 } = require("./services/znsZalo.services");
-// cron.schedule("0 9 * * *", async function () {
-//     console.log("---------------------");
-//     await znsRemindBooking();
-//     await znsAfterService();
-// });
-cron.schedule("*/5 * * * * *", async function () {
+cron.schedule("0 9 * * *", async function () {
     console.log("---------------------");
-    // await znsRemindBooking();
+    await znsRemindBooking();
     await znsAfterService();
 });
+// cron.schedule("*/5 * * * * *", async function () {
+//     console.log("---------------------");
+//     // await znsRemindBooking();
+//     await znsAfterService();
+// });
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
     console.log(`Example app listening on port ${port}`);

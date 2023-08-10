@@ -159,7 +159,7 @@ const znsAfterService = async () => {
                     addDaysFromNow(7, new Date(booking.date))
                 //booking.date == "2024-08-08"
             );
-            console.log(filterBookings);
+            console.log("filterBookings", filterBookings);
             for (let i = 0; i < filterBookings.length; i++) {
                 const phone = convertPhoneNumber(
                     filterBookings[i].order_id.user_id.phone
@@ -191,6 +191,7 @@ const znsAfterService = async () => {
                         filterBookings[i].bookingID,
                         phone
                     );
+                    let isError = false;
                     if (
                         filterBookings[i].service_id.category_id.name.includes(
                             "Phun Xăm"
@@ -209,6 +210,9 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
+                        if (response.data.error != 0) {
+                            isError = true;
+                        }
                     }
 
                     if (
@@ -228,7 +232,9 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
-                        console.log(response);
+                        if (response.data.error != 0) {
+                            isError = true;
+                        }
                     }
                     if (
                         filterBookings[i].service_id.category_id.name.includes(
@@ -247,6 +253,12 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
+                        if (response.data.error != 0) {
+                            isError = true;
+                        }
+                    }
+                    if (isError) {
+                        throw Error("Error");
                     }
                 }
             }
