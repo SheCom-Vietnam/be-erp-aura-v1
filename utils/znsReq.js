@@ -7,9 +7,9 @@ const ZALO_ZNS_URL = "https://business.openapi.zalo.me/message/template";
 const listTemplateIds = {
     remindTemplate: "275553",
     checkoutTemplate: "275692",
-    afterTatooServiceTemplate: "275599",
-    afterPTTMServiceTemplate: "275622",
-    afterMelasmaServiceTemplate: "275621",
+    afterTatooServicesTemplate: "275599",
+    afterPTTMServicesTemplate: "275622",
+    afterMelasmaServicesTemplate: "275746",
     callConfirmation: "275654",
     bookingConfirmation: "275666",
 };

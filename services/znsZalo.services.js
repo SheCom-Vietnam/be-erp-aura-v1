@@ -99,6 +99,7 @@ const znsRemindBooking = async () => {
             let filterBookings = bookings.filter(
                 (booking) => booking.date == addDaysFromNow(1)
             );
+            console.log("filterBookings", filterBookings);
             for (let i = 0; i < filterBookings.length; i++) {
                 const phone = convertPhoneNumber(
                     filterBookings[i].order_id.user_id.phone
@@ -112,7 +113,6 @@ const znsRemindBooking = async () => {
                         filterBookings[i].time +
                         " ngày " +
                         formatDate(filterBookings[i].date),
-                    note: filterBookings[i].description || "không có ghi chú.",
                     bookingID: filterBookings[i].id,
                 };
                 if (
@@ -122,7 +122,6 @@ const znsRemindBooking = async () => {
                     templateData.address &&
                     templateData.serviceName &&
                     templateData.dateTime &&
-                    templateData.note &&
                     templateData.bookingID
                 ) {
                     let trackingId = generateTrackingId(
@@ -136,6 +135,7 @@ const znsRemindBooking = async () => {
                         templateData,
                         trackingId
                     );
+                    console.log(response);
                 }
             }
         }
@@ -159,6 +159,7 @@ const znsAfterService = async () => {
                     addDaysFromNow(7, new Date(booking.date))
                 //booking.date == "2024-08-08"
             );
+            console.log(filterBookings);
             for (let i = 0; i < filterBookings.length; i++) {
                 const phone = convertPhoneNumber(
                     filterBookings[i].order_id.user_id.phone
@@ -200,10 +201,11 @@ const znsAfterService = async () => {
                         let response = await sendZNS(
                             "TMV-OA",
                             phone,
-                            listTemplateIds.afterTatooServiceTemplate,
+                            listTemplateIds.afterTatooServicesTemplate,
                             {
                                 customerName: templateData.customerName,
                                 clinicName: templateData.clinicName,
+                                bookingID: templateData.bookingID,
                             },
                             trackingId
                         );
@@ -217,14 +219,16 @@ const znsAfterService = async () => {
                         let response = await sendZNS(
                             "TMV-OA",
                             phone,
-                            listTemplateIds.afterPTTMServiceTemplate,
+                            listTemplateIds.afterPTTMServicesTemplate,
                             {
                                 customerName: templateData.customerName,
                                 clinicName: templateData.clinicName,
                                 serviceName: templateData.serviceName,
+                                bookingID: templateData.bookingID,
                             },
                             trackingId
                         );
+                        console.log(response);
                     }
                     if (
                         filterBookings[i].service_id.category_id.name.includes(
@@ -234,11 +238,12 @@ const znsAfterService = async () => {
                         let response = await sendZNS(
                             "TMV-OA",
                             phone,
-                            listTemplateIds.afterMelasmaServiceTemplate,
+                            listTemplateIds.afterMelasmaServicesTemplate,
                             {
                                 customerName: templateData.customerName,
                                 clinicName: templateData.clinicName,
                                 serviceName: templateData.serviceName,
+                                bookingID: templateData.bookingID,
                             },
                             trackingId
                         );
