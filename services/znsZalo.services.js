@@ -209,6 +209,7 @@ const znsAfterService = async () => {
                                 customerName: templateData.customerName,
                                 clinicName: templateData.clinicName,
                                 bookingID: templateData.bookingID,
+                                dateTime: templateData.dateTime,
                             },
                             trackingId
                         );
@@ -231,6 +232,7 @@ const znsAfterService = async () => {
                                 clinicName: templateData.clinicName,
                                 serviceName: templateData.serviceName,
                                 bookingID: templateData.bookingID,
+                                dateTime: templateData.dateTime,
                             },
                             trackingId
                         );
@@ -252,6 +254,7 @@ const znsAfterService = async () => {
                                 clinicName: templateData.clinicName,
                                 serviceName: templateData.serviceName,
                                 bookingID: templateData.bookingID,
+                                dateTime: templateData.dateTime,
                             },
                             trackingId
                         );

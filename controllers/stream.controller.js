@@ -175,9 +175,10 @@ class StreamController {
                     .order("created_at", { ascending: false });
                 if (streamInfo && currentSection) {
                     console.log("currentSection", currentSection[0]);
+                    let videoInfo = await this.getVideoInfo(ActivityID, Vid);
                     await supabase
                         .from("streams_sections")
-                        .update({ video_id: Vid })
+                        .update({ video_id: Vid, video_url: videoInfo.PlayUrl })
                         .eq("id", currentSection[0].id);
                 }
                 res.status(200).json({ message: "Okie" });
@@ -185,6 +186,52 @@ class StreamController {
                 res.status(404).json({ message: "Error" });
             }
         }
+    };
+    getVideoInfo = async (activityId, videoId) => {
+        const { AKSK, version } = bytePlus;
+        if (!activityId) {
+            return res.status(404).json({ message: "Activity not Inval" });
+        }
+        if (typeof activityId !== "string") {
+            return res
+                .status(404)
+                .json({ message: "Activity not typeof string" });
+        }
+        const openApiRequestData = {
+            region: "ap-singapore-1",
+            method: "POST",
+            params: {
+                Action: "ListPlayUrlsAPI",
+                Version: version,
+            },
+            headers: {},
+            body: JSON.stringify({
+                Vids: [videoId],
+            }),
+        };
+        const signer = new Signer(openApiRequestData, "livesaas");
+        signer.addAuthorization({
+            accessKeyId: AKSK?.ACCESS_KEY_ID,
+            secretKey: AKSK?.SECRET_ACCESS_KEY,
+        });
+
+        const response = await axios.post(
+            `http://open.byteplusapi.com/?Action=ListPlayUrlsAPI&Version=${version}`,
+            {
+                Vids: [videoId],
+            },
+            {
+                headers: openApiRequestData.headers,
+            }
+        );
+        if (!response) {
+            return next(new AppError("Error", 404));
+        }
+        if (response.data && response.data.Result) {
+            let videosInfo = response.data.Result.SuccessList;
+            return videosInfo[0];
+        }
+        return null;
     };
     uploadImage = async (req, res) => {
         const file = req.file;
