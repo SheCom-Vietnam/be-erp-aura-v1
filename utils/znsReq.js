@@ -12,6 +12,7 @@ const listTemplateIds = {
     afterMelasmaServicesTemplate: "275746",
     callConfirmation: "275654",
     bookingConfirmation: "275666",
+    afterServices30days: "275856",
 };
 function generateTrackingId(bookingId, phone) {
     // Get the current date

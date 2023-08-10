@@ -122,7 +122,8 @@ const znsRemindBooking = async () => {
                     templateData.address &&
                     templateData.serviceName &&
                     templateData.dateTime &&
-                    templateData.bookingID
+                    templateData.bookingID &&
+                    filterBookings[i].status == 2
                 ) {
                     let trackingId = generateTrackingId(
                         templateData.bookingID,
@@ -185,7 +186,8 @@ const znsAfterService = async () => {
                     templateData.serviceName &&
                     templateData.dateTime &&
                     templateData.note &&
-                    templateData.bookingID
+                    templateData.bookingID &&
+                    filterBookings[i].status == 7
                 ) {
                     let trackingId = generateTrackingId(
                         filterBookings[i].bookingID,
@@ -253,6 +255,88 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
+                        if (response.data.error != 0) {
+                            isError = true;
+                        }
+                    }
+                    if (isError) {
+                        throw Error("Error");
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        throw Error(error);
+    }
+};
+
+const znsAfterService30Days = async () => {
+    try {
+        let { data: bookings } = await supabase
+            .from("bookings")
+            .select(
+                "*,service_id(*,category_id(*)),clinic_id(*),order_id(user_id(*))"
+            );
+        if (bookings) {
+            console.log("ZNS After service 30days");
+            let filterBookings = bookings.filter(
+                (booking) =>
+                    addDaysFromNow() ==
+                    addDaysFromNow(30, new Date(booking.date))
+                //booking.date == "2024-08-08"
+            );
+            console.log("filterBookings", filterBookings);
+            for (let i = 0; i < filterBookings.length; i++) {
+                const phone = convertPhoneNumber(
+                    filterBookings[i].order_id.user_id.phone
+                );
+                const templateData = {
+                    customerName: filterBookings[i].order_id.user_id.name,
+                    clinicName: filterBookings[i].clinic_id.name,
+                    address: filterBookings[i].clinic_id.address,
+                    serviceName: filterBookings[i].service_id.name,
+                    dateTime:
+                        filterBookings[i].time +
+                        " ngày " +
+                        formatDate(filterBookings[i].date),
+                    note: filterBookings[i].description || "không có ghi chú.",
+                    bookingID: filterBookings[i].id,
+                };
+
+                if (
+                    phone &&
+                    templateData.customerName &&
+                    templateData.clinicName &&
+                    templateData.address &&
+                    templateData.serviceName &&
+                    templateData.dateTime &&
+                    templateData.note &&
+                    templateData.bookingID &&
+                    (filterBookings[i].status == 3 ||
+                        filterBookings[i].status == 5 ||
+                        filterBookings[i].status == 7)
+                ) {
+                    let trackingId = generateTrackingId(
+                        filterBookings[i].bookingID,
+                        phone
+                    );
+                    let isError = false;
+                    if (
+                        !filterBookings[i].service_id.category_id.name.includes(
+                            "Phun Xăm"
+                        )
+                    ) {
+                        let response = await sendZNS(
+                            "TMV-OA",
+                            phone,
+                            listTemplateIds.afterServices30days,
+                            {
+                                clinicName: templateData.clinicName,
+                            },
+                            trackingId
+                        );
+                        console.log(response);
                         if (response.data.error != 0) {
                             isError = true;
                         }
@@ -337,6 +421,8 @@ const znsBookingConfirmationV2 = async (bookingID) => {
         throw Error(error);
     }
 };
+
+const znsRetention = async () => {};
 const znsWelcomeStaffTemplate = async ({ phone, templateConfig }) => {
     try {
         const response = await axios({
@@ -367,5 +453,6 @@ module.exports = {
     znsCheckoutTemplate,
     znsAfterService,
     znsBookingConfirmationV2,
+    znsAfterService30Days,
     znsCallConfirmation,
 };
