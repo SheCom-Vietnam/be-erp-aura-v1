@@ -159,7 +159,33 @@ class StreamController {
             }
         }
     };
-
+    activityAutoReplayCallBack = async (req, res) => {
+        const { ActivityID, Vid, EventType } = req.body;
+        if (EventType == "ActivityAutoReplayCallBack") {
+            try {
+                let { data: streamInfo } = await supabase
+                    .from("stream_info")
+                    .select()
+                    .eq("activity_id", ActivityID)
+                    .single();
+                let { data: currentSection } = await supabase
+                    .from("streams_sections")
+                    .select()
+                    .eq("stream_id", streamInfo.id)
+                    .order("created_at", { ascending: false });
+                if (streamInfo && currentSection) {
+                    console.log("currentSection", currentSection[0]);
+                    await supabase
+                        .from("streams_sections")
+                        .update({ video_id: Vid })
+                        .eq("id", currentSection[0].id);
+                }
+                res.status(200).json({ message: "Okie" });
+            } catch (e) {
+                res.status(404).json({ message: "Error" });
+            }
+        }
+    };
     uploadImage = async (req, res) => {
         const file = req.file;
         const { activityId } = req.body;

@@ -152,8 +152,8 @@ cron.schedule("0 9 * * *", async function () {
 });
 // cron.schedule("*/5 * * * * *", async function () {
 //     console.log("---------------------");
-//     // await znsRemindBooking();
-//     await znsAfterService();
+//     await znsRemindBooking();
+//     // await znsAfterService();
 // });
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
