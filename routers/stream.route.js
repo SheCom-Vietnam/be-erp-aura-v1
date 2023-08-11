@@ -15,6 +15,8 @@ router.post(
     "/activityAutoReplayCallBack",
     StreamController.activityAutoReplayCallBack
 );
+router.post("/getVideoInfo", StreamController.getVideoInfoRoute);
+
 router.post(
     "/upload/media",
     upload.single("file"),
