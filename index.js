@@ -146,7 +146,7 @@ const {
     znsAfterService,
     znsAfterService30Days,
 } = require("./services/znsZalo.services");
-cron.schedule("0 9 * * *", async function () {
+cron.schedule("0 2 * * *", async function () {
     console.log("---------------------");
     await znsRemindBooking();
     await znsAfterService();
@@ -155,8 +155,8 @@ cron.schedule("0 9 * * *", async function () {
 // cron.schedule("*/5 * * * * *", async function () {
 //     console.log("---------------------");
 //     await znsRemindBooking();
-//     // await znsAfterService();
-//     // await znsAfterService30Days();
+//     await znsAfterService();
+//     await znsAfterService30Days();
 // });
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
