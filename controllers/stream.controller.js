@@ -152,6 +152,10 @@ class StreamController {
                     await supabase
                         .from("streams_sections")
                         .insert({ stream_id: updatedStream?.id });
+                    await supabase.rpc("increase_num_of_lives", {
+                        x: 1,
+                        activityid: String(ActivityID),
+                    });
                 }
                 res.status(200).json({ message: statuses[Status - 1] });
             } catch (e) {

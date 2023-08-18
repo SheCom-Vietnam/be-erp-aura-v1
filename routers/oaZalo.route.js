@@ -16,6 +16,10 @@ router.post(
     oaZaloController.sendZNSBookingConfirmation
 );
 router.post(
+    "/test-send-zns-booking-confirmation",
+    oaZaloController.sendTestZNSBookingConfirmation
+);
+router.post(
     "/send-zns-call-confirmation",
     oaZaloController.sendZNSCallConfirmation
 );
