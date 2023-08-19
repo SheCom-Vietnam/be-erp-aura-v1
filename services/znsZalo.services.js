@@ -424,7 +424,32 @@ const znsBookingConfirmationV2 = async (bookingID) => {
         throw Error(error);
     }
 };
-
+const znsTestBookingConfirmationV2 = async (bookingID) => {
+    try {
+        let trackingId = generateTrackingId(
+            bookingID,
+            convertPhoneNumber("0362928053")
+        );
+        let response = await sendZNS(
+            "TMV-OA",
+            convertPhoneNumber("0362928053"),
+            listTemplateIds.bookingConfirmation,
+            {
+                customerName: "Trong",
+                serviceName: "Hello World",
+                clinicName: "Block 71",
+                dateTime: "8:00 ngày " + formatDate("2023-7-19"),
+                address: "Block 71",
+                bookingID,
+            },
+            trackingId
+        );
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw Error(error);
+    }
+};
 const znsRetention = async () => {};
 const znsWelcomeStaffTemplate = async ({ phone, templateConfig }) => {
     try {
@@ -458,4 +483,5 @@ module.exports = {
     znsBookingConfirmationV2,
     znsAfterService30Days,
     znsCallConfirmation,
+    znsTestBookingConfirmationV2,
 };

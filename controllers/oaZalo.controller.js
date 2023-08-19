@@ -9,6 +9,7 @@ const {
     znsCheckoutTemplate,
     znsCallConfirmation,
     znsBookingConfirmationV2,
+    znsTestBookingConfirmationV2,
 } = require("../services/znsZalo.services");
 const {
     convertZaloPhoneToPhone,
@@ -133,6 +134,7 @@ class OAZaloController {
             return next(new AppError("Failed", 400));
         }
     });
+
     sendWelcomeStaffZNS = catchAsync(async (req, res, next) => {
         const { staffName, phone, staffId, date } = req.body;
 
@@ -164,6 +166,22 @@ class OAZaloController {
         // if (!staffName || !phone || !staffId || !date)
         //     return next(new AppError("Missing field in body", 400));
         const response = await znsBookingConfirmationV2(bookingID);
+        if (response && response.data.error == 0) {
+            return res.status(200).send({
+                status: "Success",
+            });
+        } else {
+            return next(new AppError("Failed", 400));
+        }
+    });
+    sendTestZNSBookingConfirmation = catchAsync(async (req, res, next) => {
+        const { bookingID } = req.body;
+
+        // if (!staffName || !phone || !staffId || !date)
+        //     return next(new AppError("Missing field in body", 400));
+        const response = await znsTestBookingConfirmationV2(bookingID);
+
+        console.log(response);
         if (response && response.data.error == 0) {
             return res.status(200).send({
                 status: "Success",
