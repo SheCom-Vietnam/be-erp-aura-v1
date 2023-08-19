@@ -57,18 +57,23 @@ module.exports = {
                 break;
             }
         }
-        let response = await await axios({
-            url: ZALO_ZNS_URL,
-            method: "POST",
-            data: {
-                ...getReqBody(phone, templateId, templateData, trackingId),
-            },
-            headers: {
-                "Content-Type": "application/json",
-                access_token: accessToken,
-            },
-        });
-        return response;
+        try {
+            let response = await await axios({
+                url: ZALO_ZNS_URL,
+                method: "POST",
+                data: {
+                    ...getReqBody(phone, templateId, templateData, trackingId),
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    access_token: accessToken,
+                },
+            });
+            return response;
+        } catch (err) {
+            console.log(err);
+        }
+        return null;
     },
     listTemplateIds,
     generateTrackingId,
