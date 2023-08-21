@@ -146,18 +146,18 @@ const {
     znsAfterService,
     znsAfterService30Days,
 } = require("./services/znsZalo.services");
-// cron.schedule("0 2 * * *", async function () {
+cron.schedule("0 2 * * *", async function () {
+    console.log("---------------------");
+    await znsRemindBooking();
+    await znsAfterService();
+    await znsAfterService30Days();
+});
+// cron.schedule("*/20 * * * * *", async function () {
 //     console.log("---------------------");
 //     await znsRemindBooking();
 //     await znsAfterService();
 //     await znsAfterService30Days();
 // });
-cron.schedule("*/20 * * * * *", async function () {
-    console.log("---------------------");
-    await znsRemindBooking();
-    // await znsAfterService();
-    // await znsAfterService30Days();
-});
 server.listen(port, () => {
     console.log(new Date(Date.now()).toString());
     console.log(`Example app listening on port ${port}`);
