@@ -5,6 +5,7 @@ const bytePlus = require("../utils/bytePlus");
 const catchAsync = require("../helpers/catchAsync");
 const supabase = require("../config/supabase");
 const { upload } = require("../index");
+const { Service, livesaasOpenapi } = require("@volcengine/openapi");
 class StreamController {
     CreateActivityAPIV2 = async (req, res, next) => {
         if (req.body.ban === undefined) {
@@ -281,6 +282,48 @@ class StreamController {
             return videosInfo[0];
         }
         return null;
+    };
+
+    getVideoToken = async (req, res) => {
+        const { videoId, activityId } = req.query;
+        const userClient = new livesaasOpenapi.LivesaasService({
+            accessKeyId: bytePlus.AKSK.ACCESS_KEY_ID,
+            secretKey: bytePlus.AKSK.SECRET_ACCESS_KEY,
+        });
+
+        // Generate the user token
+        const userToken = userClient.GetLivesaasUploadUserToken();
+        const body = {
+            userToken: userToken,
+            Vid: videoId, //videoPB.videoID,3000002870
+            ActivityId: parseInt(activityId),
+            FormatType: "mp4",
+        };
+
+        const service = new Service({
+            region: bytePlus.region,
+            host: bytePlus.domain,
+            serviceName: "livesaas",
+        });
+        service.setAccessKeyId(bytePlus.AKSK.ACCESS_KEY_ID);
+        service.setSecretKey(bytePlus.AKSK.SECRET_ACCESS_KEY);
+
+        // Call GetPlayAuthTokenAPI to generate the playback token
+        const response = await service.fetchOpenAPI({
+            Action: "GetPlayAuthTokenAPI",
+            Version: bytePlus.version,
+            method: "POST",
+            data: body,
+        });
+        // console.log(response.Result);
+
+        return res.status(200).send({
+            status: "Success",
+            data: {
+                PlayAuthToken: response.Result,
+                userToken: userToken,
+            },
+        });
     };
     uploadImage = async (req, res) => {
         const file = req.file;
