@@ -94,6 +94,7 @@ const znsRemindBooking = async () => {
         let { data: bookings } = await supabase
             .from("bookings")
             .select("*,service_id(*),clinic_id(*),order_id(user_id(*))")
+            .eq("status", 2)
             .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS remind booking");
@@ -125,8 +126,7 @@ const znsRemindBooking = async () => {
                     templateData.address &&
                     templateData.serviceName &&
                     templateData.dateTime &&
-                    templateData.bookingID &&
-                    filterBookings[i].status == 2
+                    templateData.bookingID
                 ) {
                     let trackingId = generateTrackingId(
                         templateData.bookingID,
@@ -155,6 +155,7 @@ const znsAfterService = async () => {
             .select(
                 "*,service_id(*,category_id(*)),clinic_id(*),order_id(user_id(*))"
             )
+            .in("status", [7])
             .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS After service");
@@ -190,8 +191,7 @@ const znsAfterService = async () => {
                     templateData.serviceName &&
                     templateData.dateTime &&
                     templateData.note &&
-                    templateData.bookingID &&
-                    filterBookings[i].status == 7
+                    templateData.bookingID
                 ) {
                     let trackingId = generateTrackingId(
                         filterBookings[i].bookingID,
@@ -217,9 +217,7 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
-                        if (response.data.error != 0) {
-                            isError = true;
-                        }
+                        console.log(response);
                     }
 
                     if (
@@ -240,9 +238,7 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
-                        if (response.data.error != 0) {
-                            isError = true;
-                        }
+                        console.log(response);
                     }
                     if (
                         filterBookings[i].service_id.category_id.name.includes(
@@ -265,12 +261,7 @@ const znsAfterService = async () => {
                             },
                             trackingId
                         );
-                        if (response.data.error != 0) {
-                            isError = true;
-                        }
-                    }
-                    if (isError) {
-                        throw Error("Error");
+                        console.log(response);
                     }
                 }
             }
@@ -288,6 +279,7 @@ const znsAfterService30Days = async () => {
             .select(
                 "*,service_id(*,category_id(*)),clinic_id(*),order_id(user_id(*))"
             )
+            .in("status", [3, 5, 7])
             .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS After service 30days");
@@ -323,10 +315,7 @@ const znsAfterService30Days = async () => {
                     templateData.serviceName &&
                     templateData.dateTime &&
                     templateData.note &&
-                    templateData.bookingID &&
-                    (filterBookings[i].status == 3 ||
-                        filterBookings[i].status == 5 ||
-                        filterBookings[i].status == 7)
+                    templateData.bookingID
                 ) {
                     let trackingId = generateTrackingId(
                         filterBookings[i].bookingID,
@@ -348,12 +337,6 @@ const znsAfterService30Days = async () => {
                             trackingId
                         );
                         console.log(response);
-                        if (response.data.error != 0) {
-                            isError = true;
-                        }
-                    }
-                    if (isError) {
-                        throw Error("Error");
                     }
                 }
             }
