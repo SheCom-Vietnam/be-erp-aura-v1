@@ -152,7 +152,7 @@ cron.schedule("0 2 * * *", async function () {
     await znsAfterService();
     await znsAfterService30Days();
 });
-// cron.schedule("*/5 * * * * *", async function () {
+// cron.schedule("*/20 * * * * *", async function () {
 //     console.log("---------------------");
 //     await znsRemindBooking();
 //     await znsAfterService();
