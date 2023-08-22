@@ -93,11 +93,14 @@ const znsRemindBooking = async () => {
     try {
         let { data: bookings } = await supabase
             .from("bookings")
-            .select("*,service_id(*),clinic_id(*),order_id(user_id(*))");
+            .select("*,service_id(*),clinic_id(*),order_id(user_id(*))")
+            .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS remind booking");
             let filterBookings = bookings.filter(
-                (booking) => booking.date == addDaysFromNow(1)
+                (booking) =>
+                    addDaysFromNow(0, new Date(booking.date)) ==
+                    addDaysFromNow(1)
             );
             console.log("filterBookings", filterBookings);
             for (let i = 0; i < filterBookings.length; i++) {
@@ -151,7 +154,8 @@ const znsAfterService = async () => {
             .from("bookings")
             .select(
                 "*,service_id(*,category_id(*)),clinic_id(*),order_id(user_id(*))"
-            );
+            )
+            .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS After service");
             let filterBookings = bookings.filter(
@@ -243,6 +247,9 @@ const znsAfterService = async () => {
                     if (
                         filterBookings[i].service_id.category_id.name.includes(
                             "Nám"
+                        ) ||
+                        filterBookings[i].service_id.category_id.name.includes(
+                            "Dịch Vụ Khác"
                         )
                     ) {
                         let response = await sendZNS(
@@ -280,7 +287,8 @@ const znsAfterService30Days = async () => {
             .from("bookings")
             .select(
                 "*,service_id(*,category_id(*)),clinic_id(*),order_id(user_id(*))"
-            );
+            )
+            .order("date", { ascending: false });
         if (bookings) {
             console.log("ZNS After service 30days");
             let filterBookings = bookings.filter(

@@ -16,6 +16,7 @@ router.post(
     StreamController.activityAutoReplayCallBack
 );
 router.post("/getVideoInfo", StreamController.getVideoInfoRoute);
+router.get("/getVideoToken", StreamController.getVideoToken);
 
 router.post(
     "/upload/media",
