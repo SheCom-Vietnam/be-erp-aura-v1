@@ -87,7 +87,6 @@ class PancakeController {
       name: account?.account_name.trim(),
       avatar: custom_fields?.psid && custom_fields?.page_id ? `https://pancake.vn/api/v1/pages/${custom_fields?.page_id}/avatar/${custom_fields?.psid}` : null,
       phone: account?.phone_office ? account.phone_office.trim() : null,
-      phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
       id: account.sic_code,
       customer_resource: custom_fields.pancake_ticket_name,
       gender: account.gender,
@@ -193,7 +192,6 @@ class PancakeController {
         .update([
           {
             phone: optionsUser.phone.trim(),
-            phone_update_date: optionsUser.phone_update_date,
           },
         ])
         .eq("id", _userInfoForSicCode[0].id)
@@ -215,27 +213,6 @@ class PancakeController {
         .update([
           {
             avatar: optionsUser.avatar.trim()
-          },
-        ])
-        .eq("id", _userInfoForSicCode[0].id)
-        .select("*,status(*),service_staff(*)")
-        .single();
-
-      if (error) {
-        console.log(error);
-      }
-      else if (updatedPhoneUser) {
-        io.emit("pancake_hook", updatedPhoneUser);
-      }
-    }
-
-    if (optionsUser.name !== null && _userInfoForSicCode[0].name !== optionsUser.name) {
-      //Update avatar for user
-      const { data: updatedPhoneUser, error } = await supabase
-        .from("users")
-        .update([
-          {
-            name: optionsUser.name.trim()
           },
         ])
         .eq("id", _userInfoForSicCode[0].id)
