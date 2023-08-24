@@ -5,7 +5,6 @@ const handleHook = async (data) => {
     name: account?.account_name.trim(),
     avatar: custom_fields?.psid && custom_fields?.page_id ? `https://pancake.vn/api/v1/pages/${custom_fields?.page_id}/avatar/${custom_fields?.psid}` : null,
     phone: account?.phone_office ? account.phone_office.trim() : null,
-    phone_update_date: account?.phone_office ? new Date(Date.now()) : null,
     id: account?.sic_code.trim(),
     customer_resource: custom_fields.pancake_ticket_name,
     gender: account?.gender && account?.gender == 1 ? "female" : "male",
@@ -143,7 +142,6 @@ const handleHook = async (data) => {
       .update([
         {
           phone: optionsUser.phone.trim(),
-          phone_update_date: optionsUser.phone_update_date,
         },
       ])
       .eq("id", _userInfoForSicCode[0].id)
