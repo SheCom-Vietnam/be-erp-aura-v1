@@ -58,6 +58,7 @@ const streamRouter = require("./routers/stream.route");
 const easygopRouter = require("./routers/easygop.route");
 const miniappRouter = require("./routers/miniapp.route");
 const dateRouter = require("./routers/date.route");
+const botbanhangRouter = require("./routers/botbanhang.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -106,6 +107,8 @@ app.use((err, req, res, next) => {
         message: err.message,
     });
 });
+app.use("/api/v1/botbanhang", botbanhangRouter);
+
 
 //socket
 const server = http.createServer(app);
