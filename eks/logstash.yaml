@@ -13,7 +13,7 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
             jdbc_user => "postgres"
             jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"
@@ -73,7 +73,7 @@ spec:
         input {
           jdbc {
 
-            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
             jdbc_user => "postgres"
             jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"
@@ -126,7 +126,7 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
             jdbc_user => "postgres"
             jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"

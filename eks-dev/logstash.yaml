@@ -13,9 +13,9 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
             jdbc_user => "postgres"
-            jdbc_password => "aura.shecom.asia"
+            jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"
             jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
             jdbc_paging_enabled => true
@@ -72,9 +72,9 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
             jdbc_user => "postgres"
-            jdbc_password => "aura.shecom.asia"
+            jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"
             jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
             jdbc_paging_enabled => true
@@ -125,9 +125,9 @@ spec:
       config.string: |
         input {
           jdbc {
-            jdbc_connection_string => "jdbc:postgresql://db.ghukjxfokoeacobbajae.supabase.co:5432/postgres"
+            jdbc_connection_string => "jdbc:postgresql://db.ctxvsrfwmbfxsodwuvxv.supabase.co:5432/postgres"
             jdbc_user => "postgres"
-            jdbc_password => "aura.shecom.asia"
+            jdbc_password => "aura.shecom.asia.72nct"
             jdbc_driver_class => "org.postgresql.Driver"
             jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-jdbc.jar"
             jdbc_paging_enabled => true
