@@ -6,7 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "npm install",
-        "dev": "set NODE_ENV=dev&& nodemon ./index.js",
+        "dev": "export NODE_ENV=dev&& nodemon ./index.js",
         "prod": "export NODE_ENV=production&& nodemon ./index.js"
     },
     "author": "",
