@@ -38,7 +38,7 @@ class BotbanhangController {
     if (_user) {
       return res.status(200).send({
         status: "OK",
-        data: _user
+        data: _user,
       });
     }
     return res.status(203).send({
@@ -46,7 +46,65 @@ class BotbanhangController {
     });
   });
 
-  addUserInfo = catchAsync(async (req, res, nexxt) => {});
+  addUserInfo = catchAsync(async (req, res, nexxt) => {
+    const {
+      fb_name,
+      name,
+      phone,
+      customer_resource,
+      live_chat,
+      agency_id,
+      status,
+      interact_type,
+      details_status,
+      interact_result,
+      ads_id,
+      category_id,
+      fb_client_id,
+    } = req.body;
+
+    const { data: _user } = await supabase
+      .from("users")
+      .select("*")
+      .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`)
+      .single();
+    if (_user) {
+      await supabase
+        .from("users")
+        .update({
+          fb_name,
+          name,
+          phone,
+          customer_resource,
+          live_chat,
+          agency_id,
+          status,
+          interact_type,
+          details_status,
+          interact_result,
+          ads_id,
+          category_id,
+          fb_client_id,
+        })
+        .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`);
+    } else {
+      await supabase.from("users").insert({
+        fb_name,
+        name,
+        phone,
+        customer_resource,
+        live_chat,
+        agency_id,
+        status,
+        interact_type,
+        details_status,
+        interact_result,
+        ads_id,
+        category_id,
+        fb_client_id,
+      });
+    }
+  });
 }
 
 module.exports = new BotbanhangController();
