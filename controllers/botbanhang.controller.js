@@ -16,6 +16,18 @@ class BotbanhangController {
         type: "details_status",
         active: true,
       }),
+      supabase.from("customer_status").select("id,name,type,parent_id").match({
+        type: "status",
+        active: true,
+      }),
+      supabase.from("customer_status").select("id,name,type,parent_id").match({
+        type: "interact_type",
+        active: true,
+      }),
+      supabase.from("customer_status").select("id,name,type,parent_id").match({
+        type: "interact_result",
+        active: true,
+      }),
     ]);
     if (response) {
       return res.status(200).send({
