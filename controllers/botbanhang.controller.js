@@ -104,6 +104,7 @@ class BotbanhangController {
         fb_client_id,
       });
     }
+    return res.status(200).json({status: 'OK'})
   });
 }
 
