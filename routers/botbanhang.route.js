@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get("/get-form-value", botbanhangController.getFormValue);
 router.post("/get-user-info", botbanhangController.getUserInfo);
+router.post("/add-user-info", botbanhangController.addUserInfo);
 
 
 module.exports = router;
