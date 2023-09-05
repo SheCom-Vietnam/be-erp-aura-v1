@@ -15,3 +15,5 @@ exports.formatDate = (date) =>
     2,
     "0"
   )}-${String(date.getDate()).padStart(2, "0")}`;
+
+exports.formatVND = (price) => price.toLocaleString() + " vnđ";

@@ -1,4 +1,5 @@
 const supabase = require("../../../config/supabase");
+const { formatVND } = require("../utils");
 
 const rpcFunctionName = "total_statistic_checkout";
 
@@ -32,7 +33,12 @@ const exec = async (args) => {
     .select()
     .single();
   if (error) throw Error(error?.message);
-  return { ...args, ...data };
+  return {
+    ...args,
+    revenue: formatVND(data.revenue),
+    customer_paid: formatVND(data.customer_paid),
+    debit: formatVND(data.debit),
+  };
 };
 
 module.exports = { rpcFunctionName, exec, functionScheme };

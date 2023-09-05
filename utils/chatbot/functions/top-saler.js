@@ -1,5 +1,6 @@
 const supabase = require("../../../config/supabase");
 const { Parser } = require("@json2csv/plainjs");
+const { formatVND } = require("../utils");
 
 const rpcFunctionName = "total_statistic_top_sale";
 
@@ -29,8 +30,8 @@ const exec = async (args) => {
 
   if (error) throw Error(error?.message);
   const filteredData = data.map((item) => ({
-    "Doanh thu sản phẩm": item.product_revenue,
-    "Doanh thu dịch vụ": item.service_revenue,
+    "Doanh thu sản phẩm": formatVND(item.product_revenue),
+    "Doanh thu dịch vụ": formatVND(item.service_revenue),
     "Tên nhân viên": item.staff_name,
   }));
   try {

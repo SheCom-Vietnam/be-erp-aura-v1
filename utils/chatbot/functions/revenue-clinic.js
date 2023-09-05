@@ -1,5 +1,6 @@
 const supabase = require("../../../config/supabase");
 const { Parser } = require("@json2csv/plainjs");
+const { formatVND } = require("../utils");
 
 const rpcFunctionName = "total_statistic_by_clinic";
 
@@ -31,7 +32,7 @@ const exec = async (args) => {
   const filteredData = data.map((item) => ({
     "Khách hàng đã trả": item.customer_paid,
     Nợ: item.debit,
-    "Doanh thu": item.revenue,
+    "Doanh thu": formatVND(item.revenue),
     "Tên chi nhánh": item.clinic_name,
     "Địa chỉ chi nhánh": item.clinic_address,
   }));
