@@ -118,6 +118,26 @@ class BotbanhangController {
     }
     return res.status(200).json({status: 'OK'})
   });
+
+  login = catchAsync(async (req,res,next) => {
+      const defaultUsername = 'adminaura@gmail.com'
+      const defaultPassword = 'adminaura@123'
+
+      const {username, password}  = req.body
+
+      if (username == defaultUsername && password == defaultPassword) {
+        return res.status(200).json({
+          status: 'ok',
+          code: 200
+        })
+      } else {
+        return res.status(200).json({
+          status: 'not found',
+          code: 404
+        })
+      }
+
+  })
 }
 
 module.exports = new BotbanhangController();
