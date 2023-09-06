@@ -86,7 +86,40 @@ class StreamController {
             });
         }
     };
+    GetStreamKey = async (req, res) => {
+        const { activityId } = req.query;
+        const openApiRequestData = {
+            region: "ap-singapore-1",
+            method: "GET",
+            params: {
+                Action: "GetStreamsAPI",
+                ActivityId: parseInt(activityId),
+                Version: bytePlus.version,
+            },
+            headers: {},
+            body: JSON.stringify(),
+        };
+        const signer = new Signer(openApiRequestData, "livesaas");
+        signer.addAuthorization({
+            accessKeyId: bytePlus.AKSK.ACCESS_KEY_ID,
+            secretKey: bytePlus.AKSK.SECRET_ACCESS_KEY,
+        });
 
+        const response = await axios.get(
+            `https://open.byteplusapi.com/?Action=GetStreamsAPI&Version=${
+                bytePlus.version
+            }&ActivityId=${parseInt(activityId)}`,
+            {
+                headers: openApiRequestData.headers,
+            }
+        );
+        if (!response.data) {
+            res.status(404).json({ message: "Error" });
+        }
+        res.status(200).json({
+            ...response.data.Result.LineDetails[0].MainPushInfo,
+        });
+    };
     GetToken = async (req, res, next) => {
         const { activityId } = req.query;
         const { AKSK, version } = bytePlus;

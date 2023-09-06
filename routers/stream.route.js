@@ -10,6 +10,7 @@ router.post(
     StreamController.GetStreamsAPI
 );
 router.get("/getToken", StreamController.GetToken);
+router.get("/generateStreamKey", StreamController.GetStreamKey);
 router.get("/receiveStatus", StreamController.receiveStatusLive);
 router.post(
     "/activityAutoReplayCallBack",
