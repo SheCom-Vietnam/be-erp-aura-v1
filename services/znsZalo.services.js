@@ -391,6 +391,7 @@ const znsBookingConfirmationV2 = async (bookingID) => {
                 bookingID,
                 convertPhoneNumber(bookingInfo.order_id.user_id.phone)
             );
+            console.log("bookingInfo", bookingInfo);
             let response = await sendZNS(
                 "TMV-OA",
                 convertPhoneNumber(bookingInfo.order_id.user_id.phone),
