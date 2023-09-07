@@ -78,7 +78,7 @@ class BotbanhangController {
       category_id,
       fb_client_id,
       fb_page_id,
-      note
+      note,
     } = req.body;
 
     const { data: _user } = await supabase
@@ -87,6 +87,7 @@ class BotbanhangController {
       .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`)
       .single();
     if (_user) {
+      console.log(_user.note)
       await supabase
         .from("users")
         .update({
@@ -104,6 +105,7 @@ class BotbanhangController {
           ads_id,
           category_id,
           fb_client_id,
+          note: [...(_user?.note ?? []), note],
         })
         .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`);
     } else {
@@ -120,37 +122,33 @@ class BotbanhangController {
         details_status,
         interact_result,
         ads_id,
+        note: note ? [note] : null,
         category_id,
         fb_client_id,
-        avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`
+        avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
       });
     }
-    if (note) {
-      console.log(note,phone, fb_client_id)
-      await supabase.rpc('create_user_note_botbanhang', {  fb_client_id: fb_client_id ,content: note });
-    }
-    return res.status(200).json({status: 'OK'})
+    return res.status(200).json({ status: "OK" });
   });
 
-  login = catchAsync(async (req,res,next) => {
-      const defaultUsername = 'adminaura@gmail.com'
-      const defaultPassword = 'adminaura@123'
+  login = catchAsync(async (req, res, next) => {
+    const defaultUsername = "adminaura@gmail.com";
+    const defaultPassword = "adminaura@123";
 
-      const {username, password}  = req.body
+    const { username, password } = req.body;
 
-      if (username == defaultUsername && password == defaultPassword) {
-        return res.status(200).json({
-          status: 'ok',
-          code: 200
-        })
-      } else {
-        return res.status(200).json({
-          status: 'not found',
-          code: 404
-        })
-      }
-
-  })
+    if (username == defaultUsername && password == defaultPassword) {
+      return res.status(200).json({
+        status: "ok",
+        code: 200,
+      });
+    } else {
+      return res.status(200).json({
+        status: "not found",
+        code: 404,
+      });
+    }
+  });
 }
 
 module.exports = new BotbanhangController();
