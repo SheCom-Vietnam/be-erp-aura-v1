@@ -28,6 +28,9 @@ class BotbanhangController {
         type: "interact_result",
         active: true,
       }),
+      supabase.from("clinics").select("*")({
+        active: true,
+      }),
     ]);
     if (response) {
       return res.status(200).send({
