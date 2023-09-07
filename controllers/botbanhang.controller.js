@@ -73,6 +73,7 @@ class BotbanhangController {
       ads_id,
       category_id,
       fb_client_id,
+      fb_page_id
     } = req.body;
 
     const { data: _user } = await supabase
@@ -114,6 +115,7 @@ class BotbanhangController {
         ads_id,
         category_id,
         fb_client_id,
+        avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`
       });
     }
     return res.status(200).json({status: 'OK'})
