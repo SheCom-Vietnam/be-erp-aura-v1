@@ -105,7 +105,7 @@ class BotbanhangController {
           ads_id,
           category_id,
           fb_client_id,
-          note: [...(_user?.note ?? []), note],
+          note: _user?.note != null ? [...(_user?.note ?? []), note]: [note] ,
         })
         .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`);
     } else {
@@ -122,7 +122,7 @@ class BotbanhangController {
         details_status,
         interact_result,
         ads_id,
-        note: note ? [note] : null,
+        note: note!=null ? [note] : null,
         category_id,
         fb_client_id,
         avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
