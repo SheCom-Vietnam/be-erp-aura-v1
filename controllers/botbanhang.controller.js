@@ -28,7 +28,7 @@ class BotbanhangController {
         type: "interact_result",
         active: true,
       }),
-      supabase.from("clinics").select("*")({
+      supabase.from("clinics").select("*").match({
         active: true,
       }),
     ]);
