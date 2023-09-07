@@ -80,14 +80,30 @@ class BotbanhangController {
       fb_page_id,
       note,
     } = req.body;
+    let _user = null;
 
-    const { data: _user } = await supabase
-      .from("users")
-      .select("*")
-      .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`)
-      .single();
+    const { data } = await supabase
+    .from("users")
+    .select("*")
+    .eq("fb_client_id", fb_client_id);
+
+  if (data && data.length) {
+    _user = data[0];
+  }
+
+    if (!_user && phone != null) {
+      const { data } = await supabase
+        .from("users")
+        .select("*")
+        .eq("phone", phone);
+
+      if (data && data.length) {
+        _user = data[0];
+      }
+    } 
+
     if (_user) {
-      console.log(_user.note)
+      console.log(_user);
       await supabase
         .from("users")
         .update({
@@ -105,9 +121,12 @@ class BotbanhangController {
           ads_id,
           category_id,
           fb_client_id,
-          note: note != null ? [...(_user?.note ?? []), note] :  [...(_user?.note ?? [])],
+          note:
+            note != null
+              ? [...(_user?.note ?? []), note]
+              : [...(_user?.note ?? [])],
         })
-        .or(`phone.eq.${phone},fb_client_id.eq.${fb_client_id}`);
+        .eq("id", _user.id);
     } else {
       await supabase.from("users").insert({
         fb_name,
@@ -122,12 +141,13 @@ class BotbanhangController {
         details_status,
         interact_result,
         ads_id,
-        note: note!= null ? [note] : null,
+        note: note != null ? [note] : null,
         category_id,
         fb_client_id,
         avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
       });
     }
+
     return res.status(200).json({ status: "OK" });
   });
 
