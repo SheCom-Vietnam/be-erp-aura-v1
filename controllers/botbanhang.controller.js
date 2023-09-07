@@ -74,9 +74,11 @@ class BotbanhangController {
       details_status,
       interact_result,
       ads_id,
+      clinic_id,
       category_id,
       fb_client_id,
-      fb_page_id
+      fb_page_id,
+      note
     } = req.body;
 
     const { data: _user } = await supabase
@@ -95,6 +97,7 @@ class BotbanhangController {
           live_chat,
           agency_id,
           status,
+          clinic_id,
           interact_type,
           details_status,
           interact_result,
@@ -112,6 +115,7 @@ class BotbanhangController {
         live_chat,
         agency_id,
         status,
+        clinic_id,
         interact_type,
         details_status,
         interact_result,
@@ -120,6 +124,10 @@ class BotbanhangController {
         fb_client_id,
         avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`
       });
+    }
+    if (note) {
+      console.log(note,phone, fb_client_id)
+      await supabase.rpc('create_user_note_botbanhang', {  fb_client_id: fb_client_id ,content: note });
     }
     return res.status(200).json({status: 'OK'})
   });
