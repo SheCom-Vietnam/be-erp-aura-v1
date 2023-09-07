@@ -103,7 +103,7 @@ class BotbanhangController {
     } 
 
     if (_user) {
-      console.log(_user);
+
       await supabase
         .from("users")
         .update({
