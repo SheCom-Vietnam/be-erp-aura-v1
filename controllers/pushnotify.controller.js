@@ -37,7 +37,7 @@ class PushNotifyController {
               const resFirebase = await NotifyService.doctorSendNotifyDoneBookingForStaff(response, _userId, _bookingId)
           }
             return res.status(200).send({
-      status: "Success",
+       status: "Success",
     });
 }
     });

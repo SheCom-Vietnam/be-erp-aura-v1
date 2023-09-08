@@ -1,6 +1,6 @@
-const catchAsync = require("../helpers/catchAsync");
-const { processMessages, outputStreaming } = require("../utils/chatbot");
-const { replaceUndefinedOrNull } = require("../utils/chatbot/utils");
+const catchAsync = require('../helpers/catchAsync');
+const { processMessages, outputStreaming } = require('../utils/chatbot');
+const { replaceUndefinedOrNull } = require('../utils/chatbot/utils');
 
 class ChatbotController {
   chatbotAdmin = catchAsync(async (req, res) => {
@@ -18,7 +18,7 @@ class ChatbotController {
 
       return res
         .status(200)
-        .send({ content: response.choices[0].text, role: "assistant" });
+        .send({ content: response.choices[0].text, role: 'assistant' });
     } catch (e) {
       console.error(e);
       return res.status(500).send(e);
