@@ -31,6 +31,9 @@ class BotbanhangController {
       supabase.from("clinics").select("*").match({
         active: true,
       }),
+      supabase.rpc("get_staffs_by_roles", {
+        role_ids: ['f5828bed-f7ae-4daf-9697-12023937348f'] //telesale
+      }),
     ]);
     if (response) {
       return res.status(200).send({
@@ -79,6 +82,7 @@ class BotbanhangController {
       fb_client_id,
       fb_page_id,
       note,
+      service_staff
     } = req.body;
     let _user = null;
 
@@ -121,6 +125,7 @@ class BotbanhangController {
           ads_id,
           category_id,
           fb_client_id,
+          service_staff,
           note:
             note != null
               ? [...(_user?.note ?? []), note]
@@ -143,6 +148,7 @@ class BotbanhangController {
         ads_id,
         note: note != null ? [note] : null,
         category_id,
+        service_staff,
         fb_client_id,
         avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
       });
