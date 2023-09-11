@@ -2,6 +2,7 @@ const BotBookingAlertController = require('../controllers/botBookingAlert.contro
 const express = require('express');
 const router = express.Router();
 
-router.post('/dental-noti', BotBookingAlertController.botAlertDentalBooking);
+router.post('/send-message', BotBookingAlertController.botAlertBooking);
+router.post('/add-bot', BotBookingAlertController.addBotLark);
 
 module.exports = router;

@@ -1,18 +1,15 @@
+const supabase = require('../config/supabase');
 const catchAsync = require('../helpers/catchAsync');
+const botLarkService = require('../services/botBooking.service');
 const axios = require('axios');
-
 // const DENTAL_WEBHOOK_URL =
 //   'https://open.larksuite.com/open-apis/bot/v2/hook/f19e94e2-d2c4-4fef-b12f-ea060e1fd410';
 
-/*Test*/
-const DENTAL_WEBHOOK_URL =
-  'https://open.larksuite.com/open-apis/bot/v2/hook/07d82e36-6e2d-42d6-b044-154e809a9a1d';
-
 class BotBookingAlertController {
-  botAlertDentalBooking = catchAsync(async (req, res) => {
+  botAlertBooking = catchAsync(async (req, res) => {
     const {
       booking_id,
-      clinic,
+      clinic_id,
       date,
       time,
       customer_name,
@@ -21,13 +18,24 @@ class BotBookingAlertController {
       service,
       note,
     } = req.body;
+    // try {
+    //   const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
+    //   console.log('group chat', webhook_group);
 
+    //   const group = await botLarkService.getGroupByWebhook(webhook_group);
+    //   console.log('group chat', group);
+    // } catch (error) {}
+    const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
+    console.log('group chat', webhook_group);
+
+    const group = await botLarkService.getGroupByWebhook(webhook_group);
+    console.log('group chat', group);
     const a = {
       msg_type: 'post',
       content: {
         post: {
           en_us: {
-            title: 'Booking Aura Dental',
+            title: `Booking mới - [${group}]`,
             content: [
               [
                 {
@@ -38,7 +46,7 @@ class BotBookingAlertController {
               [
                 {
                   tag: 'text',
-                  text: `Cơ sở: ${clinic}`,
+                  text: `Cơ sở: ${group}`,
                 },
               ],
               [
@@ -85,18 +93,45 @@ class BotBookingAlertController {
     };
 
     try {
-      const res = await axios.post(DENTAL_WEBHOOK_URL, a, {
+      await axios.post(webhook_group, a, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      console.log(JSON.stringify(res.data));
+      // console.log(123, JSON.stringify(res.data));
       return res.status(200).send({
         status: 'Success',
       });
     } catch (error) {
-      console.log('im here');
-      return res.status(500).send('error:', error);
+      return res.status(500).send('error', error);
+    }
+  });
+
+  addBotLark = catchAsync(async (req, res) => {
+    const { webhookUrl, group, tag } = req.body;
+    try {
+      const check = await botLarkService.isExistWebhookUrl(webhookUrl);
+
+      if (check == true) {
+        const { error } = await supabase
+          .from('bot_lark')
+          .insert({ webhook_url: webhookUrl, group: group })
+          .single();
+        if (error) {
+          console.log('error add bot', error);
+          return;
+        } else {
+          console.log('success add bot');
+          return res.status(200).send({
+            status: 'Success',
+          });
+        }
+      } else {
+        console.log('This bot is Exist');
+        return;
+      }
+    } catch (err) {
+      return res.status(500).send('error add bot:', error);
     }
   });
 }
