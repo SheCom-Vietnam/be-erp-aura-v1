@@ -27,3 +27,11 @@ class ChatbotController {
 }
 
 module.exports = new ChatbotController();
+
+/*
+  Test case:
+
+  thông tin doanh thu tháng này
+  thông tin doanh thu vừa rồi
+  Doanh thu hôm qua
+ */
