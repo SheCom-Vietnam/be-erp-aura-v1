@@ -1,5 +1,6 @@
 const catchAsync = require("../helpers/catchAsync");
 const supabase = require("../config/supabase");
+const lodash = require("lodash");
 
 class BotbanhangController {
   getFormValue = catchAsync(async (req, res, next) => {
@@ -32,7 +33,7 @@ class BotbanhangController {
         active: true,
       }),
       supabase.rpc("get_staffs_by_roles", {
-        role_ids: ['f5828bed-f7ae-4daf-9697-12023937348f'] //telesale
+        role_ids: ["f5828bed-f7ae-4daf-9697-12023937348f"], //telesale
       }),
     ]);
     if (response) {
@@ -65,6 +66,7 @@ class BotbanhangController {
   });
 
   addUserInfo = catchAsync(async (req, res, nexxt) => {
+    const io = res.io;
     const {
       fb_name,
       name,
@@ -82,18 +84,19 @@ class BotbanhangController {
       fb_client_id,
       fb_page_id,
       note,
-      service_staff
+      service_staff,
+      modified_by,
     } = req.body;
     let _user = null;
 
     const { data } = await supabase
-    .from("users")
-    .select("*")
-    .eq("fb_client_id", fb_client_id);
+      .from("users")
+      .select("*")
+      .eq("fb_client_id", fb_client_id);
 
-  if (data && data.length) {
-    _user = data[0];
-  }
+    if (data && data.length) {
+      _user = data[0];
+    }
 
     if (!_user && phone != null) {
       const { data } = await supabase
@@ -104,10 +107,33 @@ class BotbanhangController {
       if (data && data.length) {
         _user = data[0];
       }
-    } 
+    }
 
     if (_user) {
-
+      io.emit("botbanhang_update_user", {
+        new_data: {
+          fb_name: fb_name ?? undefined,
+          name: name ?? undefined,
+          phone: phone ?? undefined,
+          customer_resource: customer_resource ?? undefined,
+          live_chat: live_chat ?? undefined,
+          agency_id: agency_id ?? undefined,
+          status: status ?? undefined,
+          clinic_id: clinic_id ?? undefined,
+          interact_type: interact_type ?? undefined,
+          details_status: details_status ?? undefined,
+          interact_result: interact_result ?? undefined,
+          ads_id: ads_id ?? undefined,
+          note: note != null ? note : undefined,
+          category_id: category_id ?? undefined,
+          service_staff: service_staff ?? undefined,
+        },
+        record_id: _user.id,
+        modified_by,
+        action: "UPDATE",
+        table_name: "users",
+        modified_at: new Date(),
+      });
       await supabase
         .from("users")
         .update({
@@ -132,25 +158,57 @@ class BotbanhangController {
               : [...(_user?.note ?? [])],
         })
         .eq("id", _user.id);
+     
     } else {
-      await supabase.from("users").insert({
-        fb_name,
-        name,
-        phone,
-        customer_resource,
-        live_chat,
-        agency_id,
-        status,
-        clinic_id,
-        interact_type,
-        details_status,
-        interact_result,
-        ads_id,
-        note: note != null ? [note] : null,
-        category_id,
-        service_staff,
-        fb_client_id,
-        avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
+      const {
+        data: { id: record_id },
+      } = await supabase
+        .from("users")
+        .insert({
+          fb_name,
+          name,
+          phone,
+          customer_resource,
+          live_chat,
+          agency_id,
+          status,
+          clinic_id,
+          interact_type,
+          details_status,
+          interact_result,
+          ads_id,
+          note: note != null ? [note] : null,
+          category_id,
+          service_staff,
+          fb_client_id,
+          avatar: `https://chatbox-static.botbanhang.vn/v1/app/avatar/${fb_page_id}__${fb_client_id}.jpeg`,
+        })
+        .select("id")
+        .single();
+      console.log(record_id);
+      io.emit("botbanhang_update_user", {
+        new_data: {
+          fb_name: fb_name ?? undefined,
+          name: name ?? undefined,
+          phone: phone ?? undefined,
+          customer_resource: customer_resource ?? undefined,
+          live_chat: live_chat ?? undefined,
+          agency_id: agency_id ?? undefined,
+          status: status ?? undefined,
+          clinic_id: clinic_id ?? undefined,
+          interact_type: interact_type ?? undefined,
+          details_status: details_status ?? undefined,
+          interact_result: interact_result ?? undefined,
+          ads_id: ads_id ?? undefined,
+          note: note != null ? note : undefined,
+          category_id: category_id ?? undefined,
+          service_staff: service_staff ?? undefined,
+        },
+        record_id: record_id,
+        modified_by,
+        action: "CREATE",
+        modified_at: new Date(),
+        table_name: "users",
       });
     }
 
