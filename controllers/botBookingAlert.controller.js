@@ -2,8 +2,6 @@ const supabase = require('../config/supabase');
 const catchAsync = require('../helpers/catchAsync');
 const botLarkService = require('../services/botBooking.service');
 const axios = require('axios');
-// const DENTAL_WEBHOOK_URL =
-//   'https://open.larksuite.com/open-apis/bot/v2/hook/f19e94e2-d2c4-4fef-b12f-ea060e1fd410';
 
 class BotBookingAlertController {
   botAlertBooking = catchAsync(async (req, res) => {
@@ -18,18 +16,13 @@ class BotBookingAlertController {
       service,
       note,
     } = req.body;
-    // try {
-    //   const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
-    //   console.log('group chat', webhook_group);
-
-    //   const group = await botLarkService.getGroupByWebhook(webhook_group);
-    //   console.log('group chat', group);
-    // } catch (error) {}
     const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
-    console.log('group chat', webhook_group);
+    console.log('webhook_group', webhook_group);
 
     const group = await botLarkService.getGroupByWebhook(webhook_group);
     console.log('group chat', group);
+    const order_id = await botLarkService.getOrderId(booking_id);
+    console.log('group order_id', order_id);
     const a = {
       msg_type: 'post',
       content: {
@@ -39,8 +32,9 @@ class BotBookingAlertController {
             content: [
               [
                 {
-                  tag: 'text',
+                  tag: 'a',
                   text: `Mã Booking: ${booking_id}`,
+                  href: `https://aura.shecom.asia/dashboard/vs2/orders?order_id=${order_id}&detail=true`,
                 },
               ],
               [

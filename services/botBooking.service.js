@@ -44,4 +44,20 @@ const isExistWebhookUrl = async (webhookUrl) => {
   }
 };
 
-module.exports = { getWebhookBotLark, isExistWebhookUrl, getGroupByWebhook };
+const getOrderId = async (booking_id) => {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('id', booking_id);
+  if (data[0] == null) {
+    return null;
+  } else {
+    return data[0].order_id;
+  }
+};
+module.exports = {
+  getWebhookBotLark,
+  isExistWebhookUrl,
+  getGroupByWebhook,
+  getOrderId,
+};
