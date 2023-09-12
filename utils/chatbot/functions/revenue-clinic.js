@@ -30,8 +30,8 @@ const exec = async (args) => {
 
   if (error) throw Error(error?.message);
   const filteredData = data.map((item) => ({
-    "Khách hàng đã trả": item.customer_paid,
-    Nợ: item.debit,
+    "Khách hàng đã trả": formatVND(item.customer_paid),
+    "Công nợ": formatVND(item.debit),
     "Doanh thu": formatVND(item.revenue),
     "Tên chi nhánh": item.clinic_name,
     "Địa chỉ chi nhánh": item.clinic_address,
