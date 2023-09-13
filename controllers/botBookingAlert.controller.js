@@ -14,6 +14,7 @@ class BotBookingAlertController {
       ads_source,
       customer_source,
       service,
+      customer_id,
       note,
     } = req.body;
     const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
@@ -25,6 +26,9 @@ class BotBookingAlertController {
     console.log("group order_id", order_id);
     console.log("service", typeof service);
 
+    const customer_phone = await botLarkService.getCustomerPhone(customer_id);
+    console.log("customer_phone", customer_phone)
+
     const defaultValues = [
       [
         {
@@ -35,7 +39,7 @@ class BotBookingAlertController {
       [
         {
           tag: "text",
-          text: `Note: ${service[0].description}`,
+          text: `Note: ${service[0].description ?service[0].description:"Không có note"}`,
         },
       ],
     ];
@@ -95,6 +99,13 @@ class BotBookingAlertController {
                   text: `Họ tên KH: ${customer_name}`,
                 },
               ],
+                   [
+                {
+                  tag: "text",
+                  text: `SĐT khách: ${customer_phone}`,
+                },
+              ],
+
 
               [
                 {

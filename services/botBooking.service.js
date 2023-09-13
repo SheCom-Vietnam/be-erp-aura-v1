@@ -55,9 +55,27 @@ const getOrderId = async (booking_id) => {
     return data[0].order_id;
   }
 };
+
+const getPhoneCustomer = async (customer_id)=>{
+  try {const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', customer_id);
+  
+    if(error) {
+       return null;
+    }
+    else {
+      return data[0].phone;
+    }
+  }catch (err) { throw new Error(err);}
+
+    
+}
 module.exports = {
   getWebhookBotLark,
   isExistWebhookUrl,
   getGroupByWebhook,
   getOrderId,
+  getPhoneCustomer,
 };
