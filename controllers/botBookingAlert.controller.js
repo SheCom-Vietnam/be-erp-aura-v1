@@ -14,7 +14,6 @@ class BotBookingAlertController {
       ads_source,
       customer_source,
       service,
-      note,
     } = req.body;
     const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
     console.log("webhook_group", webhook_group);
