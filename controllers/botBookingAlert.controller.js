@@ -77,7 +77,7 @@ class BotBookingAlertController {
                 {
                   tag: "a",
                   text: `Mã Booking: ${booking_id}`,
-                  href: `https://aura.shecom.asia/dashboard/vs2/orders?order_id=${order_id}&detail=true`,
+                  href: `https://aura.shecom.asia/dashboard/vs2/orders?order_id=${booking_id}&detail=true`,
                 },
               ],
               [
