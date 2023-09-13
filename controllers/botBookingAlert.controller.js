@@ -24,25 +24,25 @@ class BotBookingAlertController {
     const order_id = await botLarkService.getOrderId(booking_id);
     console.log("group order_id", order_id);
     console.log("service", typeof service);
-    // const service_basic_info = service.flatMap((item, index) => {
-    //   const keyService = "Dịch vụ " + (index + 1);
-    //   const keyDescription = "Note " + (index + 1);
+    const service_basic_info = service.flatMap((item, index) => {
+      const keyService = "Dịch vụ " + (index + 1);
+      const keyDescription = "Note " + (index + 1);
 
-    //   return [
-    //     [
-    //       {
-    //         tag: "text",
-    //         text: `${keyService}: ${item.name}`,
-    //       },
-    //     ],
-    //     [
-    //       {
-    //         tag: "text",
-    //         text: `${keyDescription}: ${item.description ?? "Chưa có"}`,
-    //       },
-    //     ],
-    //   ];
-    // });
+      return [
+        [
+          {
+            tag: "text",
+            text: `${keyService}: ${item.name}`,
+          },
+        ],
+        [
+          {
+            tag: "text",
+            text: `${keyDescription}: ${item.description ?? "Chưa có"}`,
+          },
+        ],
+      ];
+    });
 
     const a = {
       msg_type: "post",
@@ -89,19 +89,19 @@ class BotBookingAlertController {
                   text: `Nguồn ADS: ${ads_source}`,
                 },
               ],
-              // ...service_basic_info,
-              [
-                {
-                  tag: "text",
-                  text: `Dịch vụ: ${service}`,
-                },
-              ],
-              [
-                {
-                  tag: "text",
-                  text: `Note: ${note}`,
-                },
-              ],
+              ...service_basic_info,
+              // [
+              //   {
+              //     tag: "text",
+              //     text: `Dịch vụ: ${service}`,
+              //   },
+              // ],
+              // [
+              //   {
+              //     tag: "text",
+              //     text: `Note: ${note}`,
+              //   },
+              // ],
             ],
           },
         },
