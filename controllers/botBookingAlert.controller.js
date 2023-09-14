@@ -22,7 +22,7 @@ class BotBookingAlertController {
 
     const group = await botLarkService.getGroupByWebhook(webhook_group);
     console.log("group chat", group);
-    const order_id = await botLarkService.getOrderId(booking_id);
+    const order_id = await botLarkService.getOrderId(order_id);
     console.log("group order_id", order_id);
     console.log("service", typeof service);
 
