@@ -60,7 +60,7 @@ const miniappRouter = require("./routers/miniapp.route");
 const dateRouter = require("./routers/date.route");
 const botbanhangRouter = require("./routers/botbanhang.route");
 const chatbotRouter = require("./routers/chatbot.route");
-const botBookingAlertRouter = require("./routers/botBookingAlert.route");
+const botAlert = require("./routers/botAlert.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -103,7 +103,7 @@ app.use("/api/v1/meilisearch", meilisearchRouter);
 app.use("/api/v1/elasticsearch", elasticsearchRouter);
 app.use("/api/v1/botbanhang", botbanhangRouter);
 app.use("/api/v1/chatbot", chatbotRouter);
-app.use("/api/v1/botbookingalert", botBookingAlertRouter);
+app.use("/api/v1/botalert", botAlert);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
@@ -165,13 +165,17 @@ cron.schedule("0 2 * * *", async function () {
 //     await znsAfterService();
 //     // await znsAfterService30Days();
 // });
-// cron.schedule('* * * * *', async () => {
-//   const bookings = fetchBookingsFromSupabase(); // Fetch future bookings
+
+const bookingService = require("./services/booking.service");
+const moment = require("moment");
+// cron.schedule("0 0,3,6,9 * * *", async () => {
+//   const time = moment().format();
+//   const bookings = await bookingService.getBookingToday(time); // Fetch future bookings
 //   const currentTime = moment();
 
 //   bookings.forEach((booking) => {
 //     const bookingTime = moment(`${booking.date} ${booking.time}`);
-//     const timeDifference = bookingTime.diff(currentTime, 'minutes');
+//     const timeDifference = bookingTime.diff(currentTime, "minutes");
 
 //     if (timeDifference >= 0 && timeDifference <= 60) {
 //       const notificationMessage = `Reminder: Your booking at ${booking.date} ${booking.time} is in ${timeDifference} minutes.`;
@@ -179,7 +183,13 @@ cron.schedule("0 2 * * *", async function () {
 //     }
 //   });
 // });
+const notification = async () => {
+  const time = moment().format();
 
+  const bookings = await bookingService.getBookingToday(time); // Fetch future bookings
+  console.log("run", "notifications", bookings);
+};
+notification();
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
   console.log(`Example app listening on port ${port}`);
