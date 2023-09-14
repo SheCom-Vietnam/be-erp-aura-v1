@@ -178,14 +178,9 @@ class StreamController {
                     .from("stream_info")
                     .update({ status: statuses[Status - 1] })
                     .eq("activity_id", ActivityID)
-                    .select()
-                    .single();
+                    .select();
                 console.log("updatedStream", updatedStream);
-                if (updatedStream && Status == 1) {
-                    console.log("Create stream section");
-                    await supabase
-                        .from("streams_sections")
-                        .insert({ stream_id: updatedStream?.id });
+                if (updatedStream && updatedStream.length > 0 && Status == 1) {
                     await supabase.rpc("increase_num_of_lives", {
                         x: 1,
                         activityid: String(ActivityID),
