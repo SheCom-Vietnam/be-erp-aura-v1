@@ -5,7 +5,7 @@ const getBookingToday = async (time) => {
   try {
     console.log("getBookingTody", time);
     const { data, error } = await supabase.rpc("get_bookings_in_3_hours", {
-      input_time: "2023-01-08 09:00:00+07",
+      input_time: time,
     });
     if (error) {
       return null;
@@ -16,7 +16,6 @@ const getBookingToday = async (time) => {
     throw new Error(err);
   }
 };
-
 module.exports = {
   getBookingToday,
 };

@@ -60,7 +60,7 @@ const miniappRouter = require("./routers/miniapp.route");
 const dateRouter = require("./routers/date.route");
 const botbanhangRouter = require("./routers/botbanhang.route");
 const chatbotRouter = require("./routers/chatbot.route");
-const botAlert = require("./routers/botAlert.route");
+const botAlertRouter = require("./routers/botAlert.route");
 
 //Gửi thông báo theo thời gian cố định của chức năng chấm công
 // const scheduler = require("./helpers/scheduler");
@@ -103,7 +103,7 @@ app.use("/api/v1/meilisearch", meilisearchRouter);
 app.use("/api/v1/elasticsearch", elasticsearchRouter);
 app.use("/api/v1/botbanhang", botbanhangRouter);
 app.use("/api/v1/chatbot", chatbotRouter);
-app.use("/api/v1/botalert", botAlert);
+app.use("/api/v1/botbookingalert", botAlertRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
@@ -167,29 +167,27 @@ cron.schedule("0 2 * * *", async function () {
 // });
 
 const bookingService = require("./services/booking.service");
+const chatbotService = require("./services/chatbot.service");
+const chatbotHelpers = require("./utils/notiChatbotLark");
+
 const moment = require("moment");
-// cron.schedule("0 0,3,6,9 * * *", async () => {
-//   const time = moment().format();
-//   const bookings = await bookingService.getBookingToday(time); // Fetch future bookings
-//   const currentTime = moment();
 
-//   bookings.forEach((booking) => {
-//     const bookingTime = moment(`${booking.date} ${booking.time}`);
-//     const timeDifference = bookingTime.diff(currentTime, "minutes");
+cron.schedule("0 0,3,6,9 * * * *", async () => {
+  notification();
+});
 
-//     if (timeDifference >= 0 && timeDifference <= 60) {
-//       const notificationMessage = `Reminder: Your booking at ${booking.date} ${booking.time} is in ${timeDifference} minutes.`;
-//       sendNotificationToLark(notificationMessage);
-//     }
-//   });
-// });
 const notification = async () => {
   const time = moment().format();
 
   const bookings = await bookingService.getBookingToday(time); // Fetch future bookings
-  console.log("run", "notifications", bookings);
+  if (!bookings || bookings.length === 0) return;
+
+  const bookingsFormat = bookings.map((booking) =>
+    chatbotHelpers.formatBookingNoti(booking)
+  );
+  chatbotService.sendAllNotificationToLark(bookingsFormat);
 };
-notification();
+
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
   console.log(`Example app listening on port ${port}`);
