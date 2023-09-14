@@ -110,30 +110,30 @@ class BotbanhangController {
     }
 
     if (_user) {
-      io.emit("botbanhang_update_user", {
-        new_data: {
-          fb_name: fb_name ?? undefined,
-          name: name ?? undefined,
-          phone: phone ?? undefined,
-          customer_resource: customer_resource ?? undefined,
-          live_chat: live_chat ?? undefined,
-          agency_id: agency_id ?? undefined,
-          status: status ?? undefined,
-          clinic_id: clinic_id ?? undefined,
-          interact_type: interact_type ?? undefined,
-          details_status: details_status ?? undefined,
-          interact_result: interact_result ?? undefined,
-          ads_id: ads_id ?? undefined,
-          note: note != null ? note : undefined,
-          category_id: category_id ?? undefined,
-          service_staff: service_staff ?? undefined,
-        },
-        record_id: _user.id,
-        modified_by,
-        action: "UPDATE",
-        table_name: "users",
-        modified_at: new Date(),
-      });
+      // io.emit("botbanhang_update_user", {
+      //   new_data: {
+      //     fb_name: fb_name ?? undefined,
+      //     name: name ?? undefined,
+      //     phone: phone ?? undefined,
+      //     customer_resource: customer_resource ?? undefined,
+      //     live_chat: live_chat ?? undefined,
+      //     agency_id: agency_id ?? undefined,
+      //     status: status ?? undefined,
+      //     clinic_id: clinic_id ?? undefined,
+      //     interact_type: interact_type ?? undefined,
+      //     details_status: details_status ?? undefined,
+      //     interact_result: interact_result ?? undefined,
+      //     ads_id: ads_id ?? undefined,
+      //     note: note != null ? note : undefined,
+      //     category_id: category_id ?? undefined,
+      //     service_staff: service_staff ?? undefined,
+      //   },
+      //   record_id: _user.id,
+      //   modified_by,
+      //   action: "UPDATE",
+      //   table_name: "users",
+      //   modified_at: new Date(),
+      // });
       await supabase
         .from("users")
         .update({
@@ -186,30 +186,30 @@ class BotbanhangController {
         .select("id")
         .single();
       console.log(record_id);
-      io.emit("botbanhang_update_user", {
-        new_data: {
-          fb_name: fb_name ?? undefined,
-          name: name ?? undefined,
-          phone: phone ?? undefined,
-          customer_resource: customer_resource ?? undefined,
-          live_chat: live_chat ?? undefined,
-          agency_id: agency_id ?? undefined,
-          status: status ?? undefined,
-          clinic_id: clinic_id ?? undefined,
-          interact_type: interact_type ?? undefined,
-          details_status: details_status ?? undefined,
-          interact_result: interact_result ?? undefined,
-          ads_id: ads_id ?? undefined,
-          note: note != null ? note : undefined,
-          category_id: category_id ?? undefined,
-          service_staff: service_staff ?? undefined,
-        },
-        record_id: record_id,
-        modified_by,
-        action: "CREATE",
-        modified_at: new Date(),
-        table_name: "users",
-      });
+      // io.emit("botbanhang_update_user", {
+      //   new_data: {
+      //     fb_name: fb_name ?? undefined,
+      //     name: name ?? undefined,
+      //     phone: phone ?? undefined,
+      //     customer_resource: customer_resource ?? undefined,
+      //     live_chat: live_chat ?? undefined,
+      //     agency_id: agency_id ?? undefined,
+      //     status: status ?? undefined,
+      //     clinic_id: clinic_id ?? undefined,
+      //     interact_type: interact_type ?? undefined,
+      //     details_status: details_status ?? undefined,
+      //     interact_result: interact_result ?? undefined,
+      //     ads_id: ads_id ?? undefined,
+      //     note: note != null ? note : undefined,
+      //     category_id: category_id ?? undefined,
+      //     service_staff: service_staff ?? undefined,
+      //   },
+      //   record_id: record_id,
+      //   modified_by,
+      //   action: "CREATE",
+      //   modified_at: new Date(),
+      //   table_name: "users",
+      // });
     }
 
     return res.status(200).json({ status: "OK" });
