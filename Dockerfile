@@ -10,6 +10,7 @@ RUN apk --no-cache add --virtual .gyp python3 make g++ \
     && apk del .gyp
 
 COPY . .
+
 # COPY .env.production .
 COPY .env.dev .
 
