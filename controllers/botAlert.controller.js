@@ -67,13 +67,13 @@ class BotOrderAlertController {
       content: {
         post: {
           en_us: {
-            title: `Booking mới - [${group}]`,
+            title: `Order mới - [${group}]`,
             content: [
               [
                 {
                   tag: "a",
-                  text: `Mã Booking: ${booking_id}`,
-                  href: `https://aura.shecom.asia/dashboard/vs2/orders?order_id=${booking_id}&detail=true`,
+                  text: `Mã order: ${booking_id}`,
+                  href: `https://aura-dev.shecom.asia/dashboard/vs2/orders?order_id=${booking_id}&detail=true`,
                 },
               ],
               [
@@ -131,6 +131,7 @@ class BotOrderAlertController {
         },
       },
     };
+
     console.log("service_basic_info aaaaaa", service_basic_info);
 
     try {

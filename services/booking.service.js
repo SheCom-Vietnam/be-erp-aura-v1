@@ -1,12 +1,18 @@
 const axios = require("axios");
 const supabase = require("../config/supabase");
 
-const getBookingToday = async (time) => {
+const getBookingsInNHours = async (startTime, nHours) => {
   try {
-    console.log("getBookingTody", time);
-    const { data, error } = await supabase.rpc("get_bookings_in_3_hours", {
-      input_time: time,
+    console.log("getBookingsInNHours", startTime);
+    const { data, error } = await supabase.rpc("get_bookings_in_n_hours", {
+      input_time: startTime,
+      nhours: nHours, // Numeric valu
     });
+
+    if (error) console.error(error);
+    else console.log(data);
+
+    console.log("all bookings", data);
     if (error) {
       return null;
     } else if (data.length > 0) {
@@ -16,6 +22,7 @@ const getBookingToday = async (time) => {
     throw new Error(err);
   }
 };
+
 module.exports = {
-  getBookingToday,
+  getBookingsInNHours,
 };

@@ -172,19 +172,19 @@ const chatbotHelpers = require("./utils/notiChatbotLark");
 
 const moment = require("moment");
 
-cron.schedule("0 0,3,6,9 * * * *", async () => {
+cron.schedule("0 0,1,2,3,4,5,6,7,8,9,10,11,12 * * * *", async () => {
   notification();
 });
 
 const notification = async () => {
   const time = moment().format();
-
-  const bookings = await bookingService.getBookingToday(time); // Fetch future bookings
+  const bookings = await bookingService.getBookingsInNHours(time, 1); // Fetch future bookings
   if (!bookings || bookings.length === 0) return;
 
   const bookingsFormat = bookings.map((booking) =>
     chatbotHelpers.formatBookingNoti(booking)
   );
+
   chatbotService.sendAllNotificationToLark(bookingsFormat);
 };
 
