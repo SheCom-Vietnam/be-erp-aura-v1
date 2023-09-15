@@ -70,7 +70,7 @@ const sendNotificationToLark = async (booking) => {
     content: {
       post: {
         en_us: {
-          title: `Booking mới - [${group}]`,
+          title: `Nhắc đặt hẹn - [${group}]`,
           content: [
             [
               {
@@ -134,6 +134,7 @@ const sendNotificationToLark = async (booking) => {
       },
     },
   };
+
   console.log("service_basic_info aaaaaa", service_basic_info);
 
   try {
