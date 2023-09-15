@@ -16,10 +16,17 @@ const sendNotificationToLark = async (booking) => {
     service,
     staff_creator,
   } = booking;
+  if (!clinic_id) {
+    console.log(`No clinic found. Skipping notification.`);
+    return; // Skip notification sending
+  }
   const webhook_group = await botLarkService.getWebhookBotLark(clinic_id);
 
   const group = await botLarkService.getGroupByWebhook(webhook_group);
-  if (webhook_group === null) {
+  console.log(
+    `No webhook URL found for clinic_id: ${clinic_id}. Skipping notification.`
+  );
+  if (!webhook_group) {
     console.log(
       `No webhook URL found for clinic_id: ${clinic_id}. Skipping notification.`
     );
@@ -135,7 +142,7 @@ const sendNotificationToLark = async (booking) => {
     },
   };
 
-  console.log("service_basic_info aaaaaa", service_basic_info);
+  console.log("s*******************************webhook_group", webhook_group);
 
   try {
     await axios.post(webhook_group, a, {
@@ -151,6 +158,7 @@ const sendNotificationToLark = async (booking) => {
 
 const sendAllNotificationToLark = async (bookings) => {
   let interval = 0;
+  console.log("sendAllNotificationToLark", bookings);
   bookings.forEach(async (booking) => {
     interval += 1000;
     const cb = async () => {

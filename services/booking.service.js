@@ -10,9 +10,8 @@ const getBookingsInNHours = async (startTime, nHours) => {
     });
 
     if (error) console.error(error);
-    else console.log(data);
 
-    console.log("all bookings", data);
+    // console.log("getBookingsInNHours", data);
     if (error) {
       return null;
     } else if (data.length > 0) {

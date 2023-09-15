@@ -132,8 +132,6 @@ class BotOrderAlertController {
       },
     };
 
-    console.log("service_basic_info aaaaaa", service_basic_info);
-
     try {
       await axios.post(webhook_group, a, {
         headers: {
