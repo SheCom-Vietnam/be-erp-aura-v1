@@ -161,6 +161,8 @@ const sendAllNotificationToLark = async (bookings) => {
   console.log("sendAllNotificationToLark", bookings);
   bookings.forEach((booking) => {
     interval += 1000;
+    console.log("foreach", interval);
+
     const cb = async () => {
       await sendNotificationToLark(booking);
     };
