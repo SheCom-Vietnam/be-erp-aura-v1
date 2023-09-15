@@ -172,8 +172,8 @@ const chatbotHelpers = require("./utils/notiChatbotLark");
 
 const moment = require("moment");
 
-cron.schedule("*/5 0-12  * * *", async () => {
-  notification();
+cron.schedule("0 0-12  * * *", async () => {
+  await notification();
 });
 
 const notification = async () => {
