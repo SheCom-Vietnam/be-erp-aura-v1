@@ -84,6 +84,7 @@ class BotbanhangController {
       fb_client_id,
       fb_page_id,
       note,
+      date_update_phone,
       service_staff,
       modified_by,
     } = req.body;
@@ -151,6 +152,7 @@ class BotbanhangController {
           ads_id,
           category_id,
           fb_client_id,
+          date_update_phone,
           service_staff,
           note:
             note != null
@@ -176,6 +178,7 @@ class BotbanhangController {
           interact_type,
           details_status,
           interact_result,
+          date_update_phone,
           ads_id,
           note: note != null ? [note] : null,
           category_id,
