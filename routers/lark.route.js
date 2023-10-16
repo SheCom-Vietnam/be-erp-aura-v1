@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get("/tenant-token", larkController.getTenantToken);
 router.post("/bitable/create-record", larkController.createARecord);
+router.post("/create-record-by-trong-bot", larkController.createARecordByTrongBot);
 router.post("/send-message", larkController.sendMessage);
 
 //user
