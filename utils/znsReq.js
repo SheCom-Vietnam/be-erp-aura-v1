@@ -13,6 +13,7 @@ const listTemplateIds = {
     callConfirmation: "275654",
     bookingConfirmation: "275666",
     afterServices30days: "275856",
+    eventCheckin: "288596",
 };
 function generateTrackingId(bookingId, phone) {
     // Get the current date

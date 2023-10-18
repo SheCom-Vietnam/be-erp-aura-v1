@@ -61,6 +61,21 @@ const znsConfirmBookingTemplate = async ({ phone, templateConfig }) => {
         throw Error(error);
     }
 };
+const znsEventCheckin = async (name, event, phone) => {
+    try {
+        let response = await sendZNS(
+            "TMV-OA",
+            convertPhoneNumber(phone),
+            listTemplateIds.eventCheckin,
+            { customer_name: name, note: event }
+        );
+        console.log(response);
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw Error(error);
+    }
+};
 const znsCallConfirmation = async (bookingID) => {
     try {
         let { data: bookingInfo } = await supabase
@@ -476,4 +491,5 @@ module.exports = {
     znsAfterService30Days,
     znsCallConfirmation,
     znsTestBookingConfirmationV2,
+    znsEventCheckin,
 };

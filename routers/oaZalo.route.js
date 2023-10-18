@@ -11,6 +11,7 @@ router.post("/send/welcome-staff", oaZaloController.sendWelcomeStaffZNS);
 
 router.post("/send-message-image-oa", oaZaloController.openApiMessageImageOa);
 router.post("/send-zns-checkout", oaZaloController.sendZNSCheckout);
+router.post("/send-event-checkin", oaZaloController.sendZNSEventCheckin);
 router.post(
     "/send-zns-booking-confirmation",
     oaZaloController.sendZNSBookingConfirmation
