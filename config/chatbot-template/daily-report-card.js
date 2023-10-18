@@ -196,7 +196,7 @@ const dailyReportCard = (report) => {
               elements: [
                 {
                   tag: "markdown",
-                  content: "Check-in",
+                  content: "Huỷ",
                   text_align: "left",
                 },
               ],
@@ -230,7 +230,7 @@ const dailyReportCard = (report) => {
               elements: [
                 {
                   tag: "markdown",
-                  content: "Check-in",
+                  content: "No show",
                   text_align: "left",
                 },
               ],
