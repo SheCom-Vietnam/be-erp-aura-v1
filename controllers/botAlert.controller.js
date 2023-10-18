@@ -3,7 +3,7 @@ const catchAsync = require("../helpers/catchAsync");
 const botLarkService = require("../services/botBooking.service");
 const axios = require("axios");
 
-class BotOrderAlertController {
+class BotAlertController {
   botAlertOrder = catchAsync(async (req, res) => {
     const {
       booking_id,
@@ -176,4 +176,4 @@ class BotOrderAlertController {
   });
 }
 
-module.exports = new BotOrderAlertController();
+module.exports = new BotAlertController();

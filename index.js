@@ -185,7 +185,19 @@ const notification = async () => {
     chatbotHelpers.formatBookingNoti(booking)
   );
 
-  chatbotService.sendAllNotificationToLark(bookingsFormat);
+  chatbotService.sendAllRemindBookingToLark(bookingsFormat);
+};
+
+cron.schedule("55 16 * * *", async () => {
+  //  23:55 moi ngay
+  await dailyReport();
+});
+
+const dailyReport = async () => {
+  const reports = await bookingService.getBookingDailyReport();
+  if (!reports || reports.length === 0) return;
+
+  chatbotService.sendAllDailyReportToLark(reports);
 };
 
 server.listen(port, () => {
