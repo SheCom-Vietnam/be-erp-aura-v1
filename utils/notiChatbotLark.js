@@ -16,6 +16,26 @@ function formatBookingNoti(item) {
   };
 }
 
+function formatDailyReport(item) {
+  return {
+    date: item.date, //dd/mm/yyyy
+    clinic: item.clinic.label,
+    booking: {
+      count_booking: item.booking.count_booking,
+      count_cancel_booking: item.booking.count_cancel_booking,
+      count_noshow_booking: item.booking.count_noshow_booking,
+      count_checkin_booking: item.booking.count_checkin_booking,
+    },
+    //money
+    checkout: {
+      total_paid: item.checkout.total_paid,
+      total_debit: item.checkout.total_debit,
+      total_price: item.checkout.total_price,
+    },
+  };
+}
+
 module.exports = {
   formatBookingNoti,
+  formatDailyReport,
 };
