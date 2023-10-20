@@ -1,5 +1,7 @@
 const axios = require("axios");
-
+const dailyReportCard = require("../templates/chatbot/daily-report-card");
+const formatHelper = require("../utils/helper");
+const chatbotHelpers = require("../utils/notiChatbotLark");
 const botLarkService = require("./botBooking.service");
 
 const sendNotificationToLark = async (booking) => {
@@ -170,7 +172,57 @@ const sendAllNotificationToLark = async (bookings) => {
   });
 };
 
+// input:
+const sendDailyReportToLark = async (report) => {
+  const { clinic } = report;
+  console.log("sendDailyReportToLark", report);
+  const webhook_group = await botLarkService.getWebhookBotLark(clinic.id);
+  if (!webhook_group) {
+    console.log(
+      `No webhook URL found for clinic_id: ${clinic.id}. Skipping notification.`
+    );
+    return; // Skip notification sending
+  }
+  const today = new Date();
+  const formatedDate = formatHelper.formatDDMMYYYY(today);
+
+  const formatReport = chatbotHelpers.formatDailyReport(report);
+  console.log("sendDailyReportToLark", formatReport);
+
+  const content = dailyReportCard({ ...formatReport, date: formatedDate });
+  try {
+    await axios.post(
+      "https://open.larksuite.com/open-apis/bot/v2/hook/4cf12f4a-79e7-4bb8-a7aa-be2ed3deeb46",
+      content,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    console.log("sendRemindBookingToLark Error", error);
+  }
+  return;
+};
+
+const sendAllDailyReportToLark = async (reports) => {
+  let interval = 0;
+  console.log("sendAllDailyReportToLard", reports);
+  reports.forEach((report) => {
+    interval += 2000;
+    console.log("foreach", interval);
+
+    const cb = async () => {
+      await sendDailyReportToLark(report);
+    };
+    setTimeout(cb, interval);
+  });
+};
+
 module.exports = {
   sendNotificationToLark,
   sendAllNotificationToLark,
+  sendDailyReportToLark,
+  sendAllDailyReportToLark,
 };

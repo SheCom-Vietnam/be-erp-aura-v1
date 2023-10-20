@@ -188,6 +188,21 @@ const notification = async () => {
   chatbotService.sendAllNotificationToLark(bookingsFormat);
 };
 
+cron.schedule("55 16 * * *", async () => {
+  //  23:55 moi ngay
+  await dailyReport();
+});
+
+const dailyReport = async () => {
+  // lay du lieu bao cao tu supabase
+  const reports = await bookingService.getBookingDailyReport();
+  if (!reports || reports.length === 0) return;
+
+  chatbotService.sendAllDailyReportToLark(reports);
+};
+
+dailyReport();
+
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
   console.log(`Example app listening on port ${port}`);

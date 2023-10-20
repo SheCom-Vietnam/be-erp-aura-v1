@@ -11,8 +11,8 @@ RUN apk --no-cache add --virtual .gyp python3 make g++ \
 
 COPY . .
 
-COPY .env.production .
-# COPY .env.dev .
+# COPY .env.production .
+COPY .env.dev .
 
 RUN npm run build
 
