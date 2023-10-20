@@ -1,19 +1,4 @@
-// interface DailyReportCardInterface {
-//   date: string; //dd/mm/yyyy
-//   clinic: string;
-//   booking: {
-//     count_booking: number;
-//     count_cancel_booking: number;
-//     count_noshow_booking: number;
-//     count_checkin_booking: number;
-//   };
-//   //money
-//   checkout: {
-//     total_paid: number;
-//     total_debit: number;
-//     total_price: number;
-//   };
-// }
+
 
 const { convertVND } = require("../../utils/helper");
 const dailyReportCard = (report) => {

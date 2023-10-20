@@ -1,5 +1,5 @@
 const axios = require("axios");
-const dailyReportCard = require("../config/chatbot-template/daily-report-card");
+const dailyReportCard = require("../templates/chatbot/daily-report-card");
 const formatHelper = require("../utils/helper");
 const chatbotHelpers = require("../utils/notiChatbotLark");
 
