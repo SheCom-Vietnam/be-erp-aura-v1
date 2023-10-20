@@ -189,15 +189,11 @@ const sendDailyReportToLark = async (report) => {
 
   const content = dailyReportCard({ ...formatReport, date: formatedDate });
   try {
-    await axios.post(
-      "https://open.larksuite.com/open-apis/bot/v2/hook/4cf12f4a-79e7-4bb8-a7aa-be2ed3deeb46",
-      content,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    await axios.post(webhook_group, content, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.log("sendRemindBookingToLark Error", error);
   }
