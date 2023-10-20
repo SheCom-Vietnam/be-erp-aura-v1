@@ -2,7 +2,6 @@ const axios = require("axios");
 const dailyReportCard = require("../templates/chatbot/daily-report-card");
 const formatHelper = require("../utils/helper");
 const chatbotHelpers = require("../utils/notiChatbotLark");
-
 const botLarkService = require("./botBooking.service");
 
 const sendRemindBookingToLark = async (booking) => {

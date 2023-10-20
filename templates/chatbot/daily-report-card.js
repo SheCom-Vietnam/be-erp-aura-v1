@@ -1,5 +1,3 @@
-
-
 const { convertVND } = require("../../utils/helper");
 const dailyReportCard = (report) => {
   const { date, clinic, booking, checkout } = report;

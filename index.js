@@ -201,6 +201,11 @@ const dailyReport = async () => {
   chatbotService.sendAllDailyReportToLark(reports);
 };
 
+cron.schedule("55 16 * * *", async () => {
+  //  23:55 moi ngay
+  await dailyReport();
+});
+
 server.listen(port, () => {
   console.log(new Date(Date.now()).toString());
   console.log(`Example app listening on port ${port}`);

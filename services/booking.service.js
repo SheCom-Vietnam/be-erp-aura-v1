@@ -1,6 +1,5 @@
-const axios = require("axios");
 const supabase = require("../config/supabase");
-const { formatYYYYMMDD } = require("../utils/helper");
+const helper = require("../utils/helper");
 
 const getBookingsInNHours = async (startTime, nHours) => {
   try {
@@ -26,7 +25,7 @@ const getBookingsInNHours = async (startTime, nHours) => {
 const getBookingDailyReport = async () => {
   const today = new Date();
 
-  const formatedDate = formatYYYYMMDD(today);
+  const formatedDate = helper.formatYYYYMMDD(today);
   try {
     const { data, error } = await supabase.rpc("chatbot_daily_report", {
       p_date: formatedDate,
