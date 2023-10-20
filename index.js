@@ -194,6 +194,7 @@ cron.schedule("55 16 * * *", async () => {
 });
 
 const dailyReport = async () => {
+  // lay du lieu bao cao tu supabase
   const reports = await bookingService.getBookingDailyReport();
   if (!reports || reports.length === 0) return;
 
