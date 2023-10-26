@@ -85,7 +85,7 @@ const sendRemindBookingToLark = async (booking) => {
               {
                 tag: "a",
                 text: `Mã Booking: ${booking_id}`,
-                href: `https://aura-dev.shecom.asia/dashboard/vs2/bookings?row=0&id=${booking_id}&date=${date}&time=${time}&clinic=${clinic_id}&status=${status}&page=1`,
+                href: `https://aura.shecom.asia/dashboard/vs2/bookings?row=0&id=${booking_id}&date=${date}&time=${time}&clinic=${clinic_id}&status=${status}&page=1`,
               },
             ],
             [
