@@ -27,4 +27,25 @@ function formatDDMMYYYY(p_date) {
   return `${day}/${month}/${year}`;
 }
 
-module.exports = { convertVND, formatYYYYMMDD, formatDDMMYYYY };
+function maskPhoneNumber(phone) {
+  if (phone.length < 8) {
+    return phone;
+  }
+
+  // Split the phone number into parts
+  const prefix = phone.slice(0, 3);
+  const hiddenDigits = "x".repeat(phone.length - 6);
+  const suffix = phone.slice(-3);
+
+  // Replace the middle digits with 'xxxx'
+  const maskedPhone = `${prefix}${hiddenDigits}${suffix}`;
+
+  return maskedPhone;
+}
+
+module.exports = {
+  convertVND,
+  formatYYYYMMDD,
+  formatDDMMYYYY,
+  maskPhoneNumber,
+};

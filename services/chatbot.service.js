@@ -109,7 +109,9 @@ const sendRemindBookingToLark = async (booking) => {
             [
               {
                 tag: "text",
-                text: `SĐT khách: ${customer_phone}`,
+                text: `SĐT khách: ${formatHelper.maskPhoneNumber(
+                  customer_phone
+                )}`,
               },
             ],
 
