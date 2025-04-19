@@ -188,7 +188,7 @@ const notification = async () => {
   chatbotService.sendAllRemindBookingToLark(bookingsFormat);
 };
 
-cron.schedule("55 16 * * *", async () => {
+cron.schedule("55 23 * * *", async () => {
   //  23:55 moi ngay
   await dailyReport();
 });
