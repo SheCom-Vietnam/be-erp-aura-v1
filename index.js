@@ -185,7 +185,7 @@ const notification = async () => {
     chatbotHelpers.formatBookingNoti(booking)
   );
 
-  chatbotService.sendAllRemindBookingToLark(bookingsFormat);
+  // chatbotService.sendAllRemindBookingToLark(bookingsFormat);
 };
 
 cron.schedule("55 16 * * *", async () => {
